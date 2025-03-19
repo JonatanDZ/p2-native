@@ -10,9 +10,9 @@
     <div class="sidebar">
         <h2>Products</h2>
         <ul>
-            <li><a href="#" style="color: white;">Søg</a></li>
-            <li><a href="#" style="color: white;">Sorter</a></li>
-            <li><a href="#" style="color: white;">Test</a></li>
+            <li><a href="#" class="sidebar-link">Søg</a></li>
+            <li><a href="#" class="sidebar-link">Sorter</a></li>
+            <li><a href="#" class="sidebar-link">Test</a></li>
         </ul>
     </div>
 
@@ -31,7 +31,7 @@
                         productCard.classList.add("product-card");
 
                         productCard.innerHTML = `
-                            <a href="product-detail.html?id=${product.id}" class="event-link"">
+                            <a href="product-detail.html?id=${product.id}" class="product-link"">
                                 <img src="${product.image}" alt="${product.name}">
                                 <h3>${product.name}</h3>
                                 <p>${product.info}</p>
