@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Selection</title>
+    <link rel="stylesheet" href="../assets/styles/paymentselection.css">
+</head>
+<body>
+    <h1>Betaling</h1>
+    <form id="payment-form">
+        <div class="payment-method">
+            <input type="radio" id="card" name="paymentMethod" value="Card" required>
+            <label for="card">Betalingskort</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="mobilePay" name="paymentMethod" value="MobilePay" required>
+            <label for="mobilePay">MobilePay</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="ApplePay" name="paymentMethod" value="ApplePay" required>
+            <label for="ApplePay">Apple Pay</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="GooglePay" name="paymentMethod" value="GooglePay" required>
+            <label for="GooglePay">Google Pay</label>
+        </div>
+        <button type="submit" id="checkout-button">Godkend og betal</button>
+    </form>
+    <script src="../assets/scripts/paymentselection.js"></script>
+</body>
+</html>
