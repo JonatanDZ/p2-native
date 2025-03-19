@@ -8,20 +8,33 @@
     <link rel="stylesheet" href="/public/css/landing.css">
 </head>
 <body>
-    <h1>Make local greate again</h1>
-    <div>
-        <div>
-            <a href="/public/pages/index.html">Aalborg</a>
-            <img src="/image_aalborg.png" alt="Aalborg"/>
+    <div id="navbar"></div>
+    <main>
+        <h1 id="header">Make local greate again</h1>
+        <div id="landingPage">
+            <a href="/public/pages/index.html">
+                <div class="landingPageBox">
+                    <p>Aalborg</p>
+                    <img src="/image_aalborg.png" alt="Aalborg"/>
+                </div>
+            </a>
+            <a href="/public/pages/index.html">
+                <div class="landingPageBox">
+                    <p>Aalborg</p>
+                    <img src="/image_aalborg.png" alt="Aalborg"/>
+                </div>
+            </a>
+            <a href="/public/pages/index.html">
+                <div class="landingPageBox">
+                    <p>Aalborg</p>
+                    <img src="/image_aalborg.png" alt="Aalborg"/>
+                </div>
+            </a>
         </div>
-        <div>
-            <a href="/public/pages/index.html">København</a>
-            <img src="/kbh.jpg" alt="København"/>
-        </div>
-        <div className={style.landingPageBox}>
-            <a href="/public/pages/index.html">Aarhus</a>
-            <img src="/aarhus.jpg" alt="Aarhus"/>
-        </div>
-    </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
 </body>
 </html>
