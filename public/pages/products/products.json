@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Abe",
+        "info": "Hannes abe butik",
+        "image": "testproduct1.jpg",
+        "price": "5000kr"
+    },
+    {
+        "id": 2,
+        "name": "Barbie taske",
+        "info": "Jenses tasker",
+        "image": "testproduct2.jpg",
+        "price": "250kr"
+    }
+]

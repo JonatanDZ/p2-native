@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            height: 100vh;
+            background: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .events-container {
+            margin-left: 220px;
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .event-card {
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            border: 8px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        .event-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .event-card h3 {
+            margin: 10px 0;
+        }
+        .event-card p {
+            margin: 5px 0;
+        }
+        .event-price {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Events</h2>
+        <ul>
+            <li><a href="#" style="color: white;">Søg</a></li>
+            <li><a href="#" style="color: white;">Sorter</a></li>
+            <li><a href="#" style="color: white;">Test</a></li>
+        </ul>
+    </div>
+
+    <div class="events-container" id="events-container">
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('events.json')
+                .then(response => response.json())
+                .then(events => {
+                    const eventsContainer = document.getElementById("events-container");
+
+                    events.forEach(event => {
+                        const eventCard = document.createElement("div");
+                        eventCard.classList.add("event-card");
+
+                        eventCard.innerHTML = `
+                            <a href="event-detail.html?id=${event.id}" style="text-decoration: none; color: inherit;">
+                                <img src="${event.image}" alt="${event.name}">
+                                <h3>${event.name}</h3>
+                                <p>${event.info}</p>
+                                <p class="event-price">${event.price}</p>
+                            </a>
+                        `;
+
+                        eventsContainer.appendChild(eventCard);
+                    });
+                })
+                .catch(error => console.error("Error fetching events:", error));
+        });
+    </script>
+
+</body>
+</html>
