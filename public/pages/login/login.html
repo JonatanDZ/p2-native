@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div className={styles.container}>
+        <form action={login_check}>
+          <h1>Login</h1>
+          <div>
+            <input
+              type="email"
+              placeholder="E-mail"
+              name="email"
+              required
+            ></input>
+          </div>
+  
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              required
+            ></input>
+          </div>
+  
+          <div>
+            <label>
+              <input type="checkbox" />
+              Husk mig
+            </label>
+            <a href="#">Glemt kodeord</a>
+          </div>
+  
+          <button type="submit">Login</button>
+  
+          <div>
+            <p>
+              Ny bruger? <Link href="#">Registrer dig her</Link>
+            </p>
+          </div>
+        </form>
+      </div>
+</body>
+</html>
