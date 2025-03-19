@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/css/global.css">
     <title>Signup</title>
+    <link rel="stylesheet" href="/public/css/login/login.css">
 </head>
 <body>
 
 <div id="navbar"></div>
-    <div>
+    <div class="container">
         <form>
-          <h1>Registrer dig</h1>
+          <h1 class="loginName">Registrer dig</h1>
           
-          <div>
+          <div class="inputBox">
             <input
               type="email"
               placeholder="E-mail"
@@ -22,7 +23,7 @@
             ></input>
           </div>
   
-          <div>
+          <div class="inputBox">
             <input
               type="password"
               placeholder="Password"
@@ -31,7 +32,7 @@
             ></input>
           </div>
   
-          <div>
+          <div class="inputBox">
             <input
               type="password"
               placeholder="Confirm Password"
@@ -40,11 +41,11 @@
             ></input>
           </div>
   
-          <button type="subimt">Signup</button>
+          <button type="subimt" class="button">Signup</button>
   
-          <div disabled={password != confirmPassword}>
+          <div class="registerLink">
             <p>
-              Allerede bruger? <a href="/public/pages/login/login.html">Login her</a>
+              Allerede bruger? <a href="/public/pages/login/login.html"><u>Login her</u></a>
             </p>
           </div>
         </form>

@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/css/global.css">
     <title>Login</title>
+    <link rel="stylesheet" href="/public/css/login/login.css">
 </head>
 <body>
   <div id="navbar"></div>
-    <div>
+    <div class="container">
         <form>
-          <h1>Login</h1>
-          <div>
+          <h1 class="loginName">Login</h1>
+          <div class="inputBox">
             <input
               type="email"
               placeholder="E-mail"
@@ -20,7 +21,7 @@
             ></input>
           </div>
   
-          <div>
+          <div class="inputBox">
             <input
               type="password"
               placeholder="Password"
@@ -29,7 +30,7 @@
             ></input>
           </div>
   
-          <div>
+          <div class="rememberForgot">
             <label>
               <input type="checkbox" />
               Husk mig
@@ -37,11 +38,11 @@
             <a href="#">Glemt kodeord</a>
           </div>
   
-          <button type="submit">Login</button>
+          <button type="submit" class="button">Login</button>
   
-          <div>
+          <div class="registerLink">
             <p>
-              Ny bruger? <a href="/public/pages/login/signup.html">Registrer dig her<a>
+              Ny bruger? <a href="/public/pages/login/signup.html"><u>Registrer dig her</u><a>
             </p>
           </div>
         </form>

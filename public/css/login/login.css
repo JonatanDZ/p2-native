@@ -1,0 +1,46 @@
+.loginName {
+    text-align: center;
+    padding: 5px;
+  }
+  
+  .container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .inputBox {
+    margin-bottom: 15px;
+  }
+  
+  .inputBox input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .rememberForgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .registerLink {
+    text-align: center;
+    margin-top: 15px;
+  }
