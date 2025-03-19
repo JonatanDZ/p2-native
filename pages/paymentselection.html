@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,24 +8,32 @@
 </head>
 <body>
     <h1>Betaling</h1>
+    <p><strong>Total:</strong> DKK <span id="total-price">0</span></p>
     <form id="payment-form">
         <div class="payment-method">
             <input type="radio" id="card" name="paymentMethod" value="Card" required>
             <label for="card">Betalingskort</label>
+            <img src="../assets/images/dankorticon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="../assets/images/mastercardicon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="../assets/images/visaicon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="../assets/images/visaelectronicon.jpg" alt="Card Payment" height="30" width="30">
         </div>
         <div class="payment-method">
             <input type="radio" id="mobilePay" name="paymentMethod" value="MobilePay" required>
             <label for="mobilePay">MobilePay</label>
+            <img src="../assets/images/mobilepayicon.jpg" alt="MobilePay" height="30" width="70">
         </div>
         <div class="payment-method">
             <input type="radio" id="ApplePay" name="paymentMethod" value="ApplePay" required>
             <label for="ApplePay">Apple Pay</label>
+            <img src="../assets/images/applepayicon.jpg" alt="Apple Pay" height="40" width="60">
         </div>
         <div class="payment-method">
             <input type="radio" id="GooglePay" name="paymentMethod" value="GooglePay" required>
             <label for="GooglePay">Google Pay</label>
+            <img src="../assets/images/googlepayicon.jpg" alt="Google Pay" width="50">
         </div>
-        <button type="submit" id="checkout-button">Godkend og betal</button>
+        <button type="submit" id="checkout-button">Godkend og betal DKK 0</button>
     </form>
     <script src="../assets/scripts/paymentselection.js"></script>
 </body>

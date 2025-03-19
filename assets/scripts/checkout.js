@@ -55,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        window.location.href = `paymentselection.html?totalPrice=${totalPrice}`;
+
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",
