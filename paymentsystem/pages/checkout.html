@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
-    <link rel="stylesheet" href="../assets/styles/checkout.css">
+    <link rel="stylesheet" href="/paymentsystem/styles/checkout.css">
 </head>
 <body>
     <div class="checkout-container">
@@ -26,7 +26,7 @@
                 </div>
                 <div>
                     <label>Postnummer:</label>
-                    <input type="text" name="Postnummer" required>
+                    <input type="text" name="Postnummer" minlength="4" maxlength="4" pattern="\d{4}" inputmode="numeric" required>
                 </div>
                 <div>
                     <label>By:</label>
@@ -69,6 +69,6 @@
             </div>
         </div>
     </div>
-    <script src="../assets/scripts/checkout.js"></script>
+    <script src="/paymentsystem/scripts/checkout.js"></script>
 </body>
 </html>
