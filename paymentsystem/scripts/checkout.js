@@ -1,75 +1,75 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-    const quantityInput = document.getElementById("quantity-input");
-    const totalPriceElement = document.getElementById("total-price");
-    const removeItemButton = document.getElementById("remove-item");
+    const basketItemsContainer = document.getElementById("basket-items");
+    const totalText = document.getElementById("basket-total-text");
     const checkoutForm = document.getElementById("checkout-form");
-    const basketTotalText = document.getElementById("basket-total-text");
-    let pricePerItem = 600;
+    let basket = JSON.parse(localStorage.getItem("basket")) || [];
 
-    // Load saved quantity from localStorage
-    let savedQuantity = localStorage.getItem("basketQuantity");
-    if (savedQuantity) {
-        quantityInput.value = savedQuantity;
-        updateTotalPrice(savedQuantity);
+    let total = 0;
+
+   
+    if (basket.length === 0) {
+        basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
+        totalText.textContent = "Total (0 varer) DKK 0";
     } else {
-        updateTotalPrice(1); // Default to 1
+        basket.forEach((item, index) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.classList.add("item-details");
+
+            const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''), 10);
+            total += priceNumber;
+
+            itemDiv.innerHTML = `
+                <h3>${item.name}</h3>
+                <p>${item.info}</p>
+                <strong>DKK ${priceNumber}</strong>
+                <br>
+                <a href="#" class="remove-item" data-index="${index}">Fjern</a>
+                <hr>
+            `;
+
+            basketItemsContainer.appendChild(itemDiv);
+        });
+
+        totalText.textContent = `Total (${basket.length} vare${basket.length > 1 ? "r" : ""}) DKK ${total}`;
     }
 
-    // Function to update total price and basket summary
-    function updateTotalPrice(quantity) {
-        const totalPrice = quantity * pricePerItem;
-        totalPriceElement.textContent = totalPrice;
-        basketTotalText.textContent = `Total (${quantity} Vare) DKK ${totalPrice}`;
-        localStorage.setItem("basketQuantity", quantity);
-    }
-
-    // Update price dynamically when quantity changes
-    quantityInput.addEventListener("input", function () {
-        let newQuantity = parseInt(quantityInput.value, 10);
-        if (isNaN(newQuantity) || newQuantity < 1) {
-            newQuantity = 1;
-        } else if (newQuantity > 99) {
-            newQuantity = 99;
+   
+    basketItemsContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-item")) {
+            e.preventDefault();
+            const index = parseInt(e.target.getAttribute("data-index"), 10);
+            basket.splice(index, 1);
+            localStorage.setItem("basket", JSON.stringify(basket));
+            location.reload(); 
         }
-        quantityInput.value = newQuantity;
-        updateTotalPrice(newQuantity);
     });
 
-    // Remove item from basket
-    removeItemButton.addEventListener("click", function (event) {
-        event.preventDefault();
-        document.querySelector(".basket-overview").innerHTML = "<p>Kurven er tom</p>";
-        totalPriceElement.textContent = "0";
-        basketTotalText.textContent = "Total (0 Vare) DKK 0";
-        localStorage.removeItem("basketQuantity");
-    });
-
-    // Handle checkout form submission
     checkoutForm.addEventListener("submit", async function (event) {
         event.preventDefault();
-        let totalPrice = totalPriceElement.textContent;
-        
-        if (totalPrice === "0" || !totalPrice) {
+
+        if (basket.length === 0) {
             alert("Din kurv er tom. Tilføj en vare før du fortsætter.");
             return;
         }
 
+        const totalPrice = total;
+
+        
         window.location.href = `paymentselection.html?totalPrice=${totalPrice}`;
 
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ totalPrice: totalPrice })
+                body: JSON.stringify({ totalPrice })
             });
 
             const session = await response.json();
 
             if (session.url) {
-                window.location.href = session.url;  // Redirect to Stripe Checkout
+                window.location.href = session.url;
             } else {
-                alert("Error: Kunne ikke oprette en betalingssession.");
+                alert("Fejl: Kunne ikke oprette betalingssession.");
             }
         } catch (error) {
             console.error("Fejl under checkout:", error);
