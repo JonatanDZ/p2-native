@@ -1,10 +1,38 @@
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-    display: flex;
 }
+
+
+#navbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--navbar, #333); 
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+#navbarLeftSideContainer, #navbarRightSideContainer {
+    display: flex;
+    gap: 20px; 
+}
+
+#navbarRightSideContainer svg {
+    height: 24px;
+    width: 24px;
+    fill: black;
+}
+
 
 .sidebar {
     width: 200px;
@@ -13,6 +41,9 @@ body {
     color: white;
     padding: 20px;
     position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5; 
 }
 
 .sidebar h2 {
@@ -25,13 +56,16 @@ body {
     text-decoration: none;
 }
 
+
 .products-container {
-    margin-left: 220px;
+    margin-left: 220px; 
+    margin-top: 80px; 
     padding: 30px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
+
 
 .product-card {
     width: 200px;
@@ -62,6 +96,19 @@ body {
     text-align: center;
 }
 
+.add-to-basket {
+    display: block;
+    margin: 10px auto 0 auto; 
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
 .product-link {
     text-decoration: none;
     color: inherit;
@@ -71,4 +118,36 @@ body {
 .product-link h3,
 .product-link p {
     color: black;
+}
+
+
+@media (max-width: 768px) {
+    
+    #navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #navbarLeftSideContainer, #navbarRightSideContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+   
+    .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+
+ 
+    .products-container {
+        margin-left: 0;
+        margin-top: 150px; 
+    }
+
+   
+    .product-card {
+        width: 100%; 
+    }
 }
