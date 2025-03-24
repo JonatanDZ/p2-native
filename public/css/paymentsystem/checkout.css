@@ -117,3 +117,13 @@ button[type="submit"]:hover {
         max-width: 100%;
     }
 }
+
+#basket-total-text {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.basket-overview h2 {
+    text-align: center;
+}

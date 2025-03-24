@@ -37,9 +37,9 @@ body {
 .sidebar {
     width: 200px;
     height: 100vh;
-    background: #333;
+    background: #5f5d5d;
     color: white;
-    padding: 20px;
+    padding: 50px;
     position: fixed;
     top: 0;
     left: 0;
