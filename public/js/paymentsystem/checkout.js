@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 0);
 
         
-        window.location.href = `paymentselection.html?totalPrice=${totalPrice}`;
+        window.location.href = `paymentselection.html`;
 
         
         try {
