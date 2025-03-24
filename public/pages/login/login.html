@@ -8,49 +8,19 @@
     <link rel="stylesheet" href="/public/css/login/login.css">
 </head>
 <body>
-  <div id="navbar"></div>
+    <div id="navbar"></div>
     <div class="containerCenter">
-      <div class="container">
-          <form>
-            <h1 class="loginName">Login</h1>
-            <div class="inputBox">
-              <input
-                type="email"
-                placeholder="E-mail"
-                name="email"
-                required
-              ></input>
-            </div>
-    
-            <div class="inputBox">
-              <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                required
-              ></input>
-            </div>
-    
-            <div class="rememberForgot">
-              <label>
-                <input type="checkbox" />
-                Husk mig
-              </label>
-              <a href="#">Glemt kodeord</a>
-            </div>
-    
-            <button type="submit" class="button">Login</button>
-    
-            <div class="registerLink">
-              <p>
-                Ny bruger? <a href="/public/pages/login/signup.html"><u>Registrer dig her</u><a>
-              </p>
-            </div>
-          </form>
+        <div class="container">
+            <form id="loginForm">
+                <input id="email" placeholder="E-mail" name="email" required>
+                <input id="password" placeholder="Password" name="password" required>
+                <button type="submit">Login</button>
+            </form>        
         </div>
-      </div>
-      <div id="footer"></div>
-      <script src="/public/js/components/navbar.js"></script>
-      <script src="/public/js/components/footer.js"></script>
+    </div>
+    <div id="footer"></div>
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
+    <script src="/public/js/loginandregister/auth.js"></script>
 </body>
 </html>
