@@ -12,10 +12,10 @@
         <h2>View products</h2>
         <ul> 
             <li><a href="admin.html" class="sidebar-link">Admin</a></li>
-            <li><a href="addProducts.html" class="sidebar-link">Add products</a></li>
-            <li><a href="addEvents.html" class="sidebar-link">Add event</a></li>
-            <li><a href="viewProducts.html" class="sidebar-link">See your products</a></li>
-            <li><a href="viewEvents.html" class="sidebar-link">See your events</a></li>
+            <li><a href="addproducts.html" class="sidebar-link">Add products</a></li>
+            <li><a href="addevents.html" class="sidebar-link">Add event</a></li>
+            <li><a href="viewproducts.html" class="sidebar-link">See your products</a></li>
+            <li><a href="viewevents.html" class="sidebar-link">See your events</a></li>
             <li><a href="sales.html" class="sidebar-link">Recent sales</a></li>
         </ul>
     </div>
@@ -35,10 +35,10 @@
                         productCard.classList.add("product-card");
 
                         productCard.innerHTML = `
-                            <a href="product-detail.html?id=${product.id}" class="product-link"">
+                            <a href="productdetail.html?id=${product.id}" class="product-link"">
                                 <img src="${product.image}" alt="${product.name}">
                                 <h3>${product.name}</h3>
-                                <p>${product.info}</p>
+                                <p>${product.info}</p
                                 <p class="product-price">${product.price}</p>
                             </a>
                         `;
