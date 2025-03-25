@@ -1,74 +1,122 @@
-body {
-    font-family: Arial, sans-serif;
+/* Reset styles */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+}
+
+.customContainer {
     display: flex;
 }
 
+/* Sidebar styling */
 .sidebar {
-    width: 200px;
-    height: 100vh;
-    background: #333;
-    color: white;
+    width: 220px;
+    background-color: #2c3e50;
     padding: 20px;
-    position: fixed;
+    color: white;
+    position: auto;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    height: calc(100vh - 60px);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    z-index: 5;
 }
 
 .sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar li {
+    margin: 10px 0;
 }
 
 .sidebar-link {
-    color: white;
     text-decoration: none;
+    color: #ecf0f1;
+    font-weight: bold;
+    transition: color 0.3s;
 }
 
+.sidebar-link:hover {
+    color: #3498db;
+}
+
+/* Main content styling */
 .events-container {
-    margin-left: 220px;
-    padding: 30px;
+    margin-left: 0px; /* Adjusted for sidebar width */
+    flex: 1; /* Ensures the container takes up remaining space */
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+/* Event card styling */
 .event-card {
-    width: 400px;
-    background: white;
-    border-radius: 10px;
-    border: 8px solid #ccc;
-    padding: 10px;
-    text-align: left;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .event-card img {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
-    border-radius: 5px;
 }
 
 .event-card h3 {
-    margin: 10px 0;
+    font-size: 18px;
+    padding: 10px 15px;
+    color: #2c3e50;
 }
 
 .event-card p {
-    margin: 5px 0;
+    padding: 0 15px;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .event-price {
+    font-size: 16px;
     font-weight: bold;
-    text-align: center;
+    color: #e74c3c;
+    padding: 0 15px 15px 15px;
 }
 
+/* Event link styling */
 .event-link {
     text-decoration: none;
     color: inherit;
-    display: block;
 }
 
-.event-link h3,
-.event-link p {
-    color: black;
+.event-link:hover {
+    text-decoration: underline;
 }

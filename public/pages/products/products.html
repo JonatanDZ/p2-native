@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products Page</title>
-    <link rel="stylesheet" href="/public/css/components/product.css">
     <link rel="stylesheet" href="/public/css/components/navbar.css">
+    <link rel="stylesheet" href="/public/css/components/product.css">
 </head>
 <body>
     <div id="navbar"></div>
+    <div class="customContainer">
+        <div class="sidebar">
+            <h2>Products</h2>
+            <ul>
+                <li><a href="#" class="sidebar-link">Søg</a></li>
+                <li><a href="#" class="sidebar-link">Sorter</a></li>
+                <li><a href="#" class="sidebar-link">Test</a></li>
+            </ul>
+        </div>
 
-    <div class="sidebar">
-        <h2>Products</h2>
-        <ul>
-            <li><a href="#" class="sidebar-link">Søg</a></li>
-            <li><a href="#" class="sidebar-link">Sorter</a></li>
-            <li><a href="#" class="sidebar-link">Test</a></li>
-        </ul>
+        <div class="products-container" id="products-container">
+        </div>
     </div>
-
-    <div class="products-container" id="products-container">
-    </div>
+    <div id="footer"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -74,6 +76,7 @@
     </script>
 
 <script src="/public/js/components/navbar.js"></script>
+<script src="/public/js/components/footer.js"></script>
 
 </body>
 </html>

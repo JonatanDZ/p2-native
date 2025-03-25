@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/public/css/components/event.css">
 </head>
 <body>
+    <div id="navbar"></div>
+<div class="customContainer">
     <div class="sidebar">
         <h2>Events</h2>
         <ul>
@@ -18,7 +20,10 @@
 
     <div class="events-container" id="events-container">
     </div>
-    
+</div>
+        <div id="footer"></div>
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             fetch('events.json')

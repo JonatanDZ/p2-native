@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
 :root {
-    --navbar: #b8b7b7;
     --background: #ffffff;
+    --navbar: #333;
+    --footer: #333;
     --foreground: #171717;
     --black: #0a0908ff;
     --gunmetal: rgb(188, 20, 20);
