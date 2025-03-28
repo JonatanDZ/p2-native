@@ -1,45 +1,67 @@
+import { ValidationError, NoResourceError, processReq } from "./router.js";
+export { startServer, fileResponse };
 
-const express = require("express");
-const cors = require("cors");
-const Stripe = require("stripe");
-require("dotenv").config();
+import http from "http";
+import fs from "fs";
 
-const app = express();
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-app.use(express.json());
-app.use(cors());
+const hostname = "localhost";
+const port = 3000;
 
-// Create a Stripe Checkout session
-app.post("/create-checkout-session", async (req, res) => {
-    try {
-        const { totalPrice } = req.body;
+const server = http.createServer(requestHandler);
 
-        // Validate the totalPrice
-        if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-            return res.status(400).json({ error: "Invalid total price" });
-        }
+function errorResponse(res, code, reason) {
+  res.statusCode = code;
+  res.setHeader("Content-Type", "text/txt");
+  res.write(reason);
+  res.end("\n");
+}
 
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: [{
-                price_data: {
-                    currency: "dkk",
-                    product_data: { name: "BLS Oversize T-shirt" },
-                    unit_amount: totalPrice * 100, // Convert DKK to cents/øre
-                },
-                quantity: 1,
-            }],
-            mode: "payment",
-            success_url: "http://localhost:5500/pages/paymentsuccess.html?totalPrice=" + totalPrice,
-            cancel_url: "http://localhost:5500/pages/paymentfail.html",
-        });
+function requestHandler(req, res) {
+  try {
+    processReq(req, res);
+  } catch (e) {
+    console.log("Error!!: " + e);
+    //errorResponse(res, 500, "");
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "text/txt");
+    res.write("");
+    res.end("\n");
+  }
+}
 
-        res.json({ url: session.url });
-    } catch (err) {
-        console.error("Stripe API Error:", err.message);
-        res.status(500).json({ error: err.message });
+function startServer() {
+  /* start the server */
+  server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+    fs.writeFileSync(
+      "message.txt",
+      `Server running at http://${hostname}:${port}/`
+    );
+  });
+}
+
+function fileResponse(res, filename) {
+  //const sPath=securePath(filename);
+  //console.log("Reading:"+sPath);
+  fs.readFile(filename, (err, data) => {
+    if (err) {
+      console.error(err);
+      errorResponse(res, 404, String(err));
+    } else {
+      let filetype = filename.split(".");
+      res.statusCode = 200;
+      if (filetype[1] == "html") {
+        res.setHeader("Content-Type", "text/html");
+        res.write(data);
+        res.end("\n"); //SET HEADER DEPENDING ON TYPE. CURRENTLY ONLY WORKS FOR HTML FILES
+      } else if (filetype[1] == "js") {
+        res.setHeader("Content-Type", "text/js");
+        res.write(data);
+        res.end("\n");
+      } else if (filetype[1] == "jpg") {
+        res.setHeader("Content-Type", "image/jpg");
+        //res.send(data);
+      }
     }
-});
-
-const PORT = 3000;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+  });
+}
