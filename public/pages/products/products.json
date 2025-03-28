@@ -12,12 +12,6 @@
         "info": "Jenses tasker",
         "image": "testproduct2.jpg",
         "price": "250kr"
-    },  
-    {
-        "id": 2,
-        "name": "Barbie taske",
-        "info": "Jenses tasker",
-        "image": "testproduct2.jpg",
-        "price": "250kr"
-    }
+    }  
+
 ]
