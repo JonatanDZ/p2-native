@@ -1,34 +1,33 @@
-// Function to get a cookie value
-function getCookie(name) {
-    let cookies = document.cookie.split('; ');
-    for (let cookie of cookies) {
-        let [key, value] = cookie.split('=');
-        if (key === name) return value;
-    }
-    return null;
+function makeCookie(cookieName, value, expire) {
+    const date = new Date();
+    date.setTime(date.getTime() + (expire * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + date.toUTCString();
+    document.cookie = cookieName + "=" + value + ";" + expires + ";path=/";
 }
 
-// Function to check and redirect if the cookie exists
-function onLoadCheckForLandingPageVisited() {
-    if (getCookie("landingPageVisited") === "1") {
-        console.log("Landing page already visited, redirecting...");
+function getCookie(cookieName) {
+    let name = cookieName + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return "";
+} 
+
+function checkCookie(cookieName) {
+    let cookie = getCookie(cookieName);
+    if (cookie) {
         window.location.href = "/public/pages/index.html";
-    }
+    } 
 }
 
-// Function to set cookie when clicking the link
-function setLandingPageCookie() {
-    document.cookie = "landingPageVisited=1; path=/; expires=Fri, 31 Dec 2025 23:59:59 GMT";
-    console.log("Cookie set to 1:", document.cookie);
-}
-
-// Wait for DOM to be ready before adding event listeners
-document.addEventListener("DOMContentLoaded", () => {
-    let linkElement = document.getElementById("isClickedCookie");
-    if (linkElement) {
-        linkElement.addEventListener("click", setLandingPageCookie);
-    }
-
-    // Check if the user should be redirected on page load
-    onLoadCheckForLandingPageVisited();
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("isClickedCookie").addEventListener("click", function() {
+        makeCookie("landingVisited", 1, 30);
+    });
 });
