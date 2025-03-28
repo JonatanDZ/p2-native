@@ -12,5 +12,40 @@
         "info": "Meget kedeligt event hvor der ikke sker noget",
         "image": "testevent2.jpg",
         "price": "50kr"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
     }
 ]

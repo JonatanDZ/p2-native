@@ -1,26 +1,6 @@
-
-#navbar {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--navbar);
-    padding: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-
-#navbarRightSideContainer, #navbarLeftSideContainer {
+#rightside {
+    margin-left: auto;
     display: flex;
     align-items: center;
-}
-
-#navbarRightSideContainer {
-    font-size: 23px;
-}
-
-#navLinks {
-    padding: 10px;
-}
+  }
+  

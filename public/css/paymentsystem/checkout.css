@@ -1,5 +1,4 @@
-
-body {
+html, body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -29,7 +28,7 @@ h1 {
 }
 
 .checkout-container2 {
-    margin-top: 70px ;
+    margin-top: 70px;
 }
 
 .checkout-form {
@@ -107,15 +106,8 @@ button[type="submit"]:hover {
     text-align: center;
 }
 
-@media (max-width: 768px) {
-    .checkout-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .checkout-form, .basket-overview {
-        max-width: 100%;
-    }
+#footer {
+    margin-top: auto;
 }
 
 #basket-total-text {
