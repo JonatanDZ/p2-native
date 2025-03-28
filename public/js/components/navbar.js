@@ -1,8 +1,8 @@
-function loadNavbar() {
+export function loadNavbar() {
     fetch("/public/components/navbar.html")
         .then(response => response.text())
         .then(html => {
-            document.getElementById("navbar").innerHTML = html;
+            document.querySelector(".navbar").innerHTML = html;
         })
         .catch(error => console.error("Error loading navbar:", error));
 }

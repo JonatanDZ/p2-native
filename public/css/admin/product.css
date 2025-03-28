@@ -6,25 +6,6 @@ body {
     display: flex;
 }
 
-.sidebar {
-    width: 200px;
-    height: 100vh;
-    background: #333;
-    color: white;
-    padding: 20px;
-    position: fixed;
-}
-
-.sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
-}
-
-.sidebar-link {
-    color: white;
-    text-decoration: none;
-}
-
 .products-container {
     margin-left: 220px;
     padding: 30px;
