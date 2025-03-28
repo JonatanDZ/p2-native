@@ -2,11 +2,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const basketItemsContainer = document.getElementById("basket-items");
     const totalText = document.getElementById("basket-total-text");
     const checkoutForm = document.getElementById("checkout-form");
-    let basket = JSON.parse(localStorage.getItem("basket")) || [];
+    const removeAllButton = document.getElementById("remove-all");
 
+    let basket = JSON.parse(localStorage.getItem("basket")) || [];
     let total = 0;
 
-   
+    // Remove all items from basket
+    if (removeAllButton) {
+        removeAllButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("basket");
+            location.reload();
+        });
+    }
+
+    
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
         totalText.textContent = "Total (0 varer) DKK 0";
@@ -16,13 +26,18 @@ document.addEventListener("DOMContentLoaded", function () {
             itemDiv.classList.add("item-details");
 
             const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''), 10);
-            total += priceNumber;
+            const quantity = item.quantity || 1;
+            const itemTotal = priceNumber * quantity;
+            total += itemTotal;
 
             itemDiv.innerHTML = `
                 <h3>${item.name}</h3>
-                <p>${item.info}</p>
-                <strong>DKK ${priceNumber}</strong>
-                <br>
+                <p>${item.info || ''}</p>
+                <p>Pris: DKK ${priceNumber}</p><br>
+                <p>Antal:
+                    <input type="number" class="quantity-input" data-index="${index}" value="${quantity}" min="1" max="99">
+                </label><br>
+                <p>Subtotal: DKK ${itemTotal}</p><br>
                 <a href="#" class="remove-item" data-index="${index}">Fjern</a>
                 <hr>
             `;
@@ -30,20 +45,38 @@ document.addEventListener("DOMContentLoaded", function () {
             basketItemsContainer.appendChild(itemDiv);
         });
 
-        totalText.textContent = `Total (${basket.length} vare${basket.length > 1 ? "r" : ""}) DKK ${total}`;
+        
+        const totalQuantity = basket.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        totalText.textContent = `Total (${totalQuantity} vare${totalQuantity > 1 ? "r" : ""}) DKK ${total}`;
     }
 
-   
+    // Removes individual items from basket
     basketItemsContainer.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-item")) {
             e.preventDefault();
             const index = parseInt(e.target.getAttribute("data-index"), 10);
             basket.splice(index, 1);
             localStorage.setItem("basket", JSON.stringify(basket));
+            location.reload();
+        }
+    });
+
+    // Handles quantity changes
+    basketItemsContainer.addEventListener("input", function (e) {
+        if (e.target.classList.contains("quantity-input")) {
+            const index = parseInt(e.target.getAttribute("data-index"), 10);
+            let newQty = parseInt(e.target.value, 10);
+
+            if (isNaN(newQty) || newQty < 1) newQty = 1;
+            if (newQty > 99) newQty = 99;
+
+            basket[index].quantity = newQty;
+            localStorage.setItem("basket", JSON.stringify(basket));
             location.reload(); 
         }
     });
 
+    
     checkoutForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
@@ -52,11 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const totalPrice = total;
+        const totalPrice = basket.reduce((sum, item) => {
+            const price = parseInt(item.price.replace(/[^\d]/g, ''), 10);
+            const quantity = item.quantity || 1;
+            return sum + price * quantity;
+        }, 0);
 
         
         window.location.href = `paymentselection.html?totalPrice=${totalPrice}`;
 
+        
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",

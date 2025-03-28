@@ -109,3 +109,13 @@ button[type="submit"]:hover {
 #footer {
     margin-top: auto;
 }
+
+#basket-total-text {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.basket-overview h2 {
+    text-align: center;
+}
