@@ -45,6 +45,7 @@ body {
     gap: 10px;
     padding: 20px;
     box-sizing: border-box;
+    height: 20px;
 }
 
 .product-card {
