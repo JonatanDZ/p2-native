@@ -20,7 +20,9 @@ function processReq(req, res) {
     case "GET":
       {
         let pathElements = queryPath.split("/");
-        console.log(pathElements);
+        //console.log(req.url);
+        //console.log(pathElements);
+        let betterURL = req.url.replace(req.url[0], "");
         switch (pathElements[1]) {
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
@@ -36,7 +38,7 @@ function processReq(req, res) {
             break;
           default:
             //console.log("Neither POST or GET");
-            fileResponse(res, req.url);
+            fileResponse(res, betterURL);
             break;
         }
       }
