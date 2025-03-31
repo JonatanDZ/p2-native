@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Selection</title>
+    <link rel="stylesheet" href="/public/css/paymentsystem/paymentselection.css"> 
+</head>
+<body>
+    <h1>Betaling</h1>
+    <form id="payment-form">
+        <div class="payment-method">
+            <input type="radio" id="card" name="paymentMethod" value="Card" required>
+            <label for="card">Betalingskort</label>
+            <img src="/public/images/paymentsystem/dankorticon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="/public/images/paymentsystem/mastercardicon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="/public/images/paymentsystem/visaicon.jpg" alt="Card Payment" height="30" width="30">
+            <img src="/public/images/paymentsystem/visaelectronicon.jpg" alt="Card Payment" height="30" width="30">
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="mobilePay" name="paymentMethod" value="MobilePay" required>
+            <label for="mobilePay">MobilePay</label>
+            <img src="/public/images/paymentsystem/mobilepayicon.jpg" alt="MobilePay" height="30" width="70">
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="ApplePay" name="paymentMethod" value="ApplePay" required>
+            <label for="ApplePay">Apple Pay</label>
+            <img src="/public/images/paymentsystem/applepayicon.jpg" alt="Apple Pay" height="40" width="60">
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="GooglePay" name="paymentMethod" value="GooglePay" required>
+            <label for="GooglePay">Google Pay</label>
+            <img src="/public/images/paymentsystem/googlepayicon.jpg" alt="Google Pay" width="50">
+        </div>
+        <button type="submit" id="checkout-button">Godkend og betal DKK 0</button>
+    </form>
+    <script src="/public/js/paymentsystem/paymentselection.js"></script>
+</body>
+</html>

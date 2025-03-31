@@ -3,16 +3,27 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+}
+
+.customContainer {
     display: flex;
+    margin: 0;
+    height: 100vh;
 }
 
 .sidebar {
-    width: 200px;
-    height: 100vh;
-    background: #333;
-    color: white;
+    width: 220px;
+    background-color: #2c3e50;
     padding: 20px;
-    position: fixed;
+    color: white;
+    position: auto;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    height: calc(100vh - 60px);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    z-index: 5;
 }
 
 .sidebar h2 {
@@ -25,12 +36,15 @@ body {
     text-decoration: none;
 }
 
+
 .products-container {
-    margin-left: 220px;
-    padding: 30px;
+    margin-left: 0px; 
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .product-card {
@@ -60,6 +74,19 @@ body {
 .product-price {
     font-weight: bold;
     text-align: center;
+}
+
+.add-to-basket {
+    display: block;
+    margin: 10px auto 0 auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .product-link {
