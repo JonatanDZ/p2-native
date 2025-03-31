@@ -8,78 +8,60 @@
     <link rel="stylesheet" href="/public/css/paymentsystem/checkout.css">
 </head>
 <body>
-    <div id="navbar"></div>
-
+    <div id="navbar" ></div>
     <div class="checkout-wrapper">
-        <div class="checkout-container">
-            <div class="checkout-container1">
-                <h1>Checkout</h1>
-                <form id="checkout-form">
-                    <div>
-                        <label>Fornavn:</label>
-                        <input type="text" name="Fornavn" required>
-                    </div>
-                    <div>
-                        <label>Efternavn:</label>
-                        <input type="text" name="Efternavn" required>
-                    </div>
-                    <div>
-                        <label>Addresse:</label>
-                        <input type="text" name="Addresse" required>
-                    </div>
-                    <div>
-                        <label>Postnummer:</label>
-                        <input type="text" name="Postnummer" minlength="4" maxlength="4" pattern="\d{4}" inputmode="numeric" required>
-                    </div>
-                    <div>
-                        <label>By:</label>
-                        <input type="text" name="By" required>
-                    </div>
-                    <div>
-                        <label>Land:</label>
-                        <input type="text" name="Land" required>
-                    </div>
-                    <div>
-                        <label>E-mail:</label>
-                        <input type="email" name="Email" required>
-                    </div>
-                    <div>
-                        <label>Bekræft e-mail:</label>
-                        <input type="email" name="Bekræftemail" required>
-                    </div>
-                    <button type="submit">Fortsæt til betaling</button>
-                </form>
-            </div>
-            <div class="checkout-container2">
-                <div class="basket-overview">
-                    <h2>Din Kurv</h2>
-                    <div id="basket-items"></div>
-                           
-                    <div class="selectors">
-                        <select id="size-select">
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <input type="number" id="quantity-input" min="1" max="99" value="1">
-                    </div>
-                    <a href="#" class="remove-item" id="remove-item">Fjern</a>
-                    <p id="basket-total-text">Total (0 Vare) DKK 0</p>
+    <div class="checkout-container">
+        <div class="checkout-container1">
+            <h1>Checkout</h1>
+            <form id="checkout-form">
+                <div>
+                    <label>Fornavn:</label>
+                    <input type="text" name="Fornavn" required>
                 </div>
-            </div>
+                <div>
+                    <label>Efternavn:</label>
+                    <input type="text" name="Efternavn" required>
+                </div>
+                <div>
+                    <label>Addresse:</label>
+                    <input type="text" name="Addresse" required>
+                </div>
+                <div>
+                    <label>Postnummer:</label>
+                    <input type="text" name="Postnummer" minlength="4" maxlength="4" pattern="\d{4}" inputmode="numeric" required>
+                </div>
+                <div>
+                    <label>By:</label>
+                    <input type="text" name="By" required>
+                </div>
+                <div>
+                    <label>Land:</label>
+                    <input type="text" name="Land" required>
+                </div>
+                <div>
+                    <label>E-mail:</label>
+                    <input type="email" name="Email" required>
+                </div>
+                <div>
+                    <label>Bekræft e-mail:</label>
+                    <input type="email" name="Bekræftemail" required>
+                </div>
+                <button type="submit">Fortsæt til betaling</button>
+            </form>
         </div>
-    </div> <!-- END OF WRAPPER -->
-
-    <div id="footer"></div> <!-- FOOTER IS NOW OUTSIDE THE FLEXBOX -->
-
-    <script src="/public/js/components/navbar.js"></script>
+        <div class="checkout-container2">
+            <div class="basket-overview">
+                <h2>Din Kurv</h2>
+                <div id="basket-items"></div>
+                
+                <a href="#" class="remove-all" id="remove-all">Tøm kurv</a>
+                <p id="basket-total-text">Total (0 Vare) DKK 0</p>
+        </div>
+    </div>
+    </div>
+    <div id="footer"></div>
+    <script src="/public/js/paymentsystem/checkout.js"></script>
     <script src="/public/js/components/footer.js"></script>
-    <script src="/paymentsystem/scripts/checkout.js"></script>
+    <script src="/public/js/components/navbar.js"></script>
 </body>
-
 </html>
-
-
-
-

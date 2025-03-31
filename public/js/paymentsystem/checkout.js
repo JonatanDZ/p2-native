@@ -1,12 +1,11 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const basketItemsContainer = document.getElementById("basket-items");
     const totalText = document.getElementById("basket-total-text");
     const checkoutForm = document.getElementById("checkout-form");
     const removeAllButton = document.getElementById("remove-all");
-
     let basket = JSON.parse(localStorage.getItem("basket")) || [];
     let total = 0;
-
     // Remove all items from basket
     if (removeAllButton) {
         removeAllButton.addEventListener("click", function (e) {
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
             location.reload();
         });
     }
-
     
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
@@ -24,12 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
         basket.forEach((item, index) => {
             const itemDiv = document.createElement("div");
             itemDiv.classList.add("item-details");
-
             const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''), 10);
             const quantity = item.quantity || 1;
             const itemTotal = priceNumber * quantity;
             total += itemTotal;
-
             itemDiv.innerHTML = `
                 <h3>${item.name}</h3>
                 <p>${item.info || ''}</p>
@@ -41,15 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <a href="#" class="remove-item" data-index="${index}">Fjern</a>
                 <hr>
             `;
-
             basketItemsContainer.appendChild(itemDiv);
         });
-
         
         const totalQuantity = basket.reduce((sum, item) => sum + (item.quantity || 1), 0);
         totalText.textContent = `Total (${totalQuantity} vare${totalQuantity > 1 ? "r" : ""}) DKK ${total}`;
     }
-
     // Removes individual items from basket
     basketItemsContainer.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-item")) {
@@ -60,40 +53,32 @@ document.addEventListener("DOMContentLoaded", function () {
             location.reload();
         }
     });
-
     // Handles quantity changes
     basketItemsContainer.addEventListener("input", function (e) {
         if (e.target.classList.contains("quantity-input")) {
             const index = parseInt(e.target.getAttribute("data-index"), 10);
             let newQty = parseInt(e.target.value, 10);
-
             if (isNaN(newQty) || newQty < 1) newQty = 1;
             if (newQty > 99) newQty = 99;
-
             basket[index].quantity = newQty;
             localStorage.setItem("basket", JSON.stringify(basket));
             location.reload(); 
         }
     });
-
     
     checkoutForm.addEventListener("submit", async function (event) {
         event.preventDefault();
-
         if (basket.length === 0) {
             alert("Din kurv er tom. Tilføj en vare før du fortsætter.");
             return;
         }
-
         const totalPrice = basket.reduce((sum, item) => {
             const price = parseInt(item.price.replace(/[^\d]/g, ''), 10);
             const quantity = item.quantity || 1;
             return sum + price * quantity;
         }, 0);
-
         
-        window.location.href = `paymentselection.html?totalPrice=${totalPrice}`;
-
+        window.location.href = `paymentselection.html`;
         
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
@@ -101,9 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ totalPrice })
             });
-
             const session = await response.json();
-
             if (session.url) {
                 window.location.href = session.url;
             } else {
