@@ -4,8 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalText = document.getElementById("basket-total-text");
     const checkoutForm = document.getElementById("checkout-form");
     const removeAllButton = document.getElementById("remove-all");
+    const clickAndCollectElement = document.getElementById("click-and-collect");
+
     let basket = JSON.parse(localStorage.getItem("basket")) || [];
     let total = 0;
+
     // Remove all items from basket
     if (removeAllButton) {
         removeAllButton.addEventListener("click", function (e) {
@@ -18,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
         totalText.textContent = "Total (0 varer) DKK 0";
+        clickAndCollectElement.innerHTML = "";
     } else {
         basket.forEach((item, index) => {
             const itemDiv = document.createElement("div");
@@ -42,6 +46,16 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const totalQuantity = basket.reduce((sum, item) => sum + (item.quantity || 1), 0);
         totalText.textContent = `Total (${totalQuantity} vare${totalQuantity > 1 ? "r" : ""}) DKK ${total}`;
+
+        // Displays click and collect information
+        const shopNames = [...new Set(basket.map(item => item.info).filter(Boolean))];
+        if (shopNames.length > 0) {
+            const shopLines = shopNames.map(shop => `<p><strong>Afhent i butik:</strong> ${shop}</p>`).join("");
+            clickAndCollectElement.innerHTML = shopLines;
+        } else {
+            clickAndCollectElement.innerHTML = "";
+        }
+        
     }
     // Removes individual items from basket
     basketItemsContainer.addEventListener("click", function (e) {
