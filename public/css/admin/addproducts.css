@@ -1,0 +1,17 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+
+
+.content-container {
+    flex: 1;
+    padding: 20px;
+}
