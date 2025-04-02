@@ -1,50 +1,86 @@
-const express = require("express");
-const cors = require("cors");
+const http = require("http");
 const Stripe = require("stripe");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
-const app = express();
+dotenv.config();
+
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-app.use(express.json());
-app.use(cors());
 
-// Create a Stripe Checkout session
-app.post("/create-checkout-session", async (req, res) => {
-  try {
-    const { totalPrice } = req.body;
+// Creates a HTTP server
+// Listens for POST requests to create a checkout session
+const server = http.createServer(async (req, res) => {
+  if (req.method === "OPTIONS") {
+    res.writeHead(204, {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    });
+    res.end();
+    return;
+  }
 
-    // Validate the totalPrice
-    if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-      return res.status(400).json({ error: "Invalid total price" });
-    }
+  if (req.url === "/create-checkout-session" && req.method === "POST") {
+    let body = "";
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "dkk",
-            product_data: { name: "BLS Oversize T-shirt" },
-            unit_amount: totalPrice * 100, // Convert DKK to cents/øre
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url:
-        "http://localhost:5500/pages/paymentsuccess.html?totalPrice=" +
-        totalPrice,
-      cancel_url: "http://localhost:5500/pages/paymentfail.html",
+    req.on("data", (chunk) => {
+      body += chunk.toString();
     });
 
-    res.json({ url: session.url });
-  } catch (err) {
-    console.error("Stripe API Error:", err.message);
-    res.status(500).json({ error: err.message });
+    req.on("end", async () => {
+      try {
+        const { totalPrice } = JSON.parse(body);
+
+        if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          });
+          res.end(JSON.stringify({ error: "Invalid total price" }));
+          return;
+        }
+
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: [
+            {
+              price_data: {
+                currency: "dkk",
+                product_data: { name: "Din kurv" },
+                unit_amount: Math.round(Number(totalPrice) * 100),
+              },
+              quantity: 1,
+            },
+          ],
+          mode: "payment",
+          success_url:
+            "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html",
+          cancel_url:
+            "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
+        });
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        });
+        res.end(JSON.stringify({ url: session.url }));
+      } catch (err) {
+        console.error("Stripe error:", err.message);
+        res.writeHead(500, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+  } else {
+    res.writeHead(404, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.end(JSON.stringify({ error: "Not found" }));
   }
 });
 
-const PORT = 3000;
-app.listen(PORT, () =>
-  console.log(`✅ Server running on http://localhost:${PORT}`)
-);
+server.listen(3000, () => {
+  console.log("✅ server running at http://localhost:3000");
+});
