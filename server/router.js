@@ -28,7 +28,7 @@ function processReq(req, res) {
             fileResponse(res, "public/pages/landing/landing.html");
             break;
           case "/public/pages/index.html":
-            fileResponse(res, "public/pages/index.html");
+            fileResponse(res, " ");
             break;
           case "global.css":
             fileResponse(res, "public/css/global.css");
