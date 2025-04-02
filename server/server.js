@@ -1,14 +1,16 @@
-import { ValidationError, NoResourceError, processReq } from "./router.js";
+//Import and export functions:
+import { /*ValidationError, NoResourceError,*/ processReq } from "./router.js";
 export { startServer, fileResponse };
-//TEST
-import http from "http";
-import fs from "fs";
+
+import http from "http"; //Import http protocol
+import fs from "fs"; //Import file reader
 
 const hostname = "localhost";
-const port = 3000;
+const port = 3000; //Run on port 3000 - If Uni server then 3330
 
-const server = http.createServer(requestHandler);
+const server = http.createServer(requestHandler); //Create a server with a request handler
 
+//Create function for standard error response
 function errorResponse(res, code, reason) {
   res.statusCode = code;
   res.setHeader("Content-Type", "text/txt");
@@ -18,28 +20,23 @@ function errorResponse(res, code, reason) {
 
 function requestHandler(req, res) {
   try {
+    //Try to proceess the request
     processReq(req, res);
   } catch (e) {
+    //If an exeption is thrown, print an error
     console.log("Error!!: " + e);
-    //errorResponse(res, 500, "");
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "text/txt");
-    res.write("");
-    res.end("\n");
+    errorResponse(res, 500, "");
   }
 }
 
+//Start the server
 function startServer() {
-  /* start the server */
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
-    fs.writeFileSync(
-      "message.txt",
-      `Server running at http://${hostname}:${port}/`
-    );
   });
 }
 
+//Try to guess the type of the file to respond with (ex. html, css...) (TAKEN FROM BMI)
 function guessMimeType(fileName) {
   const fileExtension = fileName.split(".").pop().toLowerCase();
   console.log(fileExtension);
@@ -60,36 +57,28 @@ function guessMimeType(fileName) {
     doc: "application/msword",
     docx: "application/msword",
   };
-  //incomplete
   return ext2Mime[fileExtension] || "text/plain";
 }
 
+//Write the given file
 function fileResponse(res, filename) {
   //const sPath=securePath(filename);
   //console.log("Reading:"+sPath);
+
+  //Read the file. If error then throw it
   fs.readFile(filename, (err, data) => {
     if (err) {
       console.error(err);
       errorResponse(res, 404, String(err));
     } else {
+      //If no error then write the file with the given type
       res.statusCode = 200;
       res.setHeader("Content-Type", guessMimeType(filename));
       res.write(data);
       res.end("\n");
-      /*let filetype = filename.split(".");
-      res.statusCode = 200;
-      if (filetype[1] == "html") {
-        res.setHeader("Content-Type", "text/html");
-        res.write(data);
-        res.end("\n"); //SET HEADER DEPENDING ON TYPE. CURRENTLY ONLY WORKS FOR HTML FILES
-      } else if (filetype[1] == "css") {
-        res.setHeader("Content-Type", "text/css");
-        res.write(data);
-        res.end("\n");
-      } /*else if (filetype[1] == "jpg") {
-        res.setHeader("Content-Type", "image/jpg");
-        //res.send(data);
-      }*/
     }
   });
 }
+
+//Start the server:
+startServer();
