@@ -1,3 +1,32 @@
+const mysql = require("mysql2");
+
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "StrongP@ssw0rd!",
+    database: "myDB",
+    port: 3306
+});
+
+db.connect((err) => {
+    if (err) {
+        console.error("Database connection failed:", err);
+        return;
+    }
+    console.log("Connected to MySQL");
+});
+
+function fetchData(callback) {
+    db.query('SELECT * FROM clothing_items', (err, results, fields) => {
+      if (err) {
+        console.error('Error fetching data:', err);
+        return;
+      }
+      const data = results.map(row => Object.values(row));
+      callback(data);
+    });
+}
+
 function dotProduct(user, item) {
     let result = 0;
     for (let i in user) {
@@ -27,7 +56,8 @@ function recommendedItem(user, numberOfLists) {
     resultsComparedPrinted(resultsCompared);
 }
 
-let user = [1, 0, 0, 1, 1];
-let numberOfLists = [[1, 1, 1, 1, 0],[0, 0, 1, 0, 1],[0, 0, 1, 0, 1]];
+let user = [1, 0, 0];
 
-recommendedItem(user, numberOfLists);
+fetchData((data) => {
+    recommendedItem(user, data);    
+});
