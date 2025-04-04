@@ -4,9 +4,9 @@ loadComponents();
 
 
 function onLoad() {
-    let file = document.getElementById("file_upload");
+   // let file = document.getElementById("file_upload");
 
-    fetch(file)
+    fetch("/public/js/admin/TestCsv.csv")
         .then((res) => res.text())
         .then((data) => {
             //  Splitting data each time there is a new line. Given that the user provides a correctly formatted csv file, index 0 will be the rowNames
