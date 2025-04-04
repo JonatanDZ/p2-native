@@ -1,26 +1,8 @@
 {
-  "name": "p2-native",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JonatanDZ/p2-native.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JonatanDZ/p2-native/issues"
-  },
-  "homepage": "https://github.com/JonatanDZ/p2-native#readme",
   "dependencies": {
-    "cors": "^2.8.5",
+    "bcrypt": "^5.1.1",
+    "bootstrap-icons": "^1.11.3",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
     "stripe": "^17.7.0"
   }
 }
