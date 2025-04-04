@@ -56,7 +56,7 @@ function recommendedItem(user, numberOfLists) {
     resultsComparedPrinted(resultsCompared);
 }
 
-let user = [1, 0, 0];
+let user = [0, 0, 0];
 
 fetchData((data) => {
     recommendedItem(user, data);    
