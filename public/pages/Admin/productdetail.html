@@ -4,22 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
-    <link rel="stylesheet" href="/public/css/global.css">
-    <link rel="stylesheet" href="/public/css/admin/productdetail.css">
-    <link rel="stylesheet" href="/public/css/components/components.css"></head>
+    <style>
+      
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        h1 {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
-    <div class="navbar">
-
-    </div>
 
     <div class="container" id="product-detail">
         <p>Loading product details...</p>
     </div>
-    <div class="sidebar-container">
 
-    </div>
-    <div class="footer"></div>
+    <script>
+        function getProductIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const productId = getProductIdFromUrl();
+            if (!productId) {
+                document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
+                return;
+            }
 
-    <script type="module" src="/public/js/admin/productdetail.js"></script>
+            fetch('products.json')
+                .then(response => response.json())
+                .then(products => {
+                    const product = products.find(e => e.id.toString() === productId);
+
+                    if (!product) {
+                        document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
+                        return;
+                    }
+
+                    document.getElementById("product-detail").innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h1>${product.name}</h1>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price}</p>
+                    `;
+                })
+                .catch(error => console.error("Error fetching product details:", error));
+        });
+    </script>
+
 </body>
 </html>
