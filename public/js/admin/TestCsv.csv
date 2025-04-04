@@ -1,4 +1,5 @@
-﻿Produktnavn;Pris;Mængde;Filtre
-Hvid T-shirt;199;100;{s,m,l}, Hvid, T-shirt
-Sort T-shirt;199;100;{s,m,l}, Sort, T-shirt
-Grå sweater;399;50;{s,m,}, Grå, Sweater
+﻿Produktnavn;Pris;Mængde;Filtre;Test;
+Hvid T-shirt;199;100;{s,m,l}, Hvid, T-shirt; test
+Sort T-shirt;199;100;{s,m,l}, Sort, T-shirt; test
+Grå sweater;399;50;{s,m,l}, Grå, Sweater; test
+Grå sweater;399;50;{s,m,l}, Grå, Sweater; test
