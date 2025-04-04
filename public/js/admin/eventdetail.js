@@ -1,6 +1,3 @@
-import { loadComponents } from "./loadcomponents/loadcomponents.js";
-
-loadComponents();
 
 function getEventIdFromUrl() {
     const params = new URLSearchParams(window.location.search);

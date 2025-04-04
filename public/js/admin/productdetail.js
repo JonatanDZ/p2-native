@@ -1,6 +1,4 @@
-import { loadComponents } from "./loadcomponents/loadcomponents.js";
 
-loadComponents();
 function getProductIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');

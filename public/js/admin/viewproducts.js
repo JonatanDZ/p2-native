@@ -1,6 +1,3 @@
-import { loadComponents } from "./loadcomponents/loadcomponents.js";
-
-loadComponents();
 
 document.addEventListener("DOMContentLoaded", function () {
     fetch('mock_db/products.json')

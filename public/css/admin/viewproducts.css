@@ -1,17 +1,16 @@
-body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+#main-container {
+display: flex;
+flex-direction: row;
+min-height: 100vh;
 }
 
-.main-container {
-    display: flex;
-    flex: 1;
+#sidebar-container {
+width: 250px; /* or whatever width you want */
+background-color: #f8f9fa; /* optional, for visibility */
 }
 
-
-
-.content-container {
-    flex: 1;
-    padding: 20px;
+#content-container {
+flex: 1; /* this makes it take the remaining space */
+padding: 1rem; /* optional, spacing */
+overflow: auto;
 }

@@ -1,8 +1,8 @@
-export function loadFooter() {
-    fetch("/public/components/footer.html")
+async function loadFooter() {
+    await fetch("/public/components/footer.html")
         .then(response => response.text())
         .then(html => {
-            document.querySelector(".footer").innerHTML = html;
+            document.getElementById("footer").innerHTML = html;
         })
         .catch(error => console.error("Error loading navbar:", error));
 }

@@ -1,7 +1,3 @@
-import { loadComponents } from "./loadcomponents/loadcomponents.js";
-
-loadComponents();
-
 
 function onLoad() {
    // let file = document.getElementById("file_upload");
