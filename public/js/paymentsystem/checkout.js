@@ -82,6 +82,12 @@ document.addEventListener("DOMContentLoaded", function () {
     
     checkoutForm.addEventListener("submit", async function (event) {
         event.preventDefault();
+
+        const emailInput = document.getElementById("email");
+        if (emailInput && emailInput.value) {
+            localStorage.setItem("userEmail", emailInput.value);
+        }
+
         if (basket.length === 0) {
             alert("Din kurv er tom. Tilføj en vare før du fortsætter.");
             return;

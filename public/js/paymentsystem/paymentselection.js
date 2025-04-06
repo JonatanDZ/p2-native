@@ -16,17 +16,30 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedPaymentMethod) {
             alert("Vælg en betalingsmetode først.");
             return;
+
         }
+        
+        const email = localStorage.getItem("userEmail");
+        if (!email) {
+        alert("Ingen e-mail fundet. Gå tilbage og udfyld din e-mail.");
+        return;
+
+        }
+        
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     totalPrice: totalPrice,
+                    basket: basket,
+                    email: email,
                     paymentMethod: selectedPaymentMethod.value
                 })
             });
+
             const session = await response.json();
+            
             if (session.url) {
                 window.location.href = session.url;
             } else {
