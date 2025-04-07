@@ -2,8 +2,9 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bootstrap-icons": "^1.11.3",
-    "mysql2": "^3.14.0",
     "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.0",
     "stripe": "^17.7.0"
   }
 }

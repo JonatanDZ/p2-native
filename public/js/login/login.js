@@ -18,6 +18,10 @@ const form = document.querySelector("form");
         const data = await response.json();
 
         if (response.ok) {
+            //save jwt in localstorage
+            const { message, token } = await response.json();
+            localStorage.setItem("token", token);
+
             alert("du er nu logget ind"); 
             window.location.href = "/public/pages/userdashboard/userdashboard.html";
         } else {

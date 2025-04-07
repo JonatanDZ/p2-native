@@ -1,6 +1,12 @@
 const http = require("http");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+//get secret key from env file (for jwt)
+const SECRET_KEY = process.env.SECRET_KEY;
+
 
 // Create database connection
 const db = mysql.createConnection({
@@ -73,7 +79,6 @@ const server = http.createServer((req, res) => {
         });
     //gets posts from login page
     } else if (req.method === "POST" && req.url === "/login") {
-        console.log("Login request received");
         let body = "";
     
         req.on("data", (chunk) => {
