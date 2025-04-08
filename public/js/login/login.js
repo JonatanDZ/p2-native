@@ -1,35 +1,44 @@
 const form = document.querySelector("form");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const email = form.email.value;
-    const password = form.password.value;
+  const email = form.email.value;
+  const password = form.password.value;
 
-    try {
-        const response = await fetch("http://localhost:3000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-        },
-            body: JSON.stringify({ email, password }),
-        });
+  try {
+    const response = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-        const data = await response.json();
+    const data = await response.json(); 
 
-        if (response.ok) {
-            //save jwt in localstorage
-            const { message, token } = await response.json();
-            localStorage.setItem("token", token);
+    if (response.ok) {
+      const { message, token } = data; 
+      localStorage.setItem("token", token);
 
-            alert("du er nu logget ind"); 
-            window.location.href = "/public/pages/userdashboard/userdashboard.html";
-        } else {
-            alert(data.error);
-        }
-    } catch (error) {
-        console.error("Error logging in:", error);
-        alert("Something went wrong, please try again.");
+      alert("Du er nu logget ind");
+      window.location.href = "/public/pages/userdashboard/userdashboard.html";
+    } else {
+      alert(data.error);
     }
-  });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    alert("Something went wrong, please try again.");
+  }
+});
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        console.log("Token found");
+    } else {
+        console.log("No token found.");
+    }
+});
 

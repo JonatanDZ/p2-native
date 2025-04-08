@@ -110,8 +110,11 @@ const server = http.createServer((req, res) => {
                     const isMatch = await bcrypt.compare(password, user.password);
     
                     if (isMatch) {
+                        //create token for successfully logged in
+                        const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: "1h" });
+
                         res.writeHead(200, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ message: "Du er nu logget ind" }));
+                        res.end(JSON.stringify({ message: "Du er nu logget ind", token }));
                     } else {
                         res.writeHead(401, { "Content-Type": "application/json" });
                         res.end(JSON.stringify({ error: "Forkert email eller password" }));

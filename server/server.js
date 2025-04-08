@@ -1,6 +1,6 @@
 //Import and export functions:
 import { /*ValidationError, NoResourceError,*/ processReq } from "./router.js";
-export { startServer, fileResponse };
+export { startServer, fileResponse, authenticateToken };
 
 import http from "http"; //Import http protocol
 import fs from "fs"; //Import file reader
@@ -16,6 +16,26 @@ function errorResponse(res, code, reason) {
   res.setHeader("Content-Type", "text/txt");
   res.write(reason);
   res.end("\n");
+}
+
+//jwt authenticator to check if the user is logged in
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]; 
+
+    if (!token) {
+        console.log("No token provided");
+        res.writeHead(302, { Location: "/public/pages/login/login.html" });
+        return res.end();
+    }
+
+    jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
+        if (err) {
+            return res.writeHead(403, { "Content-Type": "application/json" }).end(JSON.stringify({ error: "Invalid or expired token" }));
+        }
+        req.user = user;  
+        next();
+    });
 }
 
 function requestHandler(req, res) {
