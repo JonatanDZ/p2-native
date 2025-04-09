@@ -86,7 +86,15 @@ async function main(userId, itemId) {
     console.log(alteredData.userData[0]);
 };
 
-// er ikke lavet endnu, så derfor gør userid ikke noget. 
+// // forberedelse til forsiden
+// document.getElementById("placerholder").addEventListener("click", async () => {
+//     //let itemId = placeholder;
+//     let itemId = 7;
+//     //let userId = placeholder;
+//     let userId = 0;
+//     await main(userId, itemId);
+// });
+
+let itemId = 36;
 let userId = 0;
-let itemId = 4;
-main (userId, itemId);
+main(userId, itemId);
