@@ -95,6 +95,7 @@ async function main(userId, itemId) {
 //     await main(userId, itemId);
 // });
 
-let itemId = 36;
+// kan ikke gå over 36, da det er vores max item lige nu. og man skal skrive > 0 før at det virker. 
+let itemId = 12;
 let userId = 0;
 main(userId, itemId);
