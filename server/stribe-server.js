@@ -1,4 +1,4 @@
-const http = require("http");
+//const http = require("http");
 const Stripe = require("stripe");
 const dotenv = require("dotenv");
 
@@ -28,12 +28,13 @@ const server = http.createServer(async (req, res) => {
 
     req.on("end", async () => {
       try {
-        const { totalPrice } = JSON.parse(body);
+        const { totalPrice } = JSON.parse(body); //WHY BRACKETS? CHECK IF MATTERS?
 
+        //Check that price is not 0, a number or minus. If yes then throw error
         if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
           res.writeHead(400, {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "*", //WHAT?
           });
           res.end(JSON.stringify({ error: "Invalid total price" }));
           return;
