@@ -4,9 +4,9 @@ const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
 
 dotenv.config();
+
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Send confirmation email using Gmail softwaregruppe3@gmail.com
 async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -43,9 +43,6 @@ async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
 }
 
 const server = http.createServer(async (req, res) => {
-    console.log("Incoming request:", req.method, req.url);
-
-
     if (req.method === "OPTIONS") {
         res.writeHead(204, {
             "Access-Control-Allow-Origin": "*",
@@ -56,7 +53,6 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // Creates checkout session
     if (req.url === "/create-checkout-session" && req.method === "POST") {
         let body = "";
         req.on("data", chunk => body += chunk.toString());
@@ -83,10 +79,7 @@ const server = http.createServer(async (req, res) => {
                     mode: "payment",
                     customer_email: email,
                     success_url: "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html",
-                    cancel_url: "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
-                    metadata: {
-                        basket: JSON.stringify(basket)
-                    }
+                    cancel_url: "http://localhost:5500/public/pages/paymentsystem/paymentfail.html"
                 });
 
                 res.writeHead(200, {
@@ -96,7 +89,6 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ url: session.url }));
 
             } catch (err) {
-                console.error("Stripe error:", err.message);
                 res.writeHead(500, {
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Origin": "*"
@@ -107,65 +99,25 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // Stripe webhook
-    if (req.url === "/webhook" && req.method === "POST") {
-        console.log("Webhook endpoint hit");
-    
-        const chunks = [];
-        req.on("data", chunk => chunks.push(chunk));
+    if (req.url === "/send-confirmation-email" && req.method === "POST") {
+        let body = "";
+        req.on("data", chunk => body += chunk.toString());
         req.on("end", async () => {
-            const buffer = Buffer.concat(chunks);
-            const sig = req.headers["stripe-signature"];
-    
-            let event;
             try {
-                event = stripe.webhooks.constructEvent(
-                    buffer,
-                    sig,
-                    process.env.STRIPE_WEBHOOK_SECRET
-                );
+                const { email, basket } = JSON.parse(body);
+                const shopNames = [...new Set(basket.map(item => item.info))];
+
+                await sendConfirmationEmail(email, basket, shopNames);
+
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ success: true }));
             } catch (err) {
-                console.error("Webhook constructEvent failed:", err.message);
-                res.writeHead(400);
-                res.end(`Webhook Error: ${err.message}`);
-                return;
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: err.message }));
             }
-    
-            console.log("Valid webhook event:", event.type);
-    
-            if (event.type === "checkout.session.completed") {
-                const session = event.data.object;
-                const email = session.customer_email;
-            
-                let basket = [];
-                try {
-                    if (session.metadata && session.metadata.basket) {
-                        basket = JSON.parse(session.metadata.basket);
-                    } else {
-                        console.warn("No basket data found in metadata");
-                    }
-                } catch (error) {
-                    console.error("Failed to parse basket JSON:", error.message);
-                    basket = [];
-                }
-            
-                const shopNames = [...new Set(basket.map(item => item.info).filter(Boolean))];
-            
-                if (email && basket.length) {
-                    console.log("Sending confirmation email to:", email);
-                    await sendConfirmationEmail(email, basket, shopNames);
-                } else {
-                    console.warn("Missing email or basket for sending confirmation");
-                }
-            }
-    
-            res.writeHead(200);
-            res.end();
         });
-    
         return;
     }
-    
 
     res.writeHead(404, {
         "Content-Type": "application/json",
@@ -175,5 +127,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+    console.log("🚀 Server running at http://localhost:3000");
 });
