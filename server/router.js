@@ -1,4 +1,3 @@
-export { processReq };
 import { createProduct } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 
@@ -25,26 +24,87 @@ function processReq(req, res) {
   //  POST logic is from BMI app
   switch (req.method) {
     case "POST": {
-      let pathElements=queryPath.split("/"); 
-       switch(pathElements[1]){
+      let pathElements = queryPath.split("/");
+
+      switch (pathElements[1]) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
-          //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function. 
-          .then(productData => {
+            //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productData => {
               productData.forEach(product => {
                 createProduct(product.name, product.price, product.amount, product.filters);
               });
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Products saved successfully." }));
-          })
-          .catch(err=>reportError(res,err));
-          break;  
-        default: 
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ message: "Products saved successfully." }));
+            })
+            .catch(err => reportError(res, err));
+          break;
+
+        default:
+          if (req.url === "/create-checkout-session") {
+            let body = "";
+
+            //Get data and save in "body" (i think?)
+            req.on("data", (chunk) => {
+              body += chunk.toString();
+            });
+
+            req.on("end", async () => {
+              try {
+                const { totalPrice } = JSON.parse(body);
+
+                if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
+                  res.writeHead(400, {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                  });
+                  res.end(JSON.stringify({ error: "Invalid total price" }));
+                  return;
+                }
+
+                const session = await stripe.checkout.sessions.create({
+                  payment_method_types: ["card"],
+                  line_items: [
+                    {
+                      price_data: {
+                        currency: "dkk",
+                        product_data: { name: "Din kurv" },
+                        unit_amount: Math.round(Number(totalPrice) * 100),
+                      },
+                      quantity: 1,
+                    },
+                  ],
+                  mode: "payment",
+                  success_url:
+                    "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
+                  cancel_url:
+                    "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
+                });
+
+                res.writeHead(200, {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                });
+                res.end(JSON.stringify({ url: session.url }));
+              } catch (err) {
+                console.error("Stripe error:", err.message);
+                res.writeHead(500, {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                });
+                res.end(JSON.stringify({ error: err.message }));
+              }
+            });
+            break;
+          }
+
           console.error("Resource doesn't exist");
-          reportError(res, new Error("there was an error")); 
-        }
-      } 
+          reportError(res, new Error("there was an error"));
+      }
+
       break; //END POST URL
+    }
+
     /*case "OPTIONS":
       //If the request is an OPTIONS
       res.writeHead(204, {
@@ -54,63 +114,6 @@ function processReq(req, res) {
       });
       res.end();
       break;*/
-    case "POST":
-      if (req.url === "/create-checkout-session") {
-        let body = "";
-
-        //Get data and save in "body" (i think?)
-        req.on("data", (chunk) => {
-          body += chunk.toString();
-        });
-
-        req.on("end", async () => {
-          try {
-            const { totalPrice } = JSON.parse(body);
-
-            if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-              res.writeHead(400, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-              });
-              res.end(JSON.stringify({ error: "Invalid total price" }));
-              return;
-            }
-
-            const session = await stripe.checkout.sessions.create({
-              payment_method_types: ["card"],
-              line_items: [
-                {
-                  price_data: {
-                    currency: "dkk",
-                    product_data: { name: "Din kurv" },
-                    unit_amount: Math.round(Number(totalPrice) * 100),
-                  },
-                  quantity: 1,
-                },
-              ],
-              mode: "payment",
-              success_url:
-                "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
-              cancel_url:
-                "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
-            });
-
-            res.writeHead(200, {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            });
-            res.end(JSON.stringify({ url: session.url }));
-          } catch (err) {
-            console.error("Stripe error:", err.message);
-            res.writeHead(500, {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            });
-            res.end(JSON.stringify({ error: err.message }));
-          }
-        });
-      }
-      break;
     case "GET":
       {
         //If the request is a GET, split the path and print
@@ -137,9 +140,6 @@ function processReq(req, res) {
       reportError(res, new Error("No Such Resource"));
   }
 }
-
-
-
 
 // helper functions for POST part
 
@@ -183,3 +183,6 @@ function collectPostBody(req){
   }
   return new Promise(collectPostBodyExecutor);
 }
+
+
+export { processReq };
