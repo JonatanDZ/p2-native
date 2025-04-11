@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const session = await response.json();
             
             if (session.url) {
+                localStorage.setItem("lastTotalPrice", totalPrice);
                 window.location.href = session.url;
             } else {
                 alert("Fejl: Kunne ikke oprette en betalingssession.");

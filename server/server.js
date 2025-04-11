@@ -43,6 +43,9 @@ async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
 }
 
 const server = http.createServer(async (req, res) => {
+    console.log("Incoming request:", req.method, req.url);
+
+
     if (req.method === "OPTIONS") {
         res.writeHead(204, {
             "Access-Control-Allow-Origin": "*",
@@ -106,39 +109,63 @@ const server = http.createServer(async (req, res) => {
 
     // Stripe webhook
     if (req.url === "/webhook" && req.method === "POST") {
-        let rawData = [];
-        req.on("data", chunk => rawData.push(chunk));
+        console.log("Webhook endpoint hit");
+    
+        const chunks = [];
+        req.on("data", chunk => chunks.push(chunk));
         req.on("end", async () => {
+            const buffer = Buffer.concat(chunks);
+            const sig = req.headers["stripe-signature"];
+    
+            let event;
             try {
-                const sig = req.headers["stripe-signature"];
-                const buffer = Buffer.concat(rawData);
-
-                const event = stripe.webhooks.constructEvent(
+                event = stripe.webhooks.constructEvent(
                     buffer,
                     sig,
                     process.env.STRIPE_WEBHOOK_SECRET
                 );
-
-                if (event.type === "checkout.session.completed") {
-                    const session = event.data.object;
-                    const email = session.customer_email;
-                    const basket = JSON.parse(session.metadata.basket);
-                    const shopNames = [...new Set(basket.map(item => item.info))];
-
-                    console.log("Sending confirmation email to:", email);
-                    await sendConfirmationEmail(email, basket, shopNames);
-                }
-
-                res.writeHead(200);
-                res.end();
             } catch (err) {
-                console.error("Webhook error:", err.message);
+                console.error("Webhook constructEvent failed:", err.message);
                 res.writeHead(400);
                 res.end(`Webhook Error: ${err.message}`);
+                return;
             }
+    
+            console.log("Valid webhook event:", event.type);
+    
+            if (event.type === "checkout.session.completed") {
+                const session = event.data.object;
+                const email = session.customer_email;
+            
+                let basket = [];
+                try {
+                    if (session.metadata && session.metadata.basket) {
+                        basket = JSON.parse(session.metadata.basket);
+                    } else {
+                        console.warn("No basket data found in metadata");
+                    }
+                } catch (error) {
+                    console.error("Failed to parse basket JSON:", error.message);
+                    basket = [];
+                }
+            
+                const shopNames = [...new Set(basket.map(item => item.info).filter(Boolean))];
+            
+                if (email && basket.length) {
+                    console.log("Sending confirmation email to:", email);
+                    await sendConfirmationEmail(email, basket, shopNames);
+                } else {
+                    console.warn("Missing email or basket for sending confirmation");
+                }
+            }
+    
+            res.writeHead(200);
+            res.end();
         });
+    
         return;
     }
+    
 
     res.writeHead(404, {
         "Content-Type": "application/json",
