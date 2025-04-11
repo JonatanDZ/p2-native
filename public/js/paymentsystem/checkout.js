@@ -104,7 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ totalPrice })
+                body: JSON.stringify({ 
+                    totalPrice,
+                    basket,
+                    email: localStorage.getItem("userEmail")
+                 })
             });
             const session = await response.json();
             if (session.url) {

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
+   
     let total = 0;
 
     basket.forEach(item => {
@@ -8,5 +9,5 @@ document.addEventListener("DOMContentLoaded", function () {
         total += price * quantity;
     });
 
-    document.getElementById("total-price").textContent = total;
+    document.getElementById("total-price").textContent = ` ${total}`;
 });

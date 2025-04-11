@@ -4,14 +4,46 @@ const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
 
 dotenv.config();
-
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Creates a HTTP server
-// Listens for POST requests to create a checkout session
+// Send confirmation email using Gmail softwaregruppe3@gmail.com
+async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+
+    const itemList = basket.map(item => {
+        const quantity = item.quantity || 1;
+        return `<li>${item.name} x ${quantity} – ${item.price}</li>`;
+    }).join("");
+
+    const shopList = shopNames.map(shop => `<li>${shop}</li>`).join("");
+
+    const mailOptions = {
+        from: `"Din Butik" <${process.env.GMAIL_USER}>`,
+        to: recipientEmail,
+        subject: "Din ordrebekræftelse",
+        html: `
+            <h2>Tak for din ordre!</h2>
+            <p>Her er dine varer:</p>
+            <ul>${itemList}</ul>
+            <p><strong>Afhentes i butik:</strong></p>
+            <ul>${shopList}</ul>
+            <p>Vi glæder os til at se dig!</p>
+        `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Mail sent!");
+    console.log("Message ID:", info.messageId);
+}
+
 const server = http.createServer(async (req, res) => {
     if (req.method === "OPTIONS") {
-        
         res.writeHead(204, {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -21,10 +53,10 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // Creates checkout session
     if (req.url === "/create-checkout-session" && req.method === "POST") {
         let body = "";
-
-        req.on("data", chunk => (body += chunk.toString()));
+        req.on("data", chunk => body += chunk.toString());
         req.on("end", async () => {
             try {
                 const { totalPrice, email, basket } = JSON.parse(body);
@@ -50,7 +82,7 @@ const server = http.createServer(async (req, res) => {
                     success_url: "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html",
                     cancel_url: "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
                     metadata: {
-                        basket: JSON.stringify(basket),
+                        basket: JSON.stringify(basket)
                     }
                 });
 
@@ -70,10 +102,9 @@ const server = http.createServer(async (req, res) => {
             }
         });
         return;
-
     }
 
-    // Stripe Webhook (Stripe tells server if payment is successful)
+    // Stripe webhook
     if (req.url === "/webhook" && req.method === "POST") {
         let rawData = [];
         req.on("data", chunk => rawData.push(chunk));
@@ -92,27 +123,10 @@ const server = http.createServer(async (req, res) => {
                     const session = event.data.object;
                     const email = session.customer_email;
                     const basket = JSON.parse(session.metadata.basket);
-
                     const shopNames = [...new Set(basket.map(item => item.info))];
-                    const productLines = basket.map(item => `• ${item.name} (${item.info})`).join("\n");
 
-                    // Sender email
-                    const transporter = nodemailer.createTransport({
-                        service: "gmail",
-                        auth: {
-                            user: process.env.GMAIL_USER,
-                            pass: process.env.GMAIL_PASS
-                        }
-                    });
-
-                    await transporter.sendMail({
-                        from: `"LokalLivet Aalborg" <${process.env.GMAIL_USER}>`,
-                        to: email,
-                        subject: "Tak for din ordre!",
-                        text: `Hej!\n\nDu har købt:\n${productLines}\n\nAfhent i butik:\n${shopNames.join("\n")}\n\nTak for dit køb!`
-                    });
-
-                    console.log("Email sent to:", email);
+                    console.log("Sending confirmation email to:", email);
+                    await sendConfirmationEmail(email, basket, shopNames);
                 }
 
                 res.writeHead(200);
@@ -125,13 +139,14 @@ const server = http.createServer(async (req, res) => {
         });
         return;
     }
-                res.writeHead(404, {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*"
-                });
-                res.end(JSON.stringify({ error: "Not found" }));
-            });
 
-            server.listen(3000, () => {
-                console.log("Server running at http://localhost:3000");
-            });
+    res.writeHead(404, {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+    });
+    res.end(JSON.stringify({ error: "Not found" }));
+});
+
+server.listen(3000, () => {
+    console.log("Server running at http://localhost:3000");
+});
