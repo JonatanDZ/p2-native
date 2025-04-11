@@ -1,4 +1,5 @@
 
+
 document.addEventListener("DOMContentLoaded", function () {
     fetch('mock_db/products.json')
         .then(response => response.json())
