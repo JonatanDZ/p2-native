@@ -1,9 +1,18 @@
 export { processReq };
 import { fileResponse } from "./server.js";
+import mysql from "mysql2/promise";
 
 //Import stripe and dotenv
 import Stripe from "stripe";
 import dotenv from "dotenv";
+
+let db = await mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "TESTtest123",
+  database: "event_database",
+  port: 3306,
+});
 
 //Use dotenv to access stripe key (i think?)
 dotenv.config();
@@ -32,7 +41,31 @@ function processReq(req, res) {
       res.end();
       break;*/
     case "POST":
-      if (req.url === "/create-checkout-session") {
+      if (req.url === "/event-detail") {
+        //////////////////////////
+        let body = "";
+
+        //Get given data (userID & eventID)
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+        req.on("end", async () => {
+          try {
+            const { userID, eventID } = JSON.parse(body);
+            //Some error message?
+            await db.query(
+              "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
+              [userID, eventID]
+            );
+            const [test] = await db.query("SELECT * FROM user_events");
+            const rows = test.map((row) => Object.values(row));
+            console.log(rows);
+          } catch (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Internal server error" }));
+          }
+        }); /////////////////////////////////////////////////
+      } else if (req.url === "/create-checkout-session") {
         let body = "";
 
         //Get data and save in "body" (i think?)
@@ -103,6 +136,14 @@ function processReq(req, res) {
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
             break;
+          /*case "public/pages/events/event-detail.html?id=1":
+                                    console.log("TEST");
+                                    const [test] = connection.query(
+                                      "SELECT * FROM user_event ORDER BY userID"
+                                    );
+                                    const rows = test.map((row) => Object.values(row));
+                                    console.log(rows);
+                                    break;*/
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);
