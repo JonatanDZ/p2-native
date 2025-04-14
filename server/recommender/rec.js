@@ -1,25 +1,25 @@
-const mysql = require("mysql2/promise");
+import { createConnection } from "mysql2/promise";
 
-async function fetchData() {
+async function fetchData(userId) {
     let connection;
     try {
         // Create connection
-        connection = await mysql.createConnection({
+        connection = await createConnection({
             host: "localhost",
             user: "root",
             password: "StrongP@ssw0rd!",
-            database: "myDB",
+            database: "p2_database",
             port: 3306
         });
 
         console.log("Connected to MySQL");
 
         // Fetch clothing items
-        const [items_results] = await connection.execute('SELECT * FROM clothing_items');
+        const [items_results] = await connection.execute('SELECT * FROM products_filters');
         const items_data = items_results.map(row => Object.values(row));
 
         // Fetch user items
-        const [user_results] = await connection.execute('SELECT * FROM user_items');
+        const [user_results] = await connection.execute('SELECT * FROM user_filters WHERE userID = ?', [userId]);
         const user_data = user_results.map(row => Object.values(row));
 
         // Test data
@@ -64,7 +64,7 @@ function compareLists(results) {
 function recommendedItem(user, numberOfLists) {
     let resultsOfDotProduct = numberOfLists.map(list => ({
         id: list[0], 
-        score: dotProduct(user, list.slice(1))
+        score: dotProduct(user.slice(1), list.slice(1))
     }));
     
     let resultsCompared = compareLists(resultsOfDotProduct);
@@ -79,10 +79,13 @@ function recommendedItem(user, numberOfLists) {
 //let user = [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0];
 
 // Code starts here where data is fetched and main function is called
-fetchData().then(data => {
+let userId = 1;
+fetchData(userId).then(data => {
     if (data) {
         let { items, user } = data;
         user = user[0]; 
+        console.log(items);
+        console.log(user);
         recommendedItem(user, items)
     }
 });
