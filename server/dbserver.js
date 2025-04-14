@@ -25,12 +25,15 @@ export async function getProduct(id) {
     return rows[0];
 }
 
-export async function createProduct(name, price, amount, filters) {
+
+
+export async function createProduct(product) {
+    const { name, shop, picture, info, price, amount, black, white, grey, blue, pants, tshirt, sweatshirt, hoodie, shoes, shorts, cotton, linen, polyester } = product;
     const result = await pool.query(
-        "INSERT INTO products (name, price, amount, filters) VALUES (?,?,?,?)", [name, price, amount, filters])
-    const id = result.insertId;
+        "INSERT INTO products (name, shop, picture, info, price, amount, black, white, grey, blue, pants, tshirt, sweatshirt, hoodie, shoes, shorts, cotton, linen, polyester) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [name, shop, picture, info, price, amount, black, white, grey, blue, pants, tshirt, sweatshirt, hoodie, shoes, shorts, cotton, linen, polyester]);  
+        const id = result.insertId;
     return getProduct(id);
 }
 
-const idk = await createProduct("Test4", 1999, 200, "hej");
-const products = await getProducts();
+//const idk = await createProduct("Test4", 1999, 200, "hej");
+//const products = await getProducts();

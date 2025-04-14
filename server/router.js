@@ -1,4 +1,4 @@
-import { createProduct } from "./dbserver.js";
+import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 
 //Import stripe and dotenv
@@ -22,17 +22,17 @@ function processReq(req, res) {
 
   //Check for the request method:
   //  POST logic is from BMI app
+
   switch (req.method) {
     case "POST": {
       let pathElements = queryPath.split("/");
-
       switch (pathElements[1]) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
             .then(productData => {
               productData.forEach(product => {
-                createProduct(product.name, product.price, product.amount, product.filters);
+                createProduct(product);
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ message: "Products saved successfully." }));
@@ -104,22 +104,11 @@ function processReq(req, res) {
 
       break; //END POST URL
     }
-
-    /*case "OPTIONS":
-      //If the request is an OPTIONS
-      res.writeHead(204, {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      });
-      res.end();
-      break;*/
     case "GET":
       {
         //If the request is a GET, split the path and print
         let pathElements = queryPath.split("/");
-        console.log(req.url);
-        console.log(pathElements);
+
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
         let betterURL = req.url.replace(req.url[0], "");
 
@@ -128,6 +117,19 @@ function processReq(req, res) {
           //For no path go to landing page.
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
+            break;
+          case "get-products":
+            console.log("Handling GET:", queryPath);
+            getProducts()
+              .then(products => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(products));
+              })
+              .catch(err => {
+                console.error("Error fetching products:", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Failed to fetch products" }));
+              });
             break;
           //Otherwise respond with the given path
           default:

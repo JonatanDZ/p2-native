@@ -1,0 +1,23 @@
+#upper-bar {
+    flex: 1; /* this makes it take the remaining space */
+    padding: 1rem; /* optional, spacing */
+    overflow: auto;
+}
+
+#upper-bar .container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap; /* optional if cards overflow on smaller screens */
+}
+
+#sidebar-container {
+    width: 250px; /* or whatever width you want */
+    background-color: #f8f9fa; /* optional, for visibility */
+}
+
+#main-content {
+    display: flex;
+    flex-direction: row;
+}

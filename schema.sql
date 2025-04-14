@@ -2,16 +2,29 @@ CREATE DATABASE p2_app;
 USE p2_app;
 
 CREATE TABLE products (
-    id integer PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
-    price integer,
-    amount integer,
-    filters VARCHAR(255),
-    created TIMESTAMP NOT NULL DEFAULT NOW()
+    shop VARCHAR(255),
+    picture VARCHAR(255),
+    info TEXT,
+    price INT,
+    amount INT,
+    black TINYINT(1),
+    white TINYINT(1),
+    grey TINYINT(1),
+    brown TINYINT(1),
+    blue TINYINT(1),
+    pants TINYINT(1),
+    tshirt TINYINT(1),
+    sweatshirt TINYINT(1),
+    hoodie TINYINT(1),
+    shoes TINYINT(1),
+    shorts TINYINT(1),
+    cotton TINYINT(1),
+    linen TINYINT(1),
+    polyester TINYINT(1),
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO products (name, price, amount, filters)
-VALUES
-("test1", 199, 10, "tøj"),
-("test2", 299, 30, "tøj"),
-("test3", 322, 12, "tøj");
+
+
