@@ -10,7 +10,7 @@ let db = await mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "TESTtest123",
-  database: "event_database",
+  database: "p2_database",
   port: 3306,
 });
 
@@ -41,22 +41,23 @@ function processReq(req, res) {
       res.end();
       break;*/
     case "POST":
+      //////////////////////////
       if (req.url === "/event-detail") {
-        //////////////////////////
         let body = "";
 
         //Get given data (userID & eventID)
         req.on("data", (chunk) => {
           body += chunk.toString();
         });
+
         req.on("end", async () => {
           try {
             const { userID, eventID } = JSON.parse(body);
-            //Some error message?
-            await db.query(
-              "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-              [userID, eventID]
-            );
+            console.log(userID, eventID);
+            db.query("INSERT INTO user_events (userID,eventID) VALUES (?,?)", [
+              userID,
+              eventID,
+            ]);
             const [test] = await db.query("SELECT * FROM user_events");
             const rows = test.map((row) => Object.values(row));
             console.log(rows);
@@ -64,7 +65,8 @@ function processReq(req, res) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: "Internal server error" }));
           }
-        }); /////////////////////////////////////////////////
+        });
+        /////////////////////////////////////////////////
       } else if (req.url === "/create-checkout-session") {
         let body = "";
 

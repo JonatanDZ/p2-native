@@ -1,10 +1,10 @@
 import mysql from "mysql2/promise";
 
-//For this to work: Create table "User_event". When user joins event, put their ID and eventID in "User_event".
-//We have no place where user can join event, so therefor currently only "test" table
+//Should be called somewhere on front page?
 
-let currentUser = 1;
-let events = 6;
+let currentUser = 1; //Get currentUser from database (somehow?)
+
+//let events = 6; //Get the amount of events from database
 
 async function fetchData() {
   let connection;
@@ -14,7 +14,7 @@ async function fetchData() {
       host: "localhost",
       user: "root",
       password: "TESTtest123",
-      database: "event_database",
+      database: "p2_database",
       port: 3306,
     });
 
@@ -22,13 +22,21 @@ async function fetchData() {
 
     // Fetch
     const [test] = await connection.query(
-      "SELECT * FROM user_event ORDER BY userID"
+      "SELECT * FROM user_events ORDER BY userID"
+    );
+    const users_events_rows = test.map((row) => Object.values(row));
+    console.log(users_events_rows);
+
+    const [events_length] = await connection.query(
+      "SELECT * FROM events_table"
     );
 
-    const rows = test.map((row) => Object.values(row));
-    console.log(rows);
+    const events_rows = events_length.map((row) => Object.values(row));
+    console.log(events_rows);
+    let events_rows_length = events_rows.length;
+    console.log(events_rows_length);
 
-    return rows;
+    return [users_events_rows, events_rows_length];
   } catch (err) {
     console.error("Database error:", err);
   } finally {
@@ -115,8 +123,11 @@ function reccomender(data, events_length) {
     }*/
   }
   count.sort(sortFunction);
+  console.log(count);
   console.log(
-    `We reccomend event ${count[0][1]}, event ${count[1][1]} and event ${count[2][1]}`
+    `We reccomend event ${count[0][1] + 1}, event ${
+      count[1][1] + 1
+    } and event ${count[2][1] + 1}`
   );
 }
 
@@ -153,6 +164,7 @@ function sortFunction(a, b) {
 
 fetchData().then((data) => {
   if (data) {
-    reccomender(data, events);
+    console.log();
+    reccomender(data[0], data[1]);
   }
 });

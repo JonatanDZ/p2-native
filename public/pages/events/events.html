@@ -35,23 +35,25 @@
               eventCard.classList.add("event-card");
 
               eventCard.innerHTML = `
-                            <a href="event-detail.html?id=${event.id}" class="event-link">
-                                <img src="${event.image}" alt="${event.name}">
+                            <!--a href="event-detail.html?id=${event.id}" class="event-link"-->
+                                <img src="${event.image}" alt="${event.name}" class="event-link">
                                 <h3>${event.name}</h3>
                                 <p>${event.info}</p>
                                 <p class="event-price">${event.price}</p>
-                            </a>
+                            <!--/a-->
                         `;
 
               eventsContainer.appendChild(eventCard);
             });
             ///////////////////////////////
-            /*document.getElementById("1").*/ addEventListener(
-              "click",
-              async function () {
+            //When clicking event, add to user_events table (which is used for event reccomender)
+            let event_number = document.getElementsByClassName("event-link");
+            for (let i = 0; i < event_number.length; i++) {
+              event_number[i].addEventListener("click", async function () {
                 console.log("CLICKED!");
-                const userID = 2; //Insert userID here
-                const eventID = 5; //Insert eventID here
+                const userID = 2; //Insert userID here (somehow)
+                const eventID = events[i].id;
+                //Make a POST with userID and eventID
                 try {
                   const response = await fetch(
                     "http://localhost:3000/event-detail",
@@ -61,23 +63,15 @@
                       body: JSON.stringify({ userID, eventID }),
                     }
                   );
-
-                  const result = await response.json();
-
-                  if (response.ok) {
-                    alert("Du er nu tilmeldt");
-                    window.location.href = "/public/pages/events/events.html";
-                  } else {
-                    alert(result.error);
-                  }
                 } catch (err) {
                   console.error("Error:", err);
                   alert("Something went wrong. Try again.");
                 }
-              }
-            );
-            //////////////////////
+              });
+              //////////////////////
+            }
           })
+
           .catch((error) => console.error("Error fetching events:", error));
       });
     </script>
