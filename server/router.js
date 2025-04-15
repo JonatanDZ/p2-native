@@ -5,6 +5,10 @@ import { fileResponse } from "./server.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 
+
+import nodemailer from "nodemailer";
+
+
 //Use dotenv to access stripe key (i think?)
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -39,64 +43,71 @@ function processReq(req, res) {
             })
             .catch(err => reportError(res, err));
           break;
+        case "create-checkout-session":
+          let body = "";
+          req.on("data", chunk => body += chunk.toString());
+          req.on("end", async () => {
+              try {
+                  const { totalPrice, email, basket } = JSON.parse(body);
+  
+                  if (!totalPrice || !email || !basket) {
+                      res.writeHead(400, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: "Missing data" }));
+                      return;
+                  }
+  
+                  const session = await stripe.checkout.sessions.create({
+                      payment_method_types: ["card"],
+                      line_items: [{
+                          price_data: {
+                              currency: "dkk",
+                              product_data: { name: "Din kurv" },
+                              unit_amount: Math.round(Number(totalPrice) * 100),
+                          },
+                          quantity: 1,
+                      }],
+                      mode: "payment",
+                      customer_email: email,
+                      success_url: "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                      cancel_url: "http://localhost:3000/public/pages/paymentsystem/paymentfail.html"
+                  });
+  
+                  res.writeHead(200, {
+                      "Content-Type": "application/json",
+                      "Access-Control-Allow-Origin": "*"
+                  });
+                  res.end(JSON.stringify({ url: session.url }));
+  
+              } catch (err) {
+                  res.writeHead(500, {
+                      "Content-Type": "application/json",
+                      "Access-Control-Allow-Origin": "*"
+                  });
+                  res.end(JSON.stringify({ error: err.message }));
+              }
+          });
+          return;
+        case "send-confirmation-email":
+          let body2 = "";
+          req.on("data", chunk => body2 += chunk.toString());
+        req.on("end", async () => {
+            try {
+                const { email, basket } = JSON.parse(body2);
+                const shopNames = [...new Set(basket.map(item => item.info))];
+
+                await sendConfirmationEmail(email, basket, shopNames);
+
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
 
         default:
-          if (req.url === "/create-checkout-session") {
-            let body = "";
 
-            //Get data and save in "body" (i think?)
-            req.on("data", (chunk) => {
-              body += chunk.toString();
-            });
-
-            req.on("end", async () => {
-              try {
-                const { totalPrice } = JSON.parse(body);
-
-                if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-                  res.writeHead(400, {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                  });
-                  res.end(JSON.stringify({ error: "Invalid total price" }));
-                  return;
-                }
-
-                const session = await stripe.checkout.sessions.create({
-                  payment_method_types: ["card"],
-                  line_items: [
-                    {
-                      price_data: {
-                        currency: "dkk",
-                        product_data: { name: "Din kurv" },
-                        unit_amount: Math.round(Number(totalPrice) * 100),
-                      },
-                      quantity: 1,
-                    },
-                  ],
-                  mode: "payment",
-                  success_url:
-                    "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
-                  cancel_url:
-                    "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
-                });
-
-                res.writeHead(200, {
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                });
-                res.end(JSON.stringify({ url: session.url }));
-              } catch (err) {
-                console.error("Stripe error:", err.message);
-                res.writeHead(500, {
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                });
-                res.end(JSON.stringify({ error: err.message }));
-              }
-            });
-            break;
-          }
 
           console.error("Resource doesn't exist");
           reportError(res, new Error("there was an error"));
@@ -142,6 +153,41 @@ function processReq(req, res) {
 }
 
 // helper functions for POST part
+
+async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS
+      }
+  });
+
+  const itemList = basket.map(item => {
+      const quantity = item.quantity || 1;
+      return `<li>${item.name} x ${quantity} – ${item.price}</li>`;
+  }).join("");
+
+  const shopList = shopNames.map(shop => `<li>${shop}</li>`).join("");
+
+  const mailOptions = {
+      from: `"Din Butik" <${process.env.GMAIL_USER}>`,
+      to: recipientEmail,
+      subject: "Din ordrebekræftelse",
+      html: `
+          <h2>Tak for din ordre!</h2>
+          <p>Her er dine varer:</p>
+          <ul>${itemList}</ul>
+          <p><strong>Afhentes i butik:</strong></p>
+          <ul>${shopList}</ul>
+          <p>Vi glæder os til at se dig!</p>
+      `
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  console.log("Mail sent!");
+  console.log("Message ID:", info.messageId);
+}
 
 function extractJSON(req){
   if(isJsonEncoded(req.headers['content-type']))

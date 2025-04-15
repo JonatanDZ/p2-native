@@ -4,8 +4,8 @@ import mysql from 'mysql2'
 const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
-    password: 'test1234',
-    database: 'p2_app'
+    password: '12345678',
+    database: 'p2_database'
     //  Making it a promise so we can use async await functions !!
 }).promise()
 
@@ -32,5 +32,3 @@ export async function createProduct(name, price, amount, filters) {
     return getProduct(id);
 }
 
-const idk = await createProduct("Test4", 1999, 200, "hej");
-const products = await getProducts();
