@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "musik concert",
+        "info": "Fedt musik event hvor der sker meget",
+        "image": "testevent1.jpg",
+        "price": "gratis"
+    },
+    {
+        "id": 2,
+        "name": "Event 2 eksempel",
+        "info": "Meget kedeligt event hvor der ikke sker noget",
+        "image": "testevent2.jpg",
+        "price": "50kr"
+    }
+]

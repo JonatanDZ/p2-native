@@ -1,5 +1,5 @@
-async function loadFooter() {
-    await fetch("/public/components/footer.html")
+function loadFooter() {
+    fetch("/public/components/footer.html")
         .then(response => response.text())
         .then(html => {
             document.getElementById("footer").innerHTML = html;

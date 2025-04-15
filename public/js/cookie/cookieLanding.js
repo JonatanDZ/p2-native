@@ -24,37 +24,15 @@ function getCookie(cookieName) {
 function checkCookie(cookieName) {
   let cookie = getCookie(cookieName);
   console.log(cookie);
-  if (cookie === "1") {
+  if (cookie) {
     window.location.href = "/public/pages/index.html";
-  } else if (cookie === "2"){
-    window.location.href = "/public/pages/index.html";
-  } else if (cookie === "3") {
-    window.location.href = "/public/pages/index.html";
-  } else {
-    console.log("Fejl i cookie");
   }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   document
-    .getElementById("isClickedCookieAalborg")
+    .getElementById("isClickedCookie")
     .addEventListener("click", function () {
       makeCookie("landingVisited", 1, 30);
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .getElementById("isClickedCookieAarhus")
-    .addEventListener("click", function () {
-      makeCookie("landingVisited", 2, 30);
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .getElementById("isClickedCookieKoebenhavn")
-    .addEventListener("click", function () {
-      makeCookie("landingVisited", 3, 30);
     });
 });
