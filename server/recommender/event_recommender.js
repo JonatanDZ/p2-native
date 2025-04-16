@@ -1,15 +1,15 @@
 import mysql from "mysql2/promise";
 
-//Should be called somewhere on front page?
+//The event recommender: Should be called somewhere on front page?
 
-let currentUser = 1; //Get currentUser from database (somehow?)
+let currentUser = 1; //Get currentUser from database (somehow?) SHOULD BE CHANGED
 
-//let events = 6; //Get the amount of events from database
-
+//Creates and async function to get the database data
 async function fetchData() {
   let connection;
+  //Create a try statement to catch possible errors
   try {
-    // Create connection
+    // Create connection to p2_database
     connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
@@ -17,70 +17,50 @@ async function fetchData() {
       database: "p2_database",
       port: 3306,
     });
-
+    //If no error, then print succes:
     console.log("Connected to MySQL");
 
-    // Fetch
+    //Make a query (commad to recive data) on the database to get everything in user_events
     const [test] = await connection.query(
       "SELECT * FROM user_events ORDER BY userID"
     );
+    //Map the result to an array (change from json to array)
     const users_events_rows = test.map((row) => Object.values(row));
     console.log(users_events_rows);
 
+    //Get everything from events_table
     const [events_length] = await connection.query(
       "SELECT * FROM events_table"
     );
-
     const events_rows = events_length.map((row) => Object.values(row));
     console.log(events_rows);
-    let events_rows_length = events_rows.length;
+    //Take the length of the events table (how many events are present)
+    const events_rows_length = events_rows.length;
     console.log(events_rows_length);
 
+    //Return the data from user_event and the amount of events
     return [users_events_rows, events_rows_length];
   } catch (err) {
+    //Catch error
     console.error("Database error:", err);
   } finally {
     if (connection) {
       await connection.end();
+      //Write when database closes
       console.log("Database connection closed.");
     }
   }
 }
 
-/*db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed:", err);
-    return;
-  }
-  console.log("Connected to MySQL");
-});
-
-db.query(`SELECT * FROM user_event ORDER BY userID`, (err, results, fields) => {
-  if (err) {
-    console.error("Error fetching data:", err);
-    return;
-  }
-  //const data = results.map((row) => Object.values(row));
-});
-
-db.end((err) => {
-  if (err) {
-    console.error("Error closing the database connection:", err);
-  } else {
-    console.log("Database connection closed.");
-  }
-});*/
-
-//The event recommender algorithm. Currently only looks at events people are singed op for
+//The event recommender algorithm. Currently only looks at events people are singed up for
 function reccomender(data, events_length) {
   let user = []; //Users gonna be something like [2,5,3,1] which is eventID 2,5,3 and 1
-  //let others = [];
   let count = [];
-  //Initialize count
+  //Initialize count to 0 and event to 1 - 10
   for (let i = 0; i < events_length; i++) {
     count[i] = [];
     count[i][0] = 0;
-    count[i][1] = i;
+    count[i][1] = i; //SHOUL BE EVENT_ID INSTEAD?
   }
 
   //Finds and creates user:
@@ -122,8 +102,9 @@ function reccomender(data, events_length) {
       
     }*/
   }
+  //Sort it by amount
   count.sort(sortFunction);
-  console.log(count);
+  //Print top 3 reccomended
   console.log(
     `We reccomend event ${count[0][1] + 1}, event ${
       count[1][1] + 1
@@ -140,31 +121,11 @@ function sortFunction(a, b) {
   }
 }
 
-//Old algorithm
-/*function rec(data) {
-  let count = [0, 0, 0, 0, 0];
-  let user = [1, 0, 1, 1, 0];
-  for (let j = 0; j < user.length; j++) {
-    for (let i = 0; i < data.length; i++) {
-      //one cuz user_id
-      if (data[i][j + 1] == user[j]) {
-        for (let n = 0; n < user.length; n++) {
-          if (user[n] == 0) {
-            //plus one cuz user_id
-            if (data[i][n + 1] == 1) {
-              count[n] += 1;
-            }
-          } else count[n] = "a";
-        }
-      }
-    }
-  }
-  console.log(count);
-}*/
-
+//Calling the fetch function
 fetchData().then((data) => {
   if (data) {
     console.log();
+    //Call recommender
     reccomender(data[0], data[1]);
   }
 });
