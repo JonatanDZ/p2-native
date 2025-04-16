@@ -53,14 +53,15 @@ function processReq(req, res) {
         req.on("end", async () => {
           try {
             const { userID, eventID } = JSON.parse(body);
-            console.log(userID, eventID);
+            //Insert the given data into user_events
             db.query("INSERT INTO user_events (userID,eventID) VALUES (?,?)", [
               userID,
               eventID,
             ]);
+            /*For testing:
             const [test] = await db.query("SELECT * FROM user_events");
             const rows = test.map((row) => Object.values(row));
-            console.log(rows);
+            console.log(rows);*/
           } catch (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: "Internal server error" }));
