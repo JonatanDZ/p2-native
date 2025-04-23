@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
     readFromDB();
-
-
 });
 
 async function readFromDB() {
