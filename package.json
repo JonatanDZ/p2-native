@@ -8,6 +8,8 @@
     "nodemailer": "^6.10.0",
     "mysql2": "^3.14.0",
     "require": "^2.4.20",
+    "mysql-promise": "^5.0.0",
+    "mysql2": "^3.14.0",
     "stripe": "^17.7.0"
   }
 }

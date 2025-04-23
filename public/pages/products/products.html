@@ -38,14 +38,14 @@
             card.className = 'card';
 
             const productLink = document.createElement('a');
-            productLink.href = `productdetail.html?id=${product.ID}`; // Assumes product has an 'id'
-            productLink.target = "_blank"; // Opens in new tab (optional)
+            productLink.href = `productdetail.html?id=${product.ID}`;
+            productLink.target = "_blank";
 
             const img = document.createElement('img');
             img.src = product.picture;
             img.alt = product.name || `${containerId} ${index + 1}`;
 
-            productLink.appendChild(img); // Image is now clickable
+            productLink.appendChild(img);
 
             const title = document.createElement('h4');
             title.textContent = product.name || 'Untitled';
@@ -53,7 +53,7 @@
             const price = document.createElement('p');
             price.textContent = product.price || 'Untitled';
 
-            card.appendChild(productLink); // Add the clickable image
+            card.appendChild(productLink); 
             card.appendChild(price);
             card.appendChild(title);
             container.appendChild(card);
