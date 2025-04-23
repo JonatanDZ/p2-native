@@ -20,23 +20,39 @@ function errorResponse(res, code, reason) {
 
 //jwt authenticator to check if the user is logged in
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1]; 
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-    if (!token) {
-        console.log("No token provided");
-        res.writeHead(302, { Location: "/public/pages/login/login.html" });
-        return res.end();
-    }
+  if (!token) {
+      console.log("No token provided");
 
-    jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
-        if (err) {
-            return res.writeHead(403, { "Content-Type": "application/json" }).end(JSON.stringify({ error: "Invalid or expired token" }));
-        }
-        req.user = user;  
-        next();
-    });
+      const isFetch = req.headers["accept"]?.includes("application/json");
+      if (isFetch) {
+          res.writeHead(401, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ error: "No token provided" }));
+      } else {
+          res.writeHead(302, { Location: "/public/pages/login/login.html" });
+          return res.end();
+      }
+  }
+
+  jwt.verify(token, SECRET_KEY_JWT, (err, user) => {
+      if (err) {
+          const isFetch = req.headers["accept"]?.includes("application/json");
+          if (isFetch) {
+              res.writeHead(403, { "Content-Type": "application/json" });
+              return res.end(JSON.stringify({ error: "Invalid or expired token" }));
+          } else {
+              res.writeHead(302, { Location: "/public/pages/login/login.html" });
+              return res.end();
+          }
+      }
+
+      req.user = user;
+      next();
+  });
 }
+
 
 function requestHandler(req, res) {
   try {

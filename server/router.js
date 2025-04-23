@@ -207,12 +207,21 @@ function processReq(req, res) {
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
         let betterURL = req.url.replace(req.url[0], "");
 
-        if (req.url === "/public/pages/userdashboard/userdashboard.html") {
+        if (req.url === "public/pages/userdashboard/userdashboard.html") {
           authenticateToken(req, res, () => {
             fileResponse(res, "public/pages/userdashboard/userdashboard.html");
           });
           break;
         }
+
+        if (req.url === "verifyToken") {
+          authenticateToken(req, res, () => {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ valid: true }));
+          });
+          break;
+        }
+        
 
         //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
         switch (pathElements[1]) {
@@ -226,16 +235,10 @@ function processReq(req, res) {
             fileResponse(res, betterURL);
             break;
         }
+        
       }
       break;
 
-    case "/verifyToken":
-      authenticateToken(req, res, () => {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ valid: true }));
-      });
-      break;
-    
     default:
       reportError(res, new Error("No Such Resource"));
   }

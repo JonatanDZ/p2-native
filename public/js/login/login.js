@@ -37,6 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
     if (token) {
         console.log("Token found");
+        window.location.href = "/public/pages/userdashboard/userdashboard.html"
     } else {
         console.log("No token found.");
     }

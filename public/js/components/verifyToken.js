@@ -8,11 +8,11 @@ window.addEventListener("DOMContentLoaded", () => {
     })
       .then((res) => {
         if (!res.ok) {
-          window.location.href = "/public/pages/login/login.html";
+          window.location.href = "public/pages/login/login.html";
         }
       })
       .catch(() => {
-        window.location.href = "/public/pages/login/login.html";
+        window.location.href = "public/pages/login/login.html";
       });
   });
   
