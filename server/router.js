@@ -231,7 +231,7 @@ function processReq(req, res) {
         console.log(req.url);
         console.log(pathElements);
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
-        let betterURL = req.url.replace(req.url[0], "");
+        let betterURL = queryPath.startsWith("/") ? queryPath.slice(1) : queryPath;
 
         //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
         switch (pathElements[1]) {
