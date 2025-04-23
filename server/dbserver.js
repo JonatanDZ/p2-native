@@ -1,6 +1,7 @@
 import mysql from 'mysql2'
 
 //  Pool is a collection of connections to the database
+//  This is done instead of creating a new connection pr. query which is better for scalability. 
 const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
@@ -25,36 +26,37 @@ export async function getProduct(id) {
     return rows[0];
 }
 
-
-
 export async function createProduct(product) {
     const { 
         name, 
-        shop, 
+        shopID, 
         picture, 
         info, 
         price, 
         amount
     } = product;
+    //  ProductID works as a placeholder it is init further down
     const {
+        productID,
         black, 
         white, 
-        grey, 
+        gray, 
+        brown,
         blue, 
         pants, 
-        tshirt, 
+        t_shirt, 
         sweatshirt, 
         hoodie, 
         shoes, 
         shorts, 
         cotton, 
-        linen, 
-        polyester } = filters;
+        linnen, 
+        polyester } = product;
 
-    const result = await pool.query(
+    const result_table = await pool.query(
         `INSERT INTO products_table (
             name, 
-            shop, 
+            shopID, 
             picture, 
             info, 
             price, 
@@ -64,7 +66,7 @@ export async function createProduct(product) {
         )`, 
         [
             name, 
-            shop, 
+            shopID, 
             picture, 
             info, 
             price, 
@@ -72,8 +74,52 @@ export async function createProduct(product) {
         ]
     );  
 
-    const id = result.insertId;
-    return getProduct(id);
+    const id_table = result_table[0].insertId; // <- get the product ID
+
+
+    const result_filter = await pool.query(
+        `INSERT INTO products_filters (
+            productID,
+            black, 
+            white, 
+            gray, 
+            brown,
+            blue, 
+            pants, 
+            t_shirt, 
+            sweatshirt, 
+            hoodie, 
+            shoes, 
+            shorts, 
+            cotton, 
+            linnen, 
+            polyester
+        ) VALUES (
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+        )`, 
+        [
+            id_table,  
+            black, 
+            white, 
+            gray, 
+            brown,
+            blue, 
+            pants, 
+            t_shirt, 
+            sweatshirt, 
+            hoodie, 
+            shoes, 
+            shorts, 
+            cotton, 
+            linnen, 
+            polyester
+        ]
+    );
+
+    //  TODO: revisit this. 
+    const id_filters = result_filter.insertId;
+    getProduct(id_filters)
+    return getProduct(id_table);
 }
 
 //const idk = await createProduct("Test4", 1999, 200, "hej");

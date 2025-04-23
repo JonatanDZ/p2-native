@@ -178,6 +178,7 @@ function collectPostBody(req){
       }
     }).on('end', () => {
     bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
+    //  Bit annoying but comments can be removed
     console.log(bodyData);
     resolve(bodyData); 
     });
