@@ -1,8 +1,6 @@
 export { processReq };
 import { fileResponse, authenticateToken  } from "./server.js";
 import { createProduct } from "./dbserver.js";
-import { fileResponse } from "./server.js";
-import mysql from "mysql2/promise";
 
 //Import stripe and dotenv
 import Stripe from "stripe";
@@ -11,12 +9,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mysql from "mysql2";
 
-let db = await mysql.createConnection({
+let db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "TESTtest123",
+  user: "niko",
+  password: "1234",
   database: "p2_database",
-  port: 3306,
+  port: 3307,
 });
 
 import nodemailer from "nodemailer";
@@ -258,7 +256,7 @@ function processReq(req, res) {
     
                     // Insert user into database
                     db.query(
-                        "INSERT INTO User (email, password) VALUES (?, ?)",
+                        "INSERT INTO users_table (email, password) VALUES (?, ?)",
                         [email, hashedPassword],
                         (err, result) => {
                             if (err) {
@@ -343,7 +341,7 @@ function processReq(req, res) {
           break;
         }
 
-        if (req.url === "verifyToken") {
+        if (req.url === "/verifyToken") {
           authenticateToken(req, res, () => {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ valid: true }));
@@ -462,5 +460,3 @@ function collectPostBody(req) {
   }
   return new Promise(collectPostBodyExecutor);
 }
-
-export { processReq };

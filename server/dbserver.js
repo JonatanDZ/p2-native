@@ -3,9 +3,10 @@ import mysql from 'mysql2'
 //  Pool is a collection of connections to the database
 const pool = mysql.createPool({
     host: '127.0.0.1',
-    user: 'root',
-    password: '12345678',
-    database: 'p2_database'
+    user: 'niko',
+    password: '1234',
+    database: 'p2_database',
+    port: '3307'
     //  Making it a promise so we can use async await functions !!
 }).promise()
 

@@ -3,9 +3,10 @@ import mysql from 'mysql2';
 
 const db = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '12345678',
-  database: 'P2_database'
+  user: 'niko',
+  password: '1234',
+  database: 'p2_database',
+  port: '3307'
 });
 
 db.connect((err) => {

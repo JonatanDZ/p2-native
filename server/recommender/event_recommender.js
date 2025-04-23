@@ -12,10 +12,10 @@ async function fetchData() {
     // Create connection to p2_database
     connection = await mysql.createConnection({
       host: "localhost",
-      user: "root",
-      password: "TESTtest123",
+      user: "niko",
+      password: "1234",
       database: "p2_database",
-      port: 3306,
+      port: 3307,
     });
     //If no error, then print succes:
     console.log("Connected to MySQL");

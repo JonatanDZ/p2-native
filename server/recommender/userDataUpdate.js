@@ -8,7 +8,7 @@ async function fetchData(userId, itemId, dataForDB, alterDataYes) {
             user: "root",
             password: "StrongP@ssw0rd!",
             database: "p2_database",
-            port: 3306
+            port: 3307
         });
 
         console.log("Connected to MySQL");
