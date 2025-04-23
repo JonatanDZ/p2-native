@@ -3,13 +3,20 @@ import { fileResponse } from "./server.js";
 
 //Import stripe and dotenv
 import Stripe from "stripe";
-import dotenv from "dotenv";
 
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Finding .evn file in root
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import nodemailer from "nodemailer";
 
-
-//Use dotenv to access stripe key (i think?)
+//Use dotenv to access stripe key
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
