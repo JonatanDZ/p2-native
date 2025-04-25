@@ -1,45 +1,65 @@
-const mysql = require("mysql2/promise");
+import { createConnection } from "mysql2/promise";
 
 async function fetchData(userId, itemId, dataForDB, alterDataYes) {
     let connection;
     try {
-        connection = await mysql.createConnection({
+        connection = await createConnection({
             host: "localhost",
             user: "root",
             password: "StrongP@ssw0rd!",
-            database: "myDB",
+            database: "p2_database",
             port: 3306
         });
 
         console.log("Connected to MySQL");
 
-        // Hent data fra clothing_items
-        const [itemDataRaw] = await connection.execute('SELECT * FROM clothing_items WHERE id = ?', [itemId]);
+        // Forbinder til product id
+        const [itemDataRaw] = await connection.execute('SELECT * FROM products_filters WHERE productID = ?', [itemId]);
         const itemData = itemDataRaw.map(row => Object.values(row));
 
-        // Hent data fra user_items
-        const [userDataRaw] = await connection.execute('SELECT * FROM user_items');
+        // Forbinder til user id
+        const [userDataRaw] = await connection.execute('SELECT * FROM user_filters WHERE userID = ?', [userId]);
         const userData = userDataRaw.map(row => Object.values(row));
 
         // Hvis vi skal opdatere brugerens data
         if (alterDataYes) {
-            const [red,blue,green,cotton, polyester, wool, size_s, size_m, size_l, style_casual, style_formal, style_sporty, brand_nike, brand_adidas, price_range_1, price_range_2, price_range_3, season_summer, season_winter,gender_male,gender_female,gender_unisex
-                ] = dataForDB;
+            const [
+                black,
+                white,
+                gray,
+                brown,
+                blue,
+                pants,
+                t_shirt,
+                sweatshirt,
+                hoodie,
+                shoes,
+                shorts,
+                cotton,
+                linnen,
+                polyester
+            ] = dataForDB;
 
             const sql = `
-                UPDATE user_items SET 
-                    red = ?, blue = ?, green = ?,
-                    cotton = ?, polyester = ?, wool = ?,
-                    size_s = ?, size_m = ?, size_l = ?,
-                    style_casual = ?, style_formal = ?, style_sporty = ?,
-                    brand_nike = ?, brand_adidas = ?,
-                    price_range_1 = ?, price_range_2 = ?, price_range_3 = ?,
-                    season_summer = ?, season_winter = ?,
-                    gender_male = ?, gender_female = ?, gender_unisex = ?
+                UPDATE user_filters SET 
+                    black = ?,
+                    white = ?,
+                    gray = ?,
+                    brown = ?,
+                    blue = ?,
+                    pants = ?,
+                    t_shirt = ?,
+                    sweatshirt = ?,
+                    hoodie = ?,
+                    shoes = ?,
+                    shorts = ?,
+                    cotton = ?,
+                    linnen = ?,
+                    polyester = ?
                 `;
             
-            const [result] = await connection.execute(sql, [red,blue,green,cotton, polyester, wool, size_s, size_m, size_l, style_casual, style_formal, style_sporty, brand_nike, brand_adidas, price_range_1, price_range_2, price_range_3, season_summer, season_winter,gender_male,gender_female,gender_unisex]);
-
+            // Indsætter dataen i DB
+            const [result] = await connection.execute(sql, [black,white,gray,brown,blue,pants,t_shirt,sweatshirt,hoodie,shoes,shorts,cotton,linnen,polyester]);
             console.log("Rows updated:", result.affectedRows);
         }
 
@@ -58,8 +78,22 @@ async function fetchData(userId, itemId, dataForDB, alterDataYes) {
 async function alterDataToList(data) {
     let userData = data.userData[0]; // Første række 
     let itemData = data.itemData[0]; // Første række
-    //fjerner id
-    itemData.shift();
+
+    //fjerner id og er fejlkode for om id'sne eksistere. 
+    try {
+        itemData.shift();
+    } catch (error) {
+        console.log("The item id does not exist");
+        process.exit(1);
+    }
+    try {
+        userData.shift();
+    } catch (error) {
+        console.log("The user id does not exist");
+        process.exit(1);
+    }
+
+    // lægger 1 til i user hvis der er 1 i item der er trykket på.
     for (let i = 0; i < itemData.length; i++) {
         if (itemData[i] === 1) {
             userData[i]++;
@@ -74,13 +108,19 @@ async function main(userId, itemId) {
     let alterDataYes = 0;
 
     let data = await fetchData(userId, itemId, dataForDB, alterDataYes);
-    console.log("Tidliger userid: ", data.userData[0]);
-    
+    console.log("Tidliger user: ", data.userData[0]);
+    console.log("Tidligere item", data.itemData[0]);
+
+    // her sker magien med at listen bliver opdateret med de rigtige tal
     dataForDB = await alterDataToList(data);
+    console.log(data);
+
 
     alterDataYes = 1;
+    // Ændre det oprindelige liste med den nye liste af tal i dben. 
     await fetchData(userId, itemId, dataForDB, alterDataYes);
 
+    // Går ind og henter den nye liste i db. 
     alterDataYes = 0;
     let alteredData = await fetchData(userId, itemId, dataForDB, alterDataYes);
     console.log(alteredData.userData[0]);
@@ -95,7 +135,6 @@ async function main(userId, itemId) {
 //     await main(userId, itemId);
 // });
 
-// kan ikke gå over 36, da det er vores max item lige nu. og man skal skrive > 0 før at det virker. 
-let itemId = 12;
-let userId = 0;
+let itemId = 5;
+let userId = 1;
 main(userId, itemId);

@@ -2,10 +2,14 @@
   "type":"module",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
     "bootstrap-icons": "^1.11.3",
     "dotenv": "^16.4.7",
+    "nodemailer": "^6.10.0",
     "mysql2": "^3.14.0",
     "require": "^2.4.20",
+    "mysql-promise": "^5.0.0",
+    "mysql2": "^3.14.0",
     "stripe": "^17.7.0"
   }
 }
