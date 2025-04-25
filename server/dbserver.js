@@ -1,12 +1,14 @@
 import mysql from "mysql2";
+import dotenv from 'dotenv';
+dotenv.config();
 
 //  Pool is a collection of connections to the database
 //  This is done instead of creating a new connection pr. query which is better for scalability. 
 const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'test1234',
-    database: 'p2_database'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
     //  Making it a promise so we can use async await functions !!
   })
   .promise();

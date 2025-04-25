@@ -13,7 +13,7 @@ import nodemailer from "nodemailer";
 let db = await mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "TESTtest123",
+  password: "test1234",
   database: "p2_database",
   port: 3306,
 });
