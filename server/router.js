@@ -286,23 +286,6 @@ function collectPostBody(req) {
     console.log(bodyData);
     resolve(bodyData); 
     });
-    let length = 0;
-    req
-      .on("data", (chunk) => {
-        bodyData.push(chunk);
-        length += chunk.length;
-
-        if (length > 10000000) {
-          //10 MB limit!
-          req.connection.destroy(); //we would need the response object to send an error code
-          reject(new Error(MessageTooLongError));
-        }
-      })
-      .on("end", () => {
-        bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
-        console.log(bodyData);
-        resolve(bodyData);
-      });
     //Exceptions raised will reject the promise
   }
   return new Promise(collectPostBodyExecutor);
