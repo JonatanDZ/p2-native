@@ -1,4 +1,4 @@
-import mysql from 'mysql2'
+import mysql from "mysql2";
 
 //  Pool is a collection of connections to the database
 //  This is done instead of creating a new connection pr. query which is better for scalability. 
@@ -8,7 +8,8 @@ const pool = mysql.createPool({
     password: 'test1234',
     database: 'p2_database'
     //  Making it a promise so we can use async await functions !!
-}).promise()
+  })
+  .promise();
 
 export async function getProducts() {
     const result = await pool.query("SELECT * FROM products_table");
