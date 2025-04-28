@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', (event) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
     if (!token) {
         console.log('No token found. Redirecting to login.');
@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         return;
     }
 
-    console.log('Token found. Verifying...');
+    console.log('Token found');
 
     fetch('/verify-token', {
         method: 'POST',
