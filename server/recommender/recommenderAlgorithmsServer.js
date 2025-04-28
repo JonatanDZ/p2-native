@@ -11,11 +11,18 @@ const pool = mysql.createPool({
 export async function getUserFiltersDB(userId) {
     try {
         const [userResults] = await pool.query(
-            'SELECT * FROM user_filters WHERE userID = ?', 
+            'SELECT * FROM user_filters WHERE userID = ?',
             [userId]
         );
-        userResults = userResults.map(row => Object.values(row));
-        return userResults[0];
+
+        if (userResults.length === 0) {
+            console.log("User filters are empty")
+            return null;
+        }
+
+        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
+        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
+        return Object.values(userResults[0]);
     } catch (err) {
         console.error("Database error in getUserFilters:", err);
         throw err;
@@ -24,12 +31,21 @@ export async function getUserFiltersDB(userId) {
 
 export async function getSpecificItemFiltersDB(itemId) {
     try {
+        // array destructuring([]), remvoes meta data
         const [itemResults] = await pool.query(
-            'SELECT * FROM products_filters WHERE productID = ?', 
+            'SELECT * FROM products_filters WHERE productID = ?',
             [itemId]
         );
 
-        return itemResults.map(row => Object.values(row));
+        // 
+        if (itemResults.length === 0) {
+            console.log("Item filters are empty");
+            return null;
+        }
+
+        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
+        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
+        return Object.values(itemResults[0]);
     } catch (err) {
         console.error("Database error in getSpecificItemFilters:", err);
         throw err;
@@ -38,11 +54,20 @@ export async function getSpecificItemFiltersDB(itemId) {
 
 export async function getAllItemFiltersDB() {
     try {
-        const [itemsResults] = await pool.query(
+        //
+        const [itemResults] = await pool.query(
             'SELECT * FROM products_filters'
         );
 
-        return itemsResults.map(row => Object.values(row));
+        // 
+        if (itemResults.length === 0) {
+            console.log("Item filters are empty");
+            return null;
+        }
+
+        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
+        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
+        return Object.values(itemResults[0]);
     } catch (err) {
         console.error("Database error in getAllItemFilters:", err);
         throw err;
@@ -84,10 +109,9 @@ export async function updateUserFiltersDB(userId, dataForDB) {
                 cotton = ?,
                 linnen = ?,
                 polyester = ?
-            WHERE userId = ?
-            `;
-        
-        const [result] = await connection.execute(sql, [black,white,gray,brown,blue,pants,t_shirt,sweatshirt,hoodie,shoes,shorts,cotton,linnen,polyester, userId]);
+            WHERE userId = ?`;
+
+        const [result] = await pool.execute(sql, [black, white, gray, brown, blue, pants, t_shirt, sweatshirt, hoodie, shoes, shorts, cotton, linnen, polyester, userId]);
         console.log("Rows updated:", result.affectedRows);
 
     } catch (err) {

@@ -1,29 +1,46 @@
-import { getUserFiltersDB, getAllItemFiltersDB } from "./recommenderAlgorithmsServer.js";
+import { getUserFiltersDB, getSpecificItemFiltersDB, updateUserFiltersDB } from "./recommenderAlgorithmsServer.js";
 
-async function updateUserFilters(userId, itemId) {
-    let dataForDB = [];
+async function insertNewData(userFilters, itemFilters) {
+    //fjerner id og er fejlkode for om id'sne eksistere. 
+
+    if (!userFilters) {
+        console.log("The user filters do not exist");
+        process.exit(1);
+    }
+
+    if (!itemFilters) {
+        console.log("The item filters do not exist");
+        process.exit(1);
+    }
+
+    userFilters.shift();
+    itemFilters.shift();
+
+    // lægger 1 til i user hvis der er 1 i item der er trykket på.
+    for (let i = 0; i < itemFilters.length; i++) {
+        if (itemFilters[i] === 1) {
+            userFilters[i]++;
+        }
+    }
+
+    return userFilters;
+}
+
+export async function updateUserFilters(userId, itemId) {
+    let NewUserData = [];
 
     let userFilters = await getUserFiltersDB(userId);
-    let itemFilters = await getAllItemFiltersDB(itemId);
-    console.log("Tidliger user: ", userFilters);
-    console.log("Tidligere item", itemFilters[0]);
-/* 
- 
+    let itemFilters = await getSpecificItemFiltersDB(itemId);
+    console.log("User: ", userFilters);
+    console.log("item added: ", itemFilters);
+
     // her sker magien med at listen bliver opdateret med de rigtige tal
-    dataForDB = await alterDataToList(data);
-    console.log(data);
-
-
-    alterDataYes = 1;
-    // Ændre det oprindelige liste med den nye liste af tal i dben. 
-    await fetchData(userId, itemId, dataForDB, alterDataYes);
-
-    // Går ind og henter den nye liste i db. 
-    alterDataYes = 0;
-    let alteredData = await fetchData(userId, itemId, dataForDB, alterDataYes);
-    console.log(alteredData.userData[0]); */
-};
+    NewUserData = await insertNewData(userFilters, itemFilters);
+    await updateUserFiltersDB(userId, NewUserData);
+    console.log("Efter userFilter update: ", await getUserFiltersDB(userId));
+}
 
 let itemId = 5;
 let userId = 1;
+
 updateUserFilters(userId, itemId);
