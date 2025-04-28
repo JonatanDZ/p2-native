@@ -1,5 +1,5 @@
 //Import from other files:
-import { createProduct } from "./dbserver.js";
+import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { exportRecommend } from "./recommender/rec.js";
 
@@ -13,7 +13,7 @@ import nodemailer from "nodemailer";
 let db = await mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "TESTtest123",
+  password: "test1234",
   database: "p2_database",
   port: 3306,
 });
@@ -34,14 +34,18 @@ function processReq(req, res) {
 
   //Check for the request method:
   //  POST logic is from BMI app
+
   switch (req.method) {
     case "POST": {
       let pathElements = queryPath.split("/");
-
       switch (pathElements[1]) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productData => {
+              productData.forEach(product => {
+                createProduct(product);
+                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
             .then((productData) => {
               productData.forEach((product) => {
                 createProduct(
@@ -50,6 +54,7 @@ function processReq(req, res) {
                   product.amount,
                   product.filters
                 );
+                */
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
@@ -160,8 +165,7 @@ function processReq(req, res) {
       {
         //If the request is a GET, split the path and print
         let pathElements = queryPath.split("/");
-        console.log(req.url);
-        console.log(pathElements);
+
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
         let betterURL = queryPath.startsWith("/")
           ? queryPath.slice(1)
@@ -268,23 +272,21 @@ function collectPostBody(req) {
   //the "executor" function
   function collectPostBodyExecutor(resolve, reject) {
     let bodyData = [];
-    let length = 0;
-    req
-      .on("data", (chunk) => {
-        bodyData.push(chunk);
-        length += chunk.length;
-
-        if (length > 10000000) {
-          //10 MB limit!
-          req.connection.destroy(); //we would need the response object to send an error code
-          reject(new Error(MessageTooLongError));
-        }
-      })
-      .on("end", () => {
-        bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
-        console.log(bodyData);
-        resolve(bodyData);
-      });
+    let length=0;
+    req.on('data', (chunk) => {
+      bodyData.push(chunk);
+      length+=chunk.length; 
+ 
+      if(length>10000000) { //10 MB limit!
+        req.connection.destroy(); //we would need the response object to send an error code
+        reject(new Error(MessageTooLongError));
+      }
+    }).on('end', () => {
+    bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
+    //  Bit annoying but comments can be removed
+    console.log(bodyData);
+    resolve(bodyData); 
+    });
     //Exceptions raised will reject the promise
   }
   return new Promise(collectPostBodyExecutor);
