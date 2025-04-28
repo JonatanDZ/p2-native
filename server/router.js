@@ -1,8 +1,9 @@
-import { createProduct } from "./dbserver.js";
+//Import from other files:
+import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-import mysql from "mysql2/promise";
+import { exportRecommend } from "./recommender/rec.js";
 
-//Import stripe and dotenv
+//Import libraries
 import Stripe from "stripe";
 
 import dotenv from "dotenv";
@@ -24,18 +25,27 @@ let db = await mysql.createConnection({
   port: 3306,
 });
 
+import dotenv from "dotenv";
+import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 
-//Use dotenv to access stripe key (i think?)
+//Create connection to database:
+let db = await mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+//Use dotenv to access stripe key
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 //Process the server request
-function processReq(req, res) {
+async function processReq(req, res) {
   //Print method and path (for checking errors)
   console.log("GOT: " + req.method + " " + req.url);
 
-  //CHECK WHAT THIS DOES
   let baseURL = "http://" + req.headers.host + "/";
   let url = new URL(req.url, baseURL);
   //let searchParms = new URLSearchParams(url.search);
@@ -43,14 +53,18 @@ function processReq(req, res) {
 
   //Check for the request method:
   //  POST logic is from BMI app
+
   switch (req.method) {
     case "POST": {
       let pathElements = queryPath.split("/");
-
       switch (pathElements[1]) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productData => {
+              productData.forEach(product => {
+                createProduct(product);
+                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
             .then((productData) => {
               productData.forEach((product) => {
                 createProduct(
@@ -59,6 +73,7 @@ function processReq(req, res) {
                   product.amount,
                   product.filters
                 );
+                */
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
@@ -131,8 +146,33 @@ function processReq(req, res) {
               res.end(JSON.stringify({ error: err.message }));
             }
           });
-          return;
+          break;
+        case "event-detail":
+          let body3 = "";
+          //Get given data (userID & eventID)
+          req.on("data", (chunk) => {
+            body3 += chunk.toString();
+          });
 
+          req.on("end", async () => {
+            try {
+              const { userID, eventID } = JSON.parse(body3);
+              //Insert the given data into user_events
+              db.query(
+                "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
+                [userID, eventID]
+              );
+              /*For testing:
+                const [test] = await db.query("SELECT * FROM user_events");
+                const rows = test.map((row) => Object.values(row));
+                console.log(rows);*/
+            } catch (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Internal server error" }));
+            }
+          });
+          /////////////////////////////////////////////////
+          break;
         default:
           console.error("Resource doesn't exist");
           reportError(res, new Error("there was an error"));
@@ -140,114 +180,47 @@ function processReq(req, res) {
 
       break; //END POST URL
     }
-
-    /*case "OPTIONS":
-      //If the request is an OPTIONS
-      res.writeHead(204, {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      });
-      res.end();
-      break;*/
-    case "POST":
-      //////////////////////////
-      if (req.url === "/event-detail") {
-        let body = "";
-
-        //Get given data (userID & eventID)
-        req.on("data", (chunk) => {
-          body += chunk.toString();
-        });
-
-        req.on("end", async () => {
-          try {
-            const { userID, eventID } = JSON.parse(body);
-            //Insert the given data into user_events
-            db.query("INSERT INTO user_events (userID,eventID) VALUES (?,?)", [
-              userID,
-              eventID,
-            ]);
-            /*For testing:
-            const [test] = await db.query("SELECT * FROM user_events");
-            const rows = test.map((row) => Object.values(row));
-            console.log(rows);*/
-          } catch (error) {
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: "Internal server error" }));
-          }
-        });
-        /////////////////////////////////////////////////
-      } else if (req.url === "/create-checkout-session") {
-        let body = "";
-
-        //Get data and save in "body" (i think?)
-        req.on("data", (chunk) => {
-          body += chunk.toString();
-        });
-
-        req.on("end", async () => {
-          try {
-            const { totalPrice } = JSON.parse(body);
-
-            if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-              res.writeHead(400, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-              });
-              res.end(JSON.stringify({ error: "Invalid total price" }));
-              return;
-            }
-
-            const session = await stripe.checkout.sessions.create({
-              payment_method_types: ["card"],
-              line_items: [
-                {
-                  price_data: {
-                    currency: "dkk",
-                    product_data: { name: "Din kurv" },
-                    unit_amount: Math.round(Number(totalPrice) * 100),
-                  },
-                  quantity: 1,
-                },
-              ],
-              mode: "payment",
-              success_url:
-                "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
-              cancel_url:
-                "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
-            });
-
-            res.writeHead(200, {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            });
-            res.end(JSON.stringify({ url: session.url }));
-          } catch (err) {
-            console.error("Stripe error:", err.message);
-            res.writeHead(500, {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            });
-            res.end(JSON.stringify({ error: err.message }));
-          }
-        });
-      }
-      break;
     case "GET":
       {
         //If the request is a GET, split the path and print
         let pathElements = queryPath.split("/");
-        console.log(req.url);
-        console.log(pathElements);
+
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
-        let betterURL = queryPath.startsWith("/") ? queryPath.slice(1) : queryPath;
+        let betterURL = queryPath.startsWith("/")
+          ? queryPath.slice(1)
+          : queryPath;
 
         //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
         switch (pathElements[1]) {
           //For no path go to landing page.
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
+            break;
+          case "get-products":
+            //  When visiting this endpoint the backend should send back all products from DB
+            try {
+                const products = await getProducts(); 
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(products)); 
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Failed to fetch products" }));
+            }
+            break;
+          case "recommend":
+            exportRecommend()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error("Error with fetching recommended list", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch products list" })
+                );
+              });
             break;
           /*case "public/pages/events/event-detail.html?id=1":
                                     console.log("TEST");
@@ -329,23 +302,21 @@ function collectPostBody(req) {
   //the "executor" function
   function collectPostBodyExecutor(resolve, reject) {
     let bodyData = [];
-    let length = 0;
-    req
-      .on("data", (chunk) => {
-        bodyData.push(chunk);
-        length += chunk.length;
-
-        if (length > 10000000) {
-          //10 MB limit!
-          req.connection.destroy(); //we would need the response object to send an error code
-          reject(new Error(MessageTooLongError));
-        }
-      })
-      .on("end", () => {
-        bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
-        console.log(bodyData);
-        resolve(bodyData);
-      });
+    let length=0;
+    req.on('data', (chunk) => {
+      bodyData.push(chunk);
+      length+=chunk.length; 
+ 
+      if(length>10000000) { //10 MB limit!
+        req.connection.destroy(); //we would need the response object to send an error code
+        reject(new Error(MessageTooLongError));
+      }
+    }).on('end', () => {
+    bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
+    //  Bit annoying but comments can be removed
+    console.log(bodyData);
+    resolve(bodyData); 
+    });
     //Exceptions raised will reject the promise
   }
   return new Promise(collectPostBodyExecutor);
