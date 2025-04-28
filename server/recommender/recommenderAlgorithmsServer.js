@@ -65,9 +65,8 @@ export async function getAllItemFiltersDB() {
             return null;
         }
 
-        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
-        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
-        return Object.values(itemResults[0]);
+        // Her mapper vi igennem alle rows og bruger Object.values for kun at få værdierne.
+        return itemResults.map(row => Object.values(row));
     } catch (err) {
         console.error("Database error in getAllItemFilters:", err);
         throw err;

@@ -1,5 +1,24 @@
 import { getUserFiltersDB, getSpecificItemFiltersDB, updateUserFiltersDB } from "./recommenderAlgorithmsServer.js";
 
+let itemId = 5;
+let userId = 1;
+
+updateUserFilters(userId, itemId);
+
+export async function updateUserFilters(userId, itemId) {
+    let NewUserData = [];
+
+    let userFilters = await getUserFiltersDB(userId);
+    let itemFilters = await getSpecificItemFiltersDB(itemId);
+    console.log("User: ", userFilters);
+    console.log("item added: ", itemFilters);
+
+    // her sker magien med at listen bliver opdateret med de rigtige tal
+    NewUserData = await insertNewData(userFilters, itemFilters);
+    await updateUserFiltersDB(userId, NewUserData);
+    console.log("Efter userFilter update: ", await getUserFiltersDB(userId));
+}
+
 async function insertNewData(userFilters, itemFilters) {
     //fjerner id og er fejlkode for om id'sne eksistere. 
 
@@ -25,22 +44,3 @@ async function insertNewData(userFilters, itemFilters) {
 
     return userFilters;
 }
-
-export async function updateUserFilters(userId, itemId) {
-    let NewUserData = [];
-
-    let userFilters = await getUserFiltersDB(userId);
-    let itemFilters = await getSpecificItemFiltersDB(itemId);
-    console.log("User: ", userFilters);
-    console.log("item added: ", itemFilters);
-
-    // her sker magien med at listen bliver opdateret med de rigtige tal
-    NewUserData = await insertNewData(userFilters, itemFilters);
-    await updateUserFiltersDB(userId, NewUserData);
-    console.log("Efter userFilter update: ", await getUserFiltersDB(userId));
-}
-
-let itemId = 5;
-let userId = 1;
-
-updateUserFilters(userId, itemId);

@@ -1,41 +1,49 @@
-import { createConnection } from "mysql2/promise";
+import { getUserFiltersDB, getSpecificItemFiltersDB, getAllItemFiltersDB } from "./recommenderAlgorithmsServer.js";
 
-async function fetchData(userId) {
-    let connection;
-    try {
-        // Create connection
-        connection = await createConnection({
-            host: "localhost",
-            user: "root",
-            password: "StrongP@ssw0rd!",
-            database: "p2_database",
-            port: 3306
-        });
+// User recommendation based on pressed items.
+let userId = 1;
+recommenderAlgorithmForUser(userId)
 
-        console.log("Connected to MySQL");
+export async function recommenderAlgorithmForUser(userId) {
+    let userFilters = await getUserFiltersDB(userId);
+    let allItems = await getAllItemFiltersDB();
 
-        // Fetch clothing items
-        const [items_results] = await connection.execute('SELECT * FROM products_filters');
-        const items_data = items_results.map(row => Object.values(row));
+    console.log("Item for user recommended: ")
 
-        // Fetch user items
-        const [user_results] = await connection.execute('SELECT * FROM user_filters WHERE userID = ?', [userId]);
-        const user_data = user_results.map(row => Object.values(row));
+    recommendItem(userFilters, allItems);
+    // new line for prettynes
+    console.log("");
+}
 
-        // Test data
-        //console.log("Items:", items_data);
-        //console.log("User:", user_data);
 
-        return {items: items_data, user: user_data};
 
-    } catch (err) {
-        console.error("Database error:", err);
-    } finally {
-        if (connection) {
-            await connection.end();
-            console.log("Database connection closed.");
-        }
-    }
+// Item recommended, a like item.
+let itemId = 1;
+recommenderAlgorithmForItem(itemId);
+
+export async function recommenderAlgorithmForItem(itemId) {
+    let itemFilters = await getSpecificItemFiltersDB(itemId);
+    let allItems = await getAllItemFiltersDB();
+
+    console.log("A like items recommended: ")
+
+    recommendItem(itemFilters, allItems);
+    // new line for prettynes
+    console.log("");
+}
+
+function recommendItem(userFilters, allItems) {
+    let resultsOfDotProduct = allItems.map(list => ({
+        id: list[0], 
+        score: dotProduct(userFilters.slice(1), list.slice(1))
+    }));
+    
+    let resultsCompared = compareLists(resultsOfDotProduct);
+    
+    console.log("Detter er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
+    console.log() // New line
+
+    resultsComparedPrinted(resultsCompared); // prints all recommended items sorted 
 }
 
 // Multiply the two vectors
@@ -47,45 +55,15 @@ function dotProduct(user, item) {
     return result;
 }
 
-// Prints the recommmended result
-function resultsComparedPrinted(resultsCompared) {
-    for (let list of resultsCompared){
-        console.log(list);
-    }
-}
-
 // Sort the recommended list, goes from highest to lowest score
 // https://www.w3schools.com/js/js_array_sort.asp#mark_sort
 function compareLists(results) {
     return results.sort(function(a, b){return b.score - a.score});
 }
 
-// Main function that calls the other functions to recommend an item
-function recommendedItem(user, numberOfLists) {
-    let resultsOfDotProduct = numberOfLists.map(list => ({
-        id: list[0], 
-        score: dotProduct(user.slice(1), list.slice(1))
-    }));
-    
-    let resultsCompared = compareLists(resultsOfDotProduct);
-    
-    console.log("Detter er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
-    console.log() // New line
-
-    resultsComparedPrinted(resultsCompared); // prints all recommended items sorted 
-}
-
-//Test user
-//let user = [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0];
-
-// Code starts here where data is fetched and main function is called
-let userId = 1;
-fetchData(userId).then(data => {
-    if (data) {
-        let { items, user } = data;
-        user = user[0]; 
-        console.log(items);
-        console.log(user);
-        recommendedItem(user, items)
+// Prints the recommmended result
+function resultsComparedPrinted(resultsCompared) {
+    for (let list of resultsCompared){
+        console.log(list);
     }
-});
+}
