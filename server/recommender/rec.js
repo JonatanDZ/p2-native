@@ -1,4 +1,5 @@
 import { createConnection } from "mysql2/promise";
+export { exportRecommend };
 
 async function fetchData(userId) {
   let connection;
@@ -7,7 +8,7 @@ async function fetchData(userId) {
     connection = await createConnection({
       host: "localhost",
       user: "root",
-      password: "StrongP@ssw0rd!",
+      password: "TESTtest123",
       database: "p2_database",
       port: 3307,
     });
@@ -19,6 +20,7 @@ async function fetchData(userId) {
       "SELECT * FROM products_filters"
     );
     const items_data = items_results.map((row) => Object.values(row));
+    // Fetch clothing items
 
     // Fetch user items
     const [user_results] = await connection.execute(
@@ -27,6 +29,9 @@ async function fetchData(userId) {
     );
     const user_data = user_results.map((row) => Object.values(row));
 
+    // Test data
+    //console.log("Items:", items_data);
+    //console.log("User:", user_data);
     // Test data
     //console.log("Items:", items_data);
     //console.log("User:", user_data);
@@ -75,23 +80,25 @@ function recommendedItem(user, numberOfLists) {
 
   let resultsCompared = compareLists(resultsOfDotProduct);
 
-  console.log("Detter er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
+  console.log("Dette er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
   console.log(); // New line
 
-  resultsComparedPrinted(resultsCompared); // prints all recommended items sorted
+  return resultsComparedPrinted(resultsCompared); // prints all recommended items sorted. ex. {id: 2, score: 7} {id: 5, score: 5} osv.
 }
 
 //Test user
 //let user = [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0];
 
 // Code starts here where data is fetched and main function is called
-let userId = 1;
-fetchData(userId).then((data) => {
-  if (data) {
-    let { items, user } = data;
-    user = user[0];
-    console.log(items);
-    console.log(user);
-    recommendedItem(user, items);
-  }
-});
+async function exportRecommend() {
+  let userId = 1;
+  fetchData(userId).then((data) => {
+    if (data) {
+      let { items, user } = data;
+      user = user[0];
+      console.log(items);
+      console.log(user);
+      return recommendedItem(user, items);
+    }
+  });
+}

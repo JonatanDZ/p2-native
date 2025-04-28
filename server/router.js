@@ -1,8 +1,9 @@
-export { processReq };
-import { fileResponse, authenticateToken  } from "./server.js";
-import { createProduct } from "./dbserver.js";
+//Import from other files:
+import { createProduct, getProducts } from "./dbserver.js";
+import { fileResponse } from "./server.js";
+import { exportRecommend } from "./recommender/rec.js";
 
-//Import stripe and dotenv
+//Import libraries
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
@@ -17,9 +18,7 @@ let db = mysql.createConnection({
   port: 3307,
 });
 
-import nodemailer from "nodemailer";
-
-//Use dotenv to access stripe key (i think?)
+//Use dotenv to access stripe key
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const SECRET_KEY_JWT = (process.env.SECRET_KEY_JWT);
@@ -37,7 +36,6 @@ function processReq(req, res) {
   //Print method and path (for checking errors)
   console.log("GOT: " + req.method + " " + req.url);
 
-  //CHECK WHAT THIS DOES
   let baseURL = "http://" + req.headers.host + "/";
   let url = new URL(req.url, baseURL);
   //let searchParms = new URLSearchParams(url.search);
@@ -45,14 +43,18 @@ function processReq(req, res) {
 
   //Check for the request method:
   //  POST logic is from BMI app
+
   switch (req.method) {
     case "POST": {
       let pathElements = queryPath.split("/");
-
       switch (pathElements[1]) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productData => {
+              productData.forEach(product => {
+                createProduct(product);
+                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
             .then((productData) => {
               productData.forEach((product) => {
                 createProduct(
@@ -61,6 +63,7 @@ function processReq(req, res) {
                   product.amount,
                   product.filters
                 );
+                */
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
@@ -133,8 +136,33 @@ function processReq(req, res) {
               res.end(JSON.stringify({ error: err.message }));
             }
           });
-          return;
+          break;
+        case "event-detail":
+          let body3 = "";
+          //Get given data (userID & eventID)
+          req.on("data", (chunk) => {
+            body3 += chunk.toString();
+          });
 
+          req.on("end", async () => {
+            try {
+              const { userID, eventID } = JSON.parse(body3);
+              //Insert the given data into user_events
+              db.query(
+                "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
+                [userID, eventID]
+              );
+              /*For testing:
+                const [test] = await db.query("SELECT * FROM user_events");
+                const rows = test.map((row) => Object.values(row));
+                console.log(rows);*/
+            } catch (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Internal server error" }));
+            }
+          });
+          /////////////////////////////////////////////////
+          break;
         default:
           console.error("Resource doesn't exist");
           reportError(res, new Error("there was an error"));
@@ -329,10 +357,11 @@ function processReq(req, res) {
       {
         //If the request is a GET, split the path and print
         let pathElements = queryPath.split("/");
-        console.log(req.url);
-        console.log(pathElements);
+
         //Replace the first "/" with nothing (ex. /index.html becomes index.html)
-        let betterURL = queryPath.startsWith("/") ? queryPath.slice(1) : queryPath;
+        let betterURL = queryPath.startsWith("/")
+          ? queryPath.slice(1)
+          : queryPath;
 
         if (req.url === "public/pages/userdashboard/userdashboard.html") {
           authenticateToken(req, res, () => {
@@ -355,6 +384,20 @@ function processReq(req, res) {
           //For no path go to landing page.
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
+            break;
+          case "recommend":
+            exportRecommend()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error("Error with fetching recommended list", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch products list" })
+                );
+              });
             break;
           /*case "public/pages/events/event-detail.html?id=1":
                                     console.log("TEST");
@@ -439,23 +482,21 @@ function collectPostBody(req) {
   //the "executor" function
   function collectPostBodyExecutor(resolve, reject) {
     let bodyData = [];
-    let length = 0;
-    req
-      .on("data", (chunk) => {
-        bodyData.push(chunk);
-        length += chunk.length;
-
-        if (length > 10000000) {
-          //10 MB limit!
-          req.connection.destroy(); //we would need the response object to send an error code
-          reject(new Error(MessageTooLongError));
-        }
-      })
-      .on("end", () => {
-        bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
-        console.log(bodyData);
-        resolve(bodyData);
-      });
+    let length=0;
+    req.on('data', (chunk) => {
+      bodyData.push(chunk);
+      length+=chunk.length; 
+ 
+      if(length>10000000) { //10 MB limit!
+        req.connection.destroy(); //we would need the response object to send an error code
+        reject(new Error(MessageTooLongError));
+      }
+    }).on('end', () => {
+    bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
+    //  Bit annoying but comments can be removed
+    console.log(bodyData);
+    resolve(bodyData); 
+    });
     //Exceptions raised will reject the promise
   }
   return new Promise(collectPostBodyExecutor);
