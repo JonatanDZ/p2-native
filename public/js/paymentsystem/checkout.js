@@ -1,15 +1,20 @@
-
+// Waits for the DOM to fully load before executing the script to ensure all elements are available
 document.addEventListener("DOMContentLoaded", function () {
-    const basketItemsContainer = document.getElementById("basket-items");
-    const totalText = document.getElementById("basket-total-text");
-    const checkoutForm = document.getElementById("checkout-form");
-    const removeAllButton = document.getElementById("remove-all");
-    const clickAndCollectElement = document.getElementById("click-and-collect");
 
+    // Selects the necessary DOM elements by getting each element from the HTML page using its id
+    const basketItemsContainer = document.getElementById("basket-items"); // Container for displaying items in the basket
+    const totalText = document.getElementById("basket-total-text"); // display total price of items in the basket
+    const checkoutForm = document.getElementById("checkout-form"); // Customer information form
+    const removeAllButton = document.getElementById("remove-all"); // Button to remove all items from the basket
+    const clickAndCollectElement = document.getElementById("click-and-collect"); // Displays the webshops in the buttom
+
+    // loading the saved products in the local storage into the basket
     let basket = JSON.parse(localStorage.getItem("basket")) || [];
+
+    // Total price always initilized to 0
     let total = 0;
 
-    // Remove all items from basket
+    // Removes all items from basket
     if (removeAllButton) {
         removeAllButton.addEventListener("click", function (e) {
             e.preventDefault();
@@ -18,10 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
     
+    // Displays items in basket
+    // If the basket is empty, it shows a message indicating that the basket is empty
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
         totalText.textContent = "Total (0 varer) DKK 0";
         clickAndCollectElement.innerHTML = "";
+        
     } else {
         basket.forEach((item, index) => {
             const itemDiv = document.createElement("div");
@@ -57,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
     }
-    // Removes individual items from basket
+    // Removes the individual items from basket
     basketItemsContainer.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-item")) {
             e.preventDefault();
