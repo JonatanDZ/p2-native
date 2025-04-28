@@ -1,11 +1,11 @@
-import {getUserFiltersDB, getAllItemFiltersDB} from "./recommenderAlgorithmsServer.js";
+import { getUserFiltersDB, getAllItemFiltersDB } from "./recommenderAlgorithmsServer.js";
 
 async function updateUserFilters(userId, itemId) {
     let dataForDB = [];
 
     let userFilters = await getUserFiltersDB(userId);
     let itemFilters = await getAllItemFiltersDB(itemId);
-    console.log("Tidliger user: ", userFilters[0]);
+    console.log("Tidliger user: ", userFilters);
     console.log("Tidligere item", itemFilters[0]);
 /* 
  

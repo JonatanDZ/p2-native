@@ -1,4 +1,5 @@
-const mysql = require('mysql2/promise');
+import mysql from 'mysql2/promise';
+import 'dotenv/config';
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -13,8 +14,8 @@ export async function getUserFiltersDB(userId) {
             'SELECT * FROM user_filters WHERE userID = ?', 
             [userId]
         );
-
-        return userResults.map(row => Object.values(row));
+        userResults = userResults.map(row => Object.values(row));
+        return userResults[0];
     } catch (err) {
         console.error("Database error in getUserFilters:", err);
         throw err;
