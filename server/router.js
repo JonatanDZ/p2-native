@@ -174,6 +174,7 @@ function processReq(req, res) {
             fileResponse(res, "public/pages/landing/landing.html");
             break;
           case "recommend":
+            //console.log("THIS IS A TEST");
             exportRecommend()
               .then((rec) => {
                 res.writeHead(200, { "Content-Type": "application/json" });
