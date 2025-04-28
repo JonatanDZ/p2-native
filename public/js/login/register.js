@@ -1,4 +1,4 @@
-document.getElementById("signup").addEventListener("submit", async function(e) {
+    document.getElementById("signup").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     const email = document.getElementById("email").value;
@@ -11,7 +11,7 @@ document.getElementById("signup").addEventListener("submit", async function(e) {
     }
 
     try {
-        const response = await fetch("http://localhost:3001/signup", { 
+        const response = await fetch("http://localhost:3000/signup", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
@@ -20,7 +20,7 @@ document.getElementById("signup").addEventListener("submit", async function(e) {
         let result = {};
         try {
             const text = await response.text();
-            result = text ? JSON.parse(text) : {};
+            result = text.trim() ? JSON.parse(text) : {};
         } catch (err) {
             console.error("Failed to parse JSON:", err);
         }

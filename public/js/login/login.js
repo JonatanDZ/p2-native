@@ -7,7 +7,7 @@ form.addEventListener("submit", async (e) => {
   const password = form.password.value;
 
   try {
-    const response = await fetch("http://localhost:3001/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -15,10 +15,10 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json(); 
+    const data = await response.json();
 
     if (response.ok) {
-      const { message, token } = data; 
+      const { message, token } = data;
       localStorage.setItem("token", token);
 
       alert("Du er nu logget ind");
@@ -31,15 +31,3 @@ form.addEventListener("submit", async (e) => {
     alert("Something went wrong, please try again.");
   }
 });
-
-
-window.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        console.log("Token found");
-        window.location.href = "/public/pages/userdashboard/userdashboard.html"
-    } else {
-        console.log("No token found.");
-    }
-});
-

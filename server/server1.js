@@ -10,11 +10,11 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 // Create database connection
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "niko",
-    password: "1234",
-    database: "databas",
-    port: 3307,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -107,11 +107,11 @@ const server = http.createServer((req, res) => {
                     }
     
                     const user = results[0];
-                    const isMatch = await bcrypt.compare(password, user.password);
+                    const isMatch = await bcrypt.compare(password, users_table.password);
     
                     if (isMatch) {
                         //create token for successfully logged in
-                        const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: "1h" });
+                        const token = jwt.sign({ email: users_table.email }, SECRET_KEY, { expiresIn: "1h" });
 
                         res.writeHead(200, { "Content-Type": "application/json" });
                         res.end(JSON.stringify({ message: "Du er nu logget ind", token }));
