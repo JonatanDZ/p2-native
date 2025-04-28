@@ -1,7 +1,7 @@
 //Import and export functions:
 import { /*ValidationError, NoResourceError,*/ processReq } from "./router.js";
 export { startServer, fileResponse };
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 import http from "http"; //Import http protocol

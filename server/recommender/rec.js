@@ -1,16 +1,15 @@
 import { createConnection } from "mysql2/promise";
-export { exportRecommend };
+//export { exportRecommend };
 
 async function fetchData(userId) {
   let connection;
   try {
     // Create connection
     connection = await createConnection({
-      host: "localhost",
-      user: "root",
-      password: "TESTtest123",
-      database: "p2_database",
-      port: 3306,
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     });
 
     console.log("Connected to MySQL");
@@ -72,7 +71,7 @@ function compareLists(results) {
 }
 
 // Main function that calls the other functions to recommend an item
-function recommendedItem(user, numberOfLists) {
+async function recommendedItem(user, numberOfLists) {
   let resultsOfDotProduct = numberOfLists.map((list) => ({
     id: list[0],
     score: dotProduct(user.slice(1), list.slice(1)),
@@ -82,23 +81,34 @@ function recommendedItem(user, numberOfLists) {
 
   console.log("Dette er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
   console.log(); // New line
-
-  return resultsComparedPrinted(resultsCompared); // prints all recommended items sorted. ex. {id: 2, score: 7} {id: 5, score: 5} osv.
+  console.log("IN FUNCTION", resultsCompared);
+  resultsComparedPrinted(resultsCompared); // prints all recommended items sorted. ex. {id: 2, score: 7} {id: 5, score: 5} osv.
+  return resultsCompared;
 }
 
 //Test user
 //let user = [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0];
 
 // Code starts here where data is fetched and main function is called
-async function exportRecommend() {
+export async function exportRecommend() {
+  //return 8;
   let userId = 1;
+  let items;
+  let user;
   fetchData(userId).then((data) => {
     if (data) {
       let { items, user } = data;
-      user = user[0];
-      console.log(items);
-      console.log(user);
-      return recommendedItem(user, items);
+      console.log("THIS IS A TEST");
+      //user = user[0];
+      console.log("items:", items);
+      console.log("user:", user);
+      //console.log("IN RECOMMEND:", recommendedItem(user, items));
+      recommendedItem(user, items)
+        .then((res) => {
+          console.log("IN RECOMMEND", res);
+          return res;
+        })
+        .catch((error) => console.error(error));
     }
   });
 }

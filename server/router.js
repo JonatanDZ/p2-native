@@ -11,11 +11,10 @@ import nodemailer from "nodemailer";
 
 //Create connection to database:
 let db = await mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "test1234",
-  database: "p2_database",
-  port: 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 //Use dotenv to access stripe key
@@ -42,8 +41,8 @@ function processReq(req, res) {
         case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
-            .then(productData => {
-              productData.forEach(product => {
+            .then((productData) => {
+              productData.forEach((product) => {
                 createProduct(product);
                 /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
             .then((productData) => {
@@ -178,9 +177,9 @@ function processReq(req, res) {
             fileResponse(res, "public/pages/landing/landing.html");
             break;
           case "recommend":
-            //console.log("THIS IS A TEST");
-            exportRecommend()
-              .then((rec) => {
+            console.log(exportRecommend());
+            /*.then((rec) => {
+                console.log("IN ROUTER RECCOMMEND:", rec);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify(rec));
               })
@@ -190,7 +189,7 @@ function processReq(req, res) {
                 res.end(
                   JSON.stringify({ error: "Failed to fetch products list" })
                 );
-              });
+              });*/
             break;
           /*case "public/pages/events/event-detail.html?id=1":
                                     console.log("TEST");
@@ -272,21 +271,24 @@ function collectPostBody(req) {
   //the "executor" function
   function collectPostBodyExecutor(resolve, reject) {
     let bodyData = [];
-    let length=0;
-    req.on('data', (chunk) => {
-      bodyData.push(chunk);
-      length+=chunk.length; 
- 
-      if(length>10000000) { //10 MB limit!
-        req.connection.destroy(); //we would need the response object to send an error code
-        reject(new Error(MessageTooLongError));
-      }
-    }).on('end', () => {
-    bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
-    //  Bit annoying but comments can be removed
-    console.log(bodyData);
-    resolve(bodyData); 
-    });
+    let length = 0;
+    req
+      .on("data", (chunk) => {
+        bodyData.push(chunk);
+        length += chunk.length;
+
+        if (length > 10000000) {
+          //10 MB limit!
+          req.connection.destroy(); //we would need the response object to send an error code
+          reject(new Error(MessageTooLongError));
+        }
+      })
+      .on("end", () => {
+        bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
+        //  Bit annoying but comments can be removed
+        console.log(bodyData);
+        resolve(bodyData);
+      });
     //Exceptions raised will reject the promise
   }
   return new Promise(collectPostBodyExecutor);
