@@ -15,8 +15,6 @@ const __dirname = path.dirname(__filename);
 // Finding .evn file in root
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import nodemailer from "nodemailer";
-
 //Use dotenv to access stripe key
 let db = await mysql.createConnection({
   host: "localhost",
