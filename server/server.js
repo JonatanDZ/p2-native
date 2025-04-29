@@ -6,42 +6,10 @@ dotenv.config();
 
 import http from "http"; //Import http protocol
 import fs from "fs"; //Import file reader
-import db from "./database.js"; //database access thingiemagic
 
-import path from "path"; //file handling for creating json file
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url); //getting the right directory
-const __dirname = path.dirname(__filename);
 const hostname = "localhost";
 const port = 3000; //Run on port 3000 - If Uni server then 3330
-const query = "SELECT * FROM p2_database.products_table;";
 const server = http.createServer(requestHandler); //Create a server with a request handler
-
-const rootDir = path.resolve(__dirname, ".."); // more directory scenanigans
-const publicDir = path.join(rootDir, "public");
-if (!fs.existsSync(publicDir)) {
-  fs.mkdirSync(publicDir, { recursive: true });
-}
-
-db.query(query, (err, results) => {
-  if (err) {
-    console.error("Query error:", err);
-    process.exit(1);
-  }
-
-  if (results.length > 0) {
-    console.log("Raw event data:", results);
-
-    const jsonPath = path.join(publicDir, "data.json");
-    fs.writeFileSync(jsonPath, JSON.stringify({ products: results }, null, 2));
-    console.log(`data.json created with ${results.length} event(s)`);
-  } else {
-    console.log("No events found in the database.");
-  }
-
-  db.end();
-});
 
 //Create function for standard error response
 function errorResponse(res, code, reason) {
