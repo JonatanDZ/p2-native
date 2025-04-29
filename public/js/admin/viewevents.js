@@ -19,23 +19,43 @@ async function readFromDB() {
 }
 
 function displayFromDB(data){
-    const productsContainer = document.getElementById("products-container");
-    data.forEach(product => {
-        const productCard = document.createElement("div");
-        productCard.classList.add("product-card");
+    const eventsContainer = document.getElementById("events-container");
+    if (!eventsContainer) return;
+    
+    eventsContainer.innerHTML = '';
+    
+    
+    
+    data.forEach(event => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const eventLink = document.createElement('a');
+        eventLink.href = `eventdetail.html?id=${event.ID || event.id}`;
+        eventLink.target = "_blank";
+
+        const img = document.createElement('img');
+        img.src = event.image || event.picture;
+        img.alt = event.name || 'Event image';
+        img.style.width = '200px';
+        img.style.height = 'auto';
+
+        eventLink.appendChild(img);
+
+        const title = document.createElement('h4');
+        title.textContent = event.name || 'Untitled';
+
+        const info = document.createElement('h5');
+        info.textContent = `${event.info},-` || 'Info not available';
+
+        const price = document.createElement('p');
+        price.textContent = `${event.price},-` || 'Price not available';
+
+        card.appendChild(eventLink); 
+        card.appendChild(price);
+        card.appendChild(info)
+        card.appendChild(title);
         
-        productCard.innerHTML = `
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="${product.image}" alt="${product.name}">
-            <div class="card-body">
-                <h5 class="card-title">${product.name}</h5>
-                <p class="card-text">Info: ${product.info}</p>
-                <p class="product-shop">Butik: ${product.shop}</p>
-                <p class="product-price">Pris: ${product.price},-</p>
-                <p class="product-amount">Mængde: ${product.amount}</p>
-            </div>
-        </div>
-        `;
-        productsContainer.appendChild(productCard);
+        eventsContainer.appendChild(card);
     }); 
 }

@@ -1,5 +1,5 @@
 //Import from other files:
-import { createProduct, getProducts, createEvent } from "./dbserver.js";
+import { createProduct, getProducts, createEvent, getEvents } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { exportRecommend } from "./recommender/rec.js";
 
@@ -189,6 +189,18 @@ async function processReq(req, res) {
           //For no path go to landing page.
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
+            break;
+          case "get-events":
+            //  When visiting this endpoint the backend should send back all products from DB
+            try {
+                const events = await getEvents(); 
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(events)); 
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Failed to fetch products" }));
+            }
             break;
           case "get-products":
             //  When visiting this endpoint the backend should send back all products from DB
