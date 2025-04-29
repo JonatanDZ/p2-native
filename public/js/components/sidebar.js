@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-    if (!token) return; // No token, no need to check
+    if (!token) return;
 
     try {
         const response = await fetch('/verify-token', {
@@ -21,17 +21,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (data.isAuthenticated && data.isAdmin) {
             const adminLink = document.createElement('li');
             adminLink.classList.add('nav-item');
-            adminLink.innerHTML = `
-                <a class="nav-link" href="/public/pages/admin/admin.html">Admin side</a>
-            `;
+            adminLink.innerHTML = `<a class="nav-link" href="/public/pages/admin/admin.html">Admin side</a>`;
             sidebarLinks.prepend(adminLink);
         }
 
         const logoutLink = document.createElement('li');
 
-        logoutLink.innerHTML = `
-            <a class="nav-link text-danger" href="#" id="logout-link">Log ud</a>
-        `;
+        logoutLink.innerHTML = `<a class="nav-link text-danger" href="#" id="logout-link">Log ud</a>`;
         sidebarLinks.appendChild(logoutLink);
 
         document.getElementById('logout-link').addEventListener('click', (e) => {

@@ -1,6 +1,7 @@
     document.getElementById("signup").addEventListener("submit", async function(e) {
     e.preventDefault();
 
+    const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
@@ -14,7 +15,7 @@
         const response = await fetch("http://localhost:3000/signup", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ name, email, password }),
         });
 
         let result = {};

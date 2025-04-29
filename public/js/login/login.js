@@ -5,7 +5,7 @@ form.addEventListener("submit", async (e) => {
 
     const email = form.email.value;
     const password = form.password.value;
-    const rememberMe = form.remember.checked; // <-- New!
+    const rememberMe = form.remember.checked;
 
     try {
         const response = await fetch("http://localhost:3000/login", {

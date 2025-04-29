@@ -308,11 +308,11 @@ function processReq(req, res) {
 
                 req.on("end", async () => {
                     try {
-                        const { email, password } = JSON.parse(body);
+                        const { email, password, name } = JSON.parse(body);
 
-                        if (!email || !password) {
+                        if (!email || !password || !name) {
                             res.writeHead(400, { "Content-Type": "application/json" });
-                            return res.end(JSON.stringify({ error: "Email and password are required" }));
+                            return res.end(JSON.stringify({ error: "All fields are required" }));
                         }
 
                         // Hash the password
@@ -320,8 +320,8 @@ function processReq(req, res) {
 
                         // Insert user into database
                         db.query(
-                            "INSERT INTO users_table (email, password) VALUES (?, ?)",
-                            [email, hashedPassword],
+                            "INSERT INTO users_table (name, email, password) VALUES (?, ?, ?)",
+                            [name, email, hashedPassword],
                             (err, result) => {
                                 if (err) {
                                     console.error("Der eksisterer allerede en bruger med denne mail", err);
