@@ -393,48 +393,65 @@ async function processReq(req, res) {
 
         case "GET":
             {
-                //If the request is a GET, split the path and print
-                let pathElements = queryPath.split("/");
-
-                //Replace the first "/" with nothing (ex. /index.html becomes index.html)
-                let betterURL = queryPath.startsWith("/")
-                    ? queryPath.slice(1)
-                    : queryPath;
-
-
-                //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
-                switch (pathElements[1]) {
-                    //For no path go to landing page.
-                    case "":
-                        fileResponse(res, "public/pages/landing/landing.html");
-                        break;
-                    case "recommend":
-                        exportRecommend()
-                            .then((rec) => {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(rec));
-                            })
-                            .catch((err) => {
-                                console.error("Error with fetching recommended list", err);
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(
-                                    JSON.stringify({ error: "Failed to fetch products list" })
-                                );
-                            });
-                        break;
-                    default:
-                        fileResponse(res, betterURL);
-                        break;
-                }
-
+              //If the request is a GET, split the path and print
+              let pathElements = queryPath.split("/");
+      
+              //Replace the first "/" with nothing (ex. /index.html becomes index.html)
+              let betterURL = queryPath.startsWith("/")
+                ? queryPath.slice(1)
+                : queryPath;
+      
+              //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
+              switch (pathElements[1]) {
+                //For no path go to landing page.
+                case "":
+                  fileResponse(res, "public/pages/landing/landing.html");
+                  break;
+                case "get-products":
+                  //  When visiting this endpoint the backend should send back all products from DB
+                  try {
+                      const products = await getProducts(); 
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify(products)); 
+                  } catch (error) {
+                      console.error("Error fetching products:", error);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: "Failed to fetch products" }));
+                  }
+                  break;
+                case "recommend":
+                  exportRecommend()
+                    .then((rec) => {
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify(rec));
+                    })
+                    .catch((err) => {
+                      console.error("Error with fetching recommended list", err);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(
+                        JSON.stringify({ error: "Failed to fetch products list" })
+                      );
+                    });
+                  break;
+                /*case "public/pages/events/event-detail.html?id=1":
+                                          console.log("TEST");
+                                          const [test] = connection.query(
+                                            "SELECT * FROM user_event ORDER BY userID"
+                                          );
+                                          const rows = test.map((row) => Object.values(row));
+                                          console.log(rows);
+                                          break;*/
+                //Otherwise respond with the given path
+                default:
+                  fileResponse(res, betterURL);
+                  break;
+              }
             }
             break;
-
-        default:
-            console.error(err);
-    }
-
-}
+          default:
+            reportError(res, new Error("No Such Resource"));
+        }
+      }
 
 // helper functions for POST part
 

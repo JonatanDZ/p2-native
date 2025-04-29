@@ -1,22 +1,16 @@
 #main-container {
-display: flex;
-flex-direction: row;
-min-height: 100vh;
-}
-
-#sidebar-container {
-width: 250px; /* or whatever width you want */
-background-color: #f8f9fa; /* optional, for visibility */
-}
-
-#content-container {
-flex: 1; /* this makes it take the remaining space */
-padding: 1rem; /* optional, spacing */
-overflow: auto;
-}
-
-#card img {
-    width: 200px; /* or any width you want */
-    height: auto; /* maintain aspect ratio */
-    object-fit: cover; /* optional: makes it nicer if you want it to fill */
-}
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    }
+    
+    #sidebar-container {
+    width: 250px; /* or whatever width you want */
+    background-color: #f8f9fa; /* optional, for visibility */
+    }
+    
+    #content-container {
+    flex: 1; /* this makes it take the remaining space */
+    padding: 1rem; /* optional, spacing */
+    overflow: auto;
+    }
