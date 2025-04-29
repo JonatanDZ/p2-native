@@ -20,22 +20,38 @@ async function readFromDB() {
 
 function displayFromDB(data){
     const productsContainer = document.getElementById("products-container");
+    if (!productsContainer) return;
+    
+    productsContainer.innerHTML = '';
+    
+    
+    
     data.forEach(product => {
-        const productCard = document.createElement("div");
-        productCard.classList.add("product-card");
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const productLink = document.createElement('a');
+        productLink.href = `productdetail.html?id=${product.ID || product.id}`;
+        productLink.target = "_blank";
+
+        const img = document.createElement('img');
+        img.src = product.image || product.picture;
+        img.alt = product.name || 'Product image';
+        img.style.width = '200px';
+        img.style.height = 'auto';
+
+        productLink.appendChild(img);
+
+        const title = document.createElement('h4');
+        title.textContent = product.name || 'Untitled';
+
+        const price = document.createElement('p');
+        price.textContent = `${product.price},-` || 'Price not available';
+
+        card.appendChild(productLink); 
+        card.appendChild(price);
+        card.appendChild(title);
         
-        productCard.innerHTML = `
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="${product.image}" alt="${product.name}">
-            <div class="card-body">
-                <h5 class="card-title">${product.name}</h5>
-                <p class="card-text">Info: ${product.info}</p>
-                <p class="product-shop">Butik: ${product.shop}</p>
-                <p class="product-price">Pris: ${product.price},-</p>
-                <p class="product-amount">Mængde: ${product.amount}</p>
-            </div>
-        </div>
-        `;
-        productsContainer.appendChild(productCard);
+        productsContainer.appendChild(card);
     }); 
 }
