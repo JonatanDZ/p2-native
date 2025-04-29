@@ -71,7 +71,10 @@
           .then((res) => res.json())
           .then((data) => {
             console.log("HERE IS DATA STUFF:", data);
-          });
+          })
+          .catch((err) =>
+            console.error("Failed to load recommended list:", err)
+          );
 
         ///////////
         fetch("/public/data.json")

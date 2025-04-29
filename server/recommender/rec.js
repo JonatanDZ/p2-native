@@ -91,11 +91,10 @@ async function recommendedItem(user, numberOfLists) {
 
 // Code starts here where data is fetched and main function is called
 export async function exportRecommend() {
+  let list;
   //return 8;
   let userId = 1;
-  let items;
-  let user;
-  fetchData(userId).then((data) => {
+  await fetchData(userId).then((data) => {
     if (data) {
       let { items, user } = data;
       console.log("THIS IS A TEST");
@@ -106,9 +105,10 @@ export async function exportRecommend() {
       recommendedItem(user, items)
         .then((res) => {
           console.log("IN RECOMMEND", res);
-          return res;
+          list = res;
         })
         .catch((error) => console.error(error));
     }
   });
+  return list;
 }

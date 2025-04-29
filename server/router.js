@@ -189,8 +189,8 @@ async function processReq(req, res) {
             }
             break;
           case "recommend":
-            console.log(exportRecommend());
-            /*.then((rec) => {
+            await exportRecommend()
+              .then((rec) => {
                 console.log("IN ROUTER RECCOMMEND:", rec);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify(rec));
@@ -201,7 +201,7 @@ async function processReq(req, res) {
                 res.end(
                   JSON.stringify({ error: "Failed to fetch products list" })
                 );
-              });*/
+              });
             break;
           /*case "public/pages/events/event-detail.html?id=1":
                                     console.log("TEST");
