@@ -1,41 +1,36 @@
 import { getUserFiltersDB, getSpecificItemFiltersDB, updateUserFiltersDB } from "./recommenderAlgorithmsServer.js";
 
-let itemId = 5;
-let userId = 1;
-
-updateUserFilters(userId, itemId);
-
 export async function updateUserFilters(userId, itemId) {
-    let NewUserData = [];
-
+    // Get the user and item you want to update the user with. 
     let userFilters = await getUserFiltersDB(userId);
     let itemFilters = await getSpecificItemFiltersDB(itemId);
-    console.log("User: ", userFilters);
-    console.log("item added: ", itemFilters);
 
-    // her sker magien med at listen bliver opdateret med de rigtige tal
-    NewUserData = await insertNewData(userFilters, itemFilters);
+    // Makes the user update based on the specific item. 
+    let NewUserData = await insertNewData(userFilters, itemFilters);
+
+    // send the new user filters to the DB.
     await updateUserFiltersDB(userId, NewUserData);
-    console.log("Efter userFilter update: ", await getUserFiltersDB(userId));
 }
 
 async function insertNewData(userFilters, itemFilters) {
-    //fjerner id og er fejlkode for om id'sne eksistere. 
-
+    // Error catching
     if (!userFilters) {
         console.log("The user filters do not exist");
         process.exit(1);
     }
 
+    // Error catching
     if (!itemFilters) {
         console.log("The item filters do not exist");
         process.exit(1);
     }
 
+
+    // We use shift() to remove the IDs, because we won't need the first elements anymore.
     userFilters.shift();
     itemFilters.shift();
 
-    // lægger 1 til i user hvis der er 1 i item der er trykket på.
+    // Increases userFilters[i] if the item has a 1 at that index, so it updates what the user will get recommended
     for (let i = 0; i < itemFilters.length; i++) {
         if (itemFilters[i] === 1) {
             userFilters[i]++;
