@@ -184,7 +184,6 @@ async function processReq(req, res) {
         let betterURL = queryPath.startsWith("/")
           ? queryPath.slice(1)
           : queryPath;
-
         //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
         switch (pathElements[1]) {
           //For no path go to landing page.

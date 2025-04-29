@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function readFromDB() {
-    fetch('/get-products', {
+    fetch('/get-events', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ async function readFromDB() {
         displayFromDB(data);
     })
     .catch(error => {
-        console.error("Error receiving data from /get-products:", error);
+        console.error("Error receiving data from /get-events:", error);
     });
 }
 
