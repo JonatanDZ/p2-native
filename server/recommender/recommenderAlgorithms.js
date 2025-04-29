@@ -1,49 +1,50 @@
 import { getUserFiltersDB, getSpecificItemFiltersDB, getAllItemFiltersDB } from "./recommenderAlgorithmsServer.js";
 
 // User recommendation based on pressed items.
-let userId = 1;
-recommenderAlgorithmForUser(userId)
-
 export async function recommenderAlgorithmForUser(userId) {
+    // Get items from DB. 
     let userFilters = await getUserFiltersDB(userId);
     let allItems = await getAllItemFiltersDB();
 
     console.log("Item for user recommended: ")
 
-    recommendItem(userFilters, allItems);
-    // new line for prettynes
-    console.log("");
+    // To get result use: await recommenderAlgorithmForUser(userId) 
+    return recommendItem(userFilters, allItems);
 }
 
-
-
 // Item recommended, a like item.
-let itemId = 1;
-recommenderAlgorithmForItem(itemId);
-
 export async function recommenderAlgorithmForItem(itemId) {
+    // Get items from DB
     let itemFilters = await getSpecificItemFiltersDB(itemId);
     let allItems = await getAllItemFiltersDB();
 
     console.log("A like items recommended: ")
 
-    recommendItem(itemFilters, allItems);
-    // new line for prettynes
-    console.log("");
+    // To get result use: await recommenderAlgorithmForItem(itemId)
+    return recommendItem(itemFilters, allItems);;
 }
 
 function recommendItem(userFilters, allItems) {
-    let resultsOfDotProduct = allItems.map(list => ({
-        id: list[0], 
-        score: dotProduct(userFilters.slice(1), list.slice(1))
+    // map returns an array to resultsOfDotProduct, where every item has an id and a score for the different items
+    let resultsOfDotProduct = allItems.map(item => ({
+        // Saves id on every item in the list
+        id: item[0], 
+        // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero. 
+        score: dotProduct(userFilters.slice(1), item.slice(1))
     }));
     
+    // We compare the lists
     let resultsCompared = compareLists(resultsOfDotProduct);
     
-    console.log("Detter er nummer 1 recommended: ", resultsCompared[0]); // Prints the number one
+    // Prints the number one
+    console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
     console.log() // New line
-
-    resultsComparedPrinted(resultsCompared); // prints all recommended items sorted 
+    
+    // prints all recommended items sorted
+    resultsComparedPrinted(resultsCompared);
+    
+    // Return the number one recommended
+    return resultsCompared[0];
 }
 
 // Multiply the two vectors
@@ -61,7 +62,7 @@ function compareLists(results) {
     return results.sort(function(a, b){return b.score - a.score});
 }
 
-// Prints the recommmended result
+// Prints the recommended result
 function resultsComparedPrinted(resultsCompared) {
     for (let list of resultsCompared){
         console.log(list);
