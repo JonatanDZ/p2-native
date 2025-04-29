@@ -1,42 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>profil</title>
+    <title>Profil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/global.css">
 </head>
+
 <body>
     <div id="navbar"></div>
-    <h2 id="konto">Din konto</h2>
-        <div id="sidebar">
-            <ul>
-                <li><a href="/public/pages/login/login.html">Login her</a></li>
-                <li><a href="/public/pages/userdashboard/userdashboard.html">Oversigt</a></li>
-            </ul>
-        </div>
 
-        <div id="likedshops">
-            <h2>Butikker du følger</h2>
-            <div> 
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-            </div>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar py-3">
+                <div class="position-sticky">
+                    <ul class="nav flex-column" id="sidebar-links">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/public/pages/userdashboard/userdashboard.html">Oversigt</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <h2 id="konto" class="mt-4">Din konto</h2>
+
+                <div id="likedshops" class="mt-5">
+                    <h2>Butikker du følger</h2>
+                    <div class="d-flex flex-wrap gap-3">
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                    </div>
+                </div>
+
+                <div id="likeditems" class="mt-5">
+                    <h2>Favoritter</h2>
+                    <div class="d-flex flex-wrap gap-3">
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                        <img src="" alt="" width="100" height="100" />
+                    </div>
+                </div>
+            </main>
         </div>
-        <div id="likeditems">
-            <h2>Favoritter</h2>
-            <div>
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
-            </div>
-        </div>
+    </div>
+
     <div id="footer"></div>
+
+    <script src="/public/js/components/sidebarDashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/js/components/authenticateToken.js"></script>
     <script src="/public/js/components/navbar.js"></script>
     <script src="/public/js/components/footer.js"></script>
 </body>
+
 </html>

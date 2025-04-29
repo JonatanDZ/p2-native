@@ -8,7 +8,8 @@ const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
     //  Making it a promise so we can use async await functions !!
   })
   .promise();
@@ -22,6 +23,33 @@ export async function getProducts() {
     console.log(rows);
     return rows;
 }
+
+export async function getRecommendedProducts() {
+    const result = await pool.query("SELECT * FROM products_table");
+    //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
+    //  the array index to only recieve the DB rows. 
+    const rows = result[0];
+    console.log(rows);
+    return rows;
+}
+
+export async function getLikedProducts() {
+    const result = await pool.query("SELECT * FROM products_table");
+    //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
+    //  the array index to only recieve the DB rows. 
+    const rows = result[0];
+    console.log(rows);
+    return rows;
+}
+export async function getEvents() {
+    const result = await pool.query("SELECT * FROM products_table");
+    //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
+    //  the array index to only recieve the DB rows. 
+    const rows = result[0];
+    console.log(rows);
+    return rows;
+}
+
 
 export async function getProduct(id) {
     //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
