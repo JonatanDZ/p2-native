@@ -1,7 +1,7 @@
 //Import from other files:
 import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-import { exportRecommend } from "./recommender/rec.js";
+import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 
 //Import libraries
 import Stripe from "stripe";
@@ -189,7 +189,7 @@ async function processReq(req, res) {
             }
             break;
           case "recommend":
-            await exportRecommend()
+            await recommenderAlgorithmForUser(1)
               .then((rec) => {
                 console.log("IN ROUTER RECCOMMEND:", rec);
                 res.writeHead(200, { "Content-Type": "application/json" });
@@ -203,15 +203,6 @@ async function processReq(req, res) {
                 );
               });
             break;
-          /*case "public/pages/events/event-detail.html?id=1":
-                                    console.log("TEST");
-                                    const [test] = connection.query(
-                                      "SELECT * FROM user_event ORDER BY userID"
-                                    );
-                                    const rows = test.map((row) => Object.values(row));
-                                    console.log(rows);
-                                    break;*/
-          //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);
             break;
