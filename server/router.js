@@ -32,9 +32,9 @@ db.connect((err) => {
 });
 
 //Process the server request
-function processReq(req, res) {
-    //Print method and path (for checking errors)
-    console.log("GOT: " + req.method + " " + req.url);
+async function processReq(req, res) {
+  //Print method and path (for checking errors)
+  console.log("GOT: " + req.method + " " + req.url);
 
     let baseURL = "http://" + req.headers.host + "/";
     let url = new URL(req.url, baseURL);
