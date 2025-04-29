@@ -1,0 +1,34 @@
+{
+  "products": [
+    {
+      "ID": 1,
+      "shopID": 1,
+      "name": "Classic T-Shirt",
+      "picture": "https://i.imgur.com/LPQM0BV.jpeg",
+      "info": "Cotton t-shirt with round neck",
+      "price": 199,
+      "amount": 20,
+      "size": "M"
+    },
+    {
+      "ID": 2,
+      "shopID": 2,
+      "name": "Denim Jeans",
+      "picture": "https://i.imgur.com/LPQM0BV.jpeg",
+      "info": "Straight fit blue jeans",
+      "price": 499,
+      "amount": 10,
+      "size": "L"
+    },
+    {
+      "ID": 3,
+      "shopID": 3,
+      "name": "Canvas Sneakers",
+      "picture": "https://i.imgur.com/LPQM0BV.jpeg",
+      "info": "Lightweight canvas sneakers",
+      "price": 299,
+      "amount": 15,
+      "size": "42"
+    }
+  ]
+}

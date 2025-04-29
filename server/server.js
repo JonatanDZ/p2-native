@@ -1,13 +1,14 @@
 //Import and export functions:
 import { /*ValidationError, NoResourceError,*/ processReq } from "./router.js";
 export { startServer, fileResponse };
+import dotenv from 'dotenv';
+dotenv.config();
 
 import http from "http"; //Import http protocol
 import fs from "fs"; //Import file reader
 
 const hostname = "localhost";
 const port = 3000; //Run on port 3000 - If Uni server then 3330
-
 const server = http.createServer(requestHandler); //Create a server with a request handler
 
 //Create function for standard error response
