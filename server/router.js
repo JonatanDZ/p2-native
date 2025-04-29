@@ -1,5 +1,5 @@
 //Import from other files:
-import { createProduct, getProducts } from "./dbserver.js";
+import { createProduct, getProducts, createEvent } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { exportRecommend } from "./recommender/rec.js";
 
@@ -58,6 +58,21 @@ async function processReq(req, res) {
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
                 JSON.stringify({ message: "Products saved successfully." })
+              );
+            })
+            .catch((err) => reportError(res, err));
+          break;
+        case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+          extractJSON(req)
+            //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productEvent => {
+              productEvent.forEach(event => {
+                //createProduct(product);
+                createEvent(event);
+              });
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({ message: "Events saved successfully." })
               );
             })
             .catch((err) => reportError(res, err));

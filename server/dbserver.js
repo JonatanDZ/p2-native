@@ -13,6 +13,7 @@ const pool = mysql.createPool({
   })
   .promise();
 
+//  Product functions
 export async function getProducts() {
     const result = await pool.query("SELECT * FROM products_table");
     //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
@@ -125,5 +126,51 @@ export async function createProduct(product) {
     return getProduct(id_table);
 }
 
-//const idk = await createProduct("Test4", 1999, 200, "hej");
-//const products = await getProducts();
+// event functions
+
+
+export async function getEvents() {
+    const result = await pool.query("SELECT * FROM events_table");
+    //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
+    //  the array index to only recieve the DB rows. 
+    const rows = result[0];
+    console.log(rows);
+    return rows;
+}
+
+export async function createEvent(event) {
+    const { 
+        price, 
+        place, 
+        picture, 
+        info, 
+        name, 
+        time
+    } = event;
+    //  ProductID works as a placeholder it is init further down
+
+    const result_table = await pool.query(
+        `INSERT INTO events_table (
+            price, 
+            place, 
+            picture, 
+            info, 
+            name, 
+            time
+        ) VALUES (
+            ?,?,?,?,?,?
+        )`, 
+        [
+            price, 
+            place, 
+            picture, 
+            info, 
+            name, 
+            time
+        ]
+    );  
+
+    //  TODO: revisit this. 
+    const id_table = result_table.insertId;
+    return getEvents(id_table);
+}
