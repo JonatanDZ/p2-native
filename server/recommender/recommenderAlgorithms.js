@@ -28,21 +28,21 @@ function recommendItem(userFilters, allItems) {
     // map returns an array to resultsOfDotProduct, where every item has an id and a score for the different items
     let resultsOfDotProduct = allItems.map(item => ({
         // Saves id on every item in the list
-        id: item[0], 
+        id: item[0],
         // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero. 
         score: dotProduct(userFilters.slice(1), item.slice(1))
     }));
-    
+
     // We compare the lists
     let resultsCompared = compareLists(resultsOfDotProduct);
-    
+
     // Prints the number one
     console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
     console.log() // New line
-    
+
     // prints all recommended items sorted
     resultsComparedPrinted(resultsCompared);
-    
+
     // Return the number one recommended
     return resultsCompared[0];
 }
@@ -59,12 +59,12 @@ function dotProduct(user, item) {
 // Sort the recommended list, goes from highest to lowest score
 // https://www.w3schools.com/js/js_array_sort.asp#mark_sort
 function compareLists(results) {
-    return results.sort(function(a, b){return b.score - a.score});
+    return results.sort(function (a, b) { return b.score - a.score });
 }
 
 // Prints the recommended result
 function resultsComparedPrinted(resultsCompared) {
-    for (let list of resultsCompared){
+    for (let list of resultsCompared) {
         console.log(list);
     }
 }

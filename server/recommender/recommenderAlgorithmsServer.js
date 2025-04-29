@@ -10,18 +10,20 @@ const pool = mysql.createPool({
 
 export async function getUserFiltersDB(userId) {
     try {
+        // Destructuring([]) removes meta data from db, db code gets specific user, with id.  
         const [userResults] = await pool.query(
             'SELECT * FROM user_filters WHERE userID = ?',
             [userId]
         );
 
+        // input controll, checks if list is empty
         if (userResults.length === 0) {
             console.log("User filters are empty")
             return null;
         }
 
-        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
-        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
+        // Object.values ensures that we only get the values (such as 1 and 0), meaning we do not get the field names (labels).
+        // The result is delivered inside another array, so we need to access the first element with [0]
         return Object.values(userResults[0]);
     } catch (err) {
         console.error("Database error in getUserFilters:", err);
@@ -31,20 +33,20 @@ export async function getUserFiltersDB(userId) {
 
 export async function getSpecificItemFiltersDB(itemId) {
     try {
-        // array destructuring([]), remvoes meta data
+        // Destructuring([]) removes meta data from db, db code gets specific item, with id.  
         const [itemResults] = await pool.query(
             'SELECT * FROM products_filters WHERE productID = ?',
             [itemId]
         );
 
-        // 
+        // input controll, checks if list is empty 
         if (itemResults.length === 0) {
             console.log("Item filters are empty");
             return null;
         }
 
-        // Object gør at vi kun for værdierne, hvilket vil sige 1 og 0, så vi får ikke labels i arrayet.
-        // Arrayet bliver leveret inde i et andet array derfor bliver vi nødt til at gå ind i det med [0]
+        // Object.values ensures that we only get the values (such as 1 and 0), meaning we do not get the field names (labels).
+        // The result is delivered inside another array, so we need to access the first element with [0]
         return Object.values(itemResults[0]);
     } catch (err) {
         console.error("Database error in getSpecificItemFilters:", err);
@@ -54,18 +56,18 @@ export async function getSpecificItemFiltersDB(itemId) {
 
 export async function getAllItemFiltersDB() {
     try {
-        //
+        // Destructuring([]) removes meta data from db, db code gets all items.  
         const [itemResults] = await pool.query(
             'SELECT * FROM products_filters'
         );
 
-        // 
+        // input controll, checks if list is empty
         if (itemResults.length === 0) {
             console.log("Item filters are empty");
             return null;
         }
 
-        // Her mapper vi igennem alle rows og bruger Object.values for kun at få værdierne.
+        // We use .map() to go through the database rows and create an array of only the values, without the field names (labels).
         return itemResults.map(row => Object.values(row));
     } catch (err) {
         console.error("Database error in getAllItemFilters:", err);
@@ -75,6 +77,7 @@ export async function getAllItemFiltersDB() {
 
 export async function updateUserFiltersDB(userId, dataForDB) {
     try {
+        // inserts the dataForDB into these variabels. 
         const [
             black,
             white,
@@ -92,6 +95,7 @@ export async function updateUserFiltersDB(userId, dataForDB) {
             polyester
         ] = dataForDB;
 
+        // sql code so we can update the db
         const sql = `
             UPDATE user_filters SET 
                 black = ?,
@@ -110,6 +114,7 @@ export async function updateUserFiltersDB(userId, dataForDB) {
                 polyester = ?
             WHERE userId = ?`;
 
+        // We combine the sql with the dataForDB and execute it in the db so it will be updated to the new dataForDB values
         const [result] = await pool.execute(sql, [black, white, gray, brown, blue, pants, t_shirt, sweatshirt, hoodie, shoes, shorts, cotton, linnen, polyester, userId]);
         console.log("Rows updated:", result.affectedRows);
 
