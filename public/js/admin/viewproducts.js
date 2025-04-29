@@ -1,9 +1,13 @@
-document.addEventListener("DOMContentLoaded", async function () {
-    readFromDB();
+document.addEventListener("DOMContentLoaded", async () => {              // udvidet den lidt så den kan tage flere kald på en side
+    const apiContainers = document.querySelectorAll('.api-call');
+    apiContainers.forEach(container => {
+        const endpoint = container.dataset.endpoint;
+        if (endpoint) readFromDB(endpoint);
+    });
 });
 
-async function readFromDB() {
-    fetch('/get-products', {
+async function readFromDB(endpoint) {   //endpointet bliver defineret på den givne html side fx: <div class="api-call" data-endpoint="/get-products"></div>
+    fetch(endpoint, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
