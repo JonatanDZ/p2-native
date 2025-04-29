@@ -35,7 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
         basket.forEach((item, index) => {
             const itemDiv = document.createElement("div");
             itemDiv.classList.add("item-details");
-            const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''), 10);
+            const priceNumber = typeof item.price === 'string' 
+            ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
+            : item.price;
             const quantity = item.quantity || 1;
             const itemTotal = priceNumber * quantity;
             total += itemTotal;
@@ -102,11 +104,23 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("userEmail", emailInput.value);
         }
 
+
         // If basket is empty when the user clicks on the checkout button, an alert is shown
         if (basket.length === 0) {
             alert("Din kurv er tom. Tilføj en vare før du fortsætter.");
             return;
         }
+
+        const totalPrice = basket.reduce((sum, item) => {
+            const price = typeof item.price === 'string' 
+                ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
+                : item.price;
+            const quantity = item.quantity || 1;
+            return sum + price * quantity;
+        }, 0);
+    
+        // Save total price to local storage
+        localStorage.setItem("lastTotalPrice", totalPrice);
 
         // Redirects to the payment selection page
         window.location.href = `paymentselection.html`;

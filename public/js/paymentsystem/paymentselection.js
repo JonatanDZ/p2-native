@@ -6,18 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Parsing the saved products in the local storage into the basket
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
 
-    // Total price always initilized to 0
-    let totalPrice = 0;
-
-    // Loop through each item in the basket,
-    // clean and convert the item's price from text to number,
-    // determine how many of that item were ordered (default to 1 if missing),
-    // and add the total cost for that item to the total price.
-    basket.forEach(item => {
-        const price = parseInt(item.price.replace(/[^\d]/g, ''), 10);
-        const quantity = item.quantity || 1;
-        totalPrice += price * quantity;
-    });
+    const totalPrice = localStorage.getItem("lastTotalPrice") || 0;
 
     // Change the text on the checkout button to show the total price
     payButton.textContent = `Godkend og betal DKK ${totalPrice}`;

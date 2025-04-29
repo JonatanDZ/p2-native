@@ -48,10 +48,40 @@ function displayFromDB(data){
         const price = document.createElement('p');
         price.textContent = `${product.price},-` || 'Price not available';
 
+        const button = document.createElement('button');
+        button.className = 'add-to-basket';
+        button.dataset.id = product.ID;
+        button.textContent = 'Tilføj til kurv';
+
         card.appendChild(productLink); 
         card.appendChild(price);
         card.appendChild(title);
-        
+        card.appendChild(button);
+
         productsContainer.appendChild(card);
     }); 
+
+    productsContainer.addEventListener("click", function (e) {
+        if (e.target && e.target.classList.contains("add-to-basket")) {
+            e.preventDefault();
+            const productId = parseInt(e.target.getAttribute("data-id"));
+            const product = data.find(p => p.ID === productId);
+            if (product) {
+                addToBasket(product);
+            }
+        }
+    });
+
+    function addToBasket(product) {
+        let basket = JSON.parse(localStorage.getItem("basket")) || [];
+        const existingProduct = basket.find(item => item.ID === product.ID);
+        if (existingProduct) {
+            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+        } else {
+            product.quantity = 1;
+            basket.push(product);
+        }
+        localStorage.setItem("basket", JSON.stringify(basket));
+        alert("Produktet er tilføjet til kurven!");
+}
 }
