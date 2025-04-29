@@ -22,7 +22,7 @@ dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 //Process the server request
-function processReq(req, res) {
+async function processReq(req, res) {
   //Print method and path (for checking errors)
   console.log("GOT: " + req.method + " " + req.url);
 
@@ -175,6 +175,18 @@ function processReq(req, res) {
           //For no path go to landing page.
           case "":
             fileResponse(res, "public/pages/landing/landing.html");
+            break;
+          case "get-products":
+            //  When visiting this endpoint the backend should send back all products from DB
+            try {
+              const products = await getProducts();
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(products));
+            } catch (error) {
+              console.error("Error fetching products:", error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Failed to fetch products" }));
+            }
             break;
           case "recommend":
             console.log(exportRecommend());
