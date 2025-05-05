@@ -454,20 +454,20 @@ async function processReq(req, res) {
               res.end(JSON.stringify({ error: "Failed to fetch products" }));
             }
             break;
-          /* case "recommend":
-                  exportRecommend()
-                    .then((rec) => {
-                      res.writeHead(200, { "Content-Type": "application/json" });
-                      res.end(JSON.stringify(rec));
-                    })
-                    .catch((err) => {
-                      console.error("Error with fetching recommended list", err);
-                      res.writeHead(500, { "Content-Type": "application/json" });
-                      res.end(
-                        JSON.stringify({ error: "Failed to fetch products list" })
-                      );
-                    });
-                  break; */
+          case "recommend":
+            await recommenderAlgorithmForUser()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error("Error with fetching recommended list", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch products list" })
+                );
+              });
+            break;
           /*case "public/pages/events/event-detail.html?id=1":
                                           console.log("TEST");
                                           const [test] = connection.query(
