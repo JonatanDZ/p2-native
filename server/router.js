@@ -115,15 +115,19 @@ async function processReq(req, res) {
                         try {
                             const { token } = JSON.parse(bodyVerify);
 
+                            // If no token respond with 400 (Bad request)
                             if (!token) {
                                 res.writeHead(400, { "Content-Type": "application/json" });
                                 return res.end(JSON.stringify({ isAuthenticated: false }));
                             }
 
                             let decoded;
+
                             try {
+                                // Verify the token using secret_key
                                 decoded = jwt.verify(token, SECRET_KEY_JWT);
                             } catch (error) {
+                                // If the token is invalid or expired, respond unauthorized
                                 console.error("JWT verification error:", error.message);
                                 res.writeHead(401, { "Content-Type": "application/json" });
                                 return res.end(JSON.stringify({ isAuthenticated: false }));
@@ -131,21 +135,26 @@ async function processReq(req, res) {
 
                             const userId = decoded.id;
 
+                            //Look into database by the users ID
                             db.query("SELECT admin FROM users_table WHERE ID = ?", [userId], (err, results) => {
                                 if (err) {
                                     console.error("Database error:", err.message);
                                     res.writeHead(500, { "Content-Type": "application/json" });
                                     return res.end(JSON.stringify({ isAuthenticated: false }));
                                 }
-
+                                // If no user return unauthorized
                                 if (results.length === 0) {
                                     res.writeHead(404, { "Content-Type": "application/json" });
                                     return res.end(JSON.stringify({ isAuthenticated: false }));
                                 }
 
+                                // Extract admin status from the user record
                                 const user = results[0];
+                                // If user.admin === 1 isAdmin will be true
+                                // If user.admin !== 1 isAdmin will be false
                                 const isAdmin = user.admin === 1;
 
+                                // Respond with authorized admin
                                 res.writeHead(200, { "Content-Type": "application/json" });
                                 return res.end(JSON.stringify({ isAuthenticated: true, isAdmin }));
                             });
