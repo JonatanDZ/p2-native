@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Main</title>
     <link rel="stylesheet" href="/public/css/global.css" />
-    <link rel="stylesheet" href="/public/css/components/product.css">
+    <link rel="stylesheet" href="/public/css/components/product.css" />
     <!--Nedestående skal være i sin egen css fil?-->
     <style>
       .image-container {
@@ -43,20 +43,20 @@
     <main>
       <div id="navbar"></div>
       <div>
-        <h1>Recommendations</h1>
+        <h1>Anbefalede produkter</h1>
         <div class="image-container" id="recommendations">
           <!-- images will be displayed here -->
         </div>
 
-        <h1>products</h1>
+        <h1>Nyeste produkter</h1>
         <div class="image-container" id="products">
           <!-- images will be displayed here -->
         </div>
 
-        <h1>Recent</h1>
+        <!--<h1>Recent</h1>
         <div class="image-container" id="recent">
-          <!-- images will be displayed here -->
-        </div>
+           images will be displayed here
+        </div> -->
       </div>
       <div id="footer"></div>
 
@@ -64,81 +64,105 @@
       <script src="/public/js/components/footer.js"></script>
       <!--Nedestående skal være i sin egen js fil?-->
       <script>
-        ///////////
-        fetch("http://localhost:3000/recommend", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
+        let frontpageAmount = 5;
+        fetch("/get-products")
           .then((res) => res.json())
           .then((data) => {
-            console.log("HERE IS DATA STUFF:", data);
-          })
-          .catch((err) =>
-            console.error("Failed to load recommended list:", err)
-          );
+            ///////////
+            fetch("http://localhost:3000/recommend", {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            })
+              .then((res) => res.json())
+              .then((data1) => {
+                ///////////
+                const renderProducts = (containerId, listOfPrints) => {
+                  const container = document.getElementById(containerId);
+                  if (!container) return;
 
-        ///////////
-        fetch('/get-products')
-        .then((res) => res.json())
-        .then((data) => {
-        const renderProducts = (containerId) => {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+                  container.innerHTML = "";
 
-            container.innerHTML = "";
+                  data.forEach((product) => {
+                    //Chooses top 5
+                    for (
+                      let i = 0;
+                      i <
+                      (data.length >= frontpageAmount
+                        ? frontpageAmount
+                        : data.length);
+                      i++
+                    ) {
+                      //If id is in reccomended top 5, then make product
+                      if (product.ID == listOfPrints[i].ID) {
+                        const card = document.createElement("div");
+                        card.className = "card";
 
-            data.forEach((product) => {
-                const card = document.createElement("div");
-                card.className = "card";
+                        const img = document.createElement("img");
+                        img.src = product.picture;
+                        img.alt = product.name;
 
-                const img = document.createElement("img");
-                img.src = product.picture;
-                img.alt = product.name;
+                        const title = document.createElement("h3");
+                        title.textContent = product.name;
 
-                const title = document.createElement("h3");
-                title.textContent = product.name;
+                        const price = document.createElement("p");
+                        price.textContent = `${product.price} DKK`;
 
-                const price = document.createElement("p");
-                price.textContent = `${product.price} DKK`;
+                        const button = document.createElement("button");
+                        button.className = "add-to-basket";
+                        button.dataset.id = product.ID;
+                        button.textContent = "Tilføj til kurv";
 
-                const button = document.createElement("button");
-                button.className = "add-to-basket";
-                button.dataset.id = product.ID;
-                button.textContent = "Tilføj til kurv";
+                        card.appendChild(img);
+                        card.appendChild(title);
+                        card.appendChild(price);
+                        card.appendChild(button);
+                        container.appendChild(card);
+                      }
+                    }
+                  });
+                };
+                //Find the latest products
+                let last = [];
+                for (let i = 0; i < frontpageAmount; i++) {
+                  last[i] = data[data.length - 1 - i];
+                }
+                renderProducts("recommendations", data1);
+                renderProducts("products", last);
+                //renderProducts("recent");
 
-                card.appendChild(img);
-                card.appendChild(title);
-                card.appendChild(price);
-                card.appendChild(button);
-                container.appendChild(card);
-            });
-        };
+                document.body.addEventListener("click", function (e) {
+                  if (
+                    e.target &&
+                    e.target.classList.contains("add-to-basket")
+                  ) {
+                    e.preventDefault();
 
-            renderProducts("recommendations");
-            renderProducts("products");
-            renderProducts("recent");
+                    const productId = parseInt(e.target.dataset.id);
+                    const product = data.find((p) => p.ID === productId);
 
-            document.body.addEventListener("click", function (e) {
-      if (e.target && e.target.classList.contains("add-to-basket")) {
-        e.preventDefault();
-
-        const productId = parseInt(e.target.dataset.id);
-        const product = data.find(p => p.ID === productId);
-
-        if (product) {
-          let basket = JSON.parse(localStorage.getItem("basket")) || [];
-          const existingProduct = basket.find(item => item.ID === product.ID);
-          if (existingProduct) {
-            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-          } else {
-            product.quantity = 1;
-            basket.push(product);
-          }
-          localStorage.setItem("basket", JSON.stringify(basket));
-          alert("Produktet er tilføjet til kurven!");
-        }
-      }
-    });
+                    if (product) {
+                      let basket =
+                        JSON.parse(localStorage.getItem("basket")) || [];
+                      const existingProduct = basket.find(
+                        (item) => item.ID === product.ID
+                      );
+                      if (existingProduct) {
+                        existingProduct.quantity =
+                          (existingProduct.quantity || 1) + 1;
+                      } else {
+                        product.quantity = 1;
+                        basket.push(product);
+                      }
+                      localStorage.setItem("basket", JSON.stringify(basket));
+                      alert("Produktet er tilføjet til kurven!");
+                    }
+                  }
+                });
+              })
+              .catch((err) =>
+                console.error("Failed to load recommended list:", err)
+              );
+            /////////////////
           })
           .catch((err) =>
             console.error("Failed to load dynamic product data:", err)

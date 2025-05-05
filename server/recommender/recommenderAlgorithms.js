@@ -32,7 +32,7 @@ function recommendItem(userFilters, allItems) {
   // map returns an array to resultsOfDotProduct, where every item has an id and a score for the different items
   let resultsOfDotProduct = allItems.map((item) => ({
     // Saves id on every item in the list
-    id: item[0],
+    ID: item[0],
     // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero.
     score: dotProduct(userFilters.slice(1), item.slice(1)),
   }));

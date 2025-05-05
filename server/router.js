@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 // Finding .evn file in root
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import mysql from "mysql2/promise";
+//import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -467,7 +467,7 @@ async function processReq(req, res) {
             }
             break;
           case "recommend":
-            await recommenderAlgorithmForUser()
+            await recommenderAlgorithmForUser(2)
               .then((rec) => {
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify(rec));
