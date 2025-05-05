@@ -1,7 +1,7 @@
 //Import from other files:
 import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-//import { exportRecommend } from "./recommender/recommenderAlgorithmsServer.js";
+import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 
 //Import libraries
 import Stripe from "stripe";

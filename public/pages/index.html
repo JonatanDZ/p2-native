@@ -64,7 +64,7 @@
       <script src="/public/js/components/footer.js"></script>
       <!--Nedestående skal være i sin egen js fil?-->
       <script>
-        let frontpageAmount = 5;
+        let frontpageAmount = 7;
         fetch("/get-products")
           .then((res) => res.json())
           .then((data) => {
@@ -83,7 +83,7 @@
                   container.innerHTML = "";
 
                   data.forEach((product) => {
-                    //Chooses top 5
+                    //Chooses the right amount of product unless there are fewer
                     for (
                       let i = 0;
                       i <
