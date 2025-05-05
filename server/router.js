@@ -5,7 +5,19 @@ import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms
 
 //Import libraries
 import Stripe from "stripe";
+
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Finding .evn file in root
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+import mysql from "mysql2/promise";
+import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mysql from "mysql2";
