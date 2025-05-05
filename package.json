@@ -12,5 +12,11 @@
     "nodemon": "^3.1.10",
     "require": "^2.4.20",
     "stripe": "^17.7.0"
+  },
+  "scripts": {
+    "test": "jest"
+},
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
