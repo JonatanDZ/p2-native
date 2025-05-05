@@ -1,11 +1,23 @@
 //Import from other files:
 import { createProduct, getProducts } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-//import { exportRecommend } from "./recommender/recommenderAlgorithms.js";
+//import { exportRecommend } from "./recommender/recommenderAlgorithmsServer.js";
 
 //Import libraries
 import Stripe from "stripe";
+
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Finding .evn file in root
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+import mysql from "mysql2/promise";
+import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mysql from "mysql2";
@@ -419,7 +431,7 @@ async function processReq(req, res) {
                       res.end(JSON.stringify({ error: "Failed to fetch products" }));
                   }
                   break;
-                case "recommend":
+                /* case "recommend":
                   exportRecommend()
                     .then((rec) => {
                       res.writeHead(200, { "Content-Type": "application/json" });
@@ -432,7 +444,7 @@ async function processReq(req, res) {
                         JSON.stringify({ error: "Failed to fetch products list" })
                       );
                     });
-                  break;
+                  break; */
                 /*case "public/pages/events/event-detail.html?id=1":
                                           console.log("TEST");
                                           const [test] = connection.query(
