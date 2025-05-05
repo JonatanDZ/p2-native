@@ -65,14 +65,17 @@
       <!--Nedestående skal være i sin egen js fil?-->
       <script>
         ///////////
-        fetch("/recommend", {
+        fetch("http://localhost:3000/recommend", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-          });
+            console.log("HERE IS DATA STUFF:", data);
+          })
+          .catch((err) =>
+            console.error("Failed to load recommended list:", err)
+          );
 
         ///////////
         fetch('/get-products')
