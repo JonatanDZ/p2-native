@@ -16,11 +16,10 @@ const __dirname = path.dirname(__filename);
 // Finding .evn file in root
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import mysql from "mysql2/promise";
+import mysql from "mysql2";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import mysql from "mysql2";
 
 let db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -45,8 +44,8 @@ db.connect((err) => {
 
 //Process the server request
 async function processReq(req, res) {
-  //Print method and path (for checking errors)
-  console.log("GOT: " + req.method + " " + req.url);
+    //Print method and path (for checking errors)
+    console.log("GOT: " + req.method + " " + req.url);
 
     let baseURL = "http://" + req.headers.host + "/";
     let url = new URL(req.url, baseURL);
@@ -82,60 +81,15 @@ async function processReq(req, res) {
                         .catch((err) => console.error(err));
                     break;
 
-                case "create-checkout-session":
-                    let body = "";
-                    req.on("data", (chunk) => (body += chunk.toString()));
-                    req.on("end", async () => {
-                        try {
-                            const { totalPrice, email, basket } = JSON.parse(body);
-
-                            if (!totalPrice || !email || !basket) {
-                                res.writeHead(400, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: "Missing data" }));
-                                return;
-                            }
-
-                            const session = await stripe.checkout.sessions.create({
-                                payment_method_types: ["card"],
-                                line_items: [
-                                    {
-                                        price_data: {
-                                            currency: "dkk",
-                                            product_data: { name: "Din kurv" },
-                                            unit_amount: Math.round(Number(totalPrice) * 100),
-                                        },
-                                        quantity: 1,
-                                    },
-                                ],
-                                mode: "payment",
-                                customer_email: email,
-                                success_url:
-                                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
-                                cancel_url:
-                                    "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
-                            });
-
-                            res.writeHead(200, {
-                                "Content-Type": "application/json",
-                                "Access-Control-Allow-Origin": "*",
-                            });
-                            res.end(JSON.stringify({ url: session.url }));
-                        } catch (err) {
-                            res.writeHead(500, {
-                                "Content-Type": "application/json",
-                                "Access-Control-Allow-Origin": "*",
-                            });
-                            res.end(JSON.stringify({ error: err.message }));
-                        }
-                    });
-                    return;
-
                 case "send-confirmation-email":
-                    let body2 = "";
-                    req.on("data", (chunk) => (body2 += chunk.toString()));
+                    let bodyConfirmationMail = "";
+
+                    // Listen for incoming data and append it to the body
+                    req.on("data", (chunk) => (bodyConfirmationMail += chunk.toString()));
+                    
                     req.on("end", async () => {
                         try {
-                            const { email, basket } = JSON.parse(body2);
+                            const { email, basket } = JSON.parse(bodyConfirmationMail);
                             const shopNames = [...new Set(basket.map((item) => item.info))];
 
                             await sendConfirmationEmail(email, basket, shopNames);
@@ -148,37 +102,15 @@ async function processReq(req, res) {
                         }
                     });
                     break;
-                case "event-detail":
-                    let body3 = "";
-                    //Get given data (userID & eventID)
-                    req.on("data", (chunk) => {
-                        body3 += chunk.toString();
-                    });
 
-                    req.on("end", async () => {
-                        try {
-                            const { userID, eventID } = JSON.parse(body3);
-                            //Insert the given data into user_events
-                            db.query(
-                                "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-                                [userID, eventID]
-                            );
-                            /*For testing:
-                              const [test] = await db.query("SELECT * FROM user_events");
-                              const rows = test.map((row) => Object.values(row));
-                              console.log(rows);*/
-                        } catch (error) {
-                            res.writeHead(500, { "Content-Type": "application/json" });
-                            res.end(JSON.stringify({ error: "Internal server error" }));
-                        }
-                    });
-                    /////////////////////////////////////////////////
-                    break;
                 case "verify-token":
                     let bodyVerify = "";
+
+                    // Listen for incoming data and append it to the body
                     req.on("data", (chunk) => {
                         bodyVerify += chunk.toString();
                     });
+
                     req.on("end", async () => {
                         try {
                             const { token } = JSON.parse(bodyVerify);
@@ -225,245 +157,277 @@ async function processReq(req, res) {
                     });
                     break;
 
-                default:
-                    console.error("Resource doesn't exist");
-            }
+                case "event-detail":
+                    let bodyEventDetail = "";
 
+                    // Listen for incoming data and append it to the body
+                    req.on("data", (chunk) => {
+                        bodyEventDetail += chunk.toString();
+                    });
 
-            if (req.url === "/event-detail") {
-                let body = "";
+                    req.on("end", async () => {
+                        try {
+                            const { userID, eventID } = JSON.parse(bodyEventDetail);
+                            //Insert the given data into user_events
+                            db.query("INSERT INTO user_events (userID,eventID) VALUES (?,?)", [
+                                userID,
+                                eventID,
+                            ]);
+                            /*For testing:
+                            const [test] = await db.query("SELECT * FROM user_events");
+                            const rows = test.map((row) => Object.values(row));
+                            console.log(rows);*/
+                        } catch (error) {
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Internal server error" }));
+                        }
+                    });
+                    break;
 
-                //Get given data (userID & eventID)
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
+                case "create-checkout-session":
+                    let bodyCheckoutSession = "";
 
-                req.on("end", async () => {
-                    try {
-                        const { userID, eventID } = JSON.parse(body);
-                        //Insert the given data into user_events
-                        db.query("INSERT INTO user_events (userID,eventID) VALUES (?,?)", [
-                            userID,
-                            eventID,
-                        ]);
-                        /*For testing:
-                        const [test] = await db.query("SELECT * FROM user_events");
-                        const rows = test.map((row) => Object.values(row));
-                        console.log(rows);*/
-                    } catch (error) {
-                        res.writeHead(500, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Internal server error" }));
-                    }
-                });
-                /////////////////////////////////////////////////
-            } else if (req.url === "/create-checkout-session") {
-                let body = "";
+                    // Listen for incoming data and append it to the body
+                    req.on("data", (chunk) => {
+                        bodyCheckoutSession += chunk.toString();
+                    });
 
-                //Get data and save in "body" (i think?)
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
+                    req.on("end", async () => {
+                        try {
+                            const { totalPrice } = JSON.parse(bodyCheckoutSession);
 
-                req.on("end", async () => {
-                    try {
-                        const { totalPrice } = JSON.parse(body);
+                            if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
+                                res.writeHead(400, {
+                                    "Content-Type": "application/json",
+                                    "Access-Control-Allow-Origin": "*",
+                                });
+                                res.end(JSON.stringify({ error: "Invalid total price" }));
+                                return;
+                            }
 
-                        if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0) {
-                            res.writeHead(400, {
+                            const session = await stripe.checkout.sessions.create({
+                                payment_method_types: ["card"],
+                                line_items: [
+                                    {
+                                        price_data: {
+                                            currency: "dkk",
+                                            product_data: { name: "Din kurv" },
+                                            unit_amount: Math.round(Number(totalPrice) * 100),
+                                        },
+                                        quantity: 1,
+                                    },
+                                ],
+                                mode: "payment",
+                                success_url:
+                                    "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
+                                cancel_url:
+                                    "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
+                            });
+
+                            res.writeHead(200, {
                                 "Content-Type": "application/json",
                                 "Access-Control-Allow-Origin": "*",
                             });
-                            res.end(JSON.stringify({ error: "Invalid total price" }));
-                            return;
+                            res.end(JSON.stringify({ url: session.url }));
+                        } catch (err) {
+                            console.error("Stripe error:", err.message);
+                            res.writeHead(500, {
+                                "Content-Type": "application/json",
+                                "Access-Control-Allow-Origin": "*",
+                            });
+                            res.end(JSON.stringify({ error: err.message }));
                         }
+                    });
+                    break;
 
-                        const session = await stripe.checkout.sessions.create({
-                            payment_method_types: ["card"],
-                            line_items: [
-                                {
-                                    price_data: {
-                                        currency: "dkk",
-                                        product_data: { name: "Din kurv" },
-                                        unit_amount: Math.round(Number(totalPrice) * 100),
-                                    },
-                                    quantity: 1,
-                                },
-                            ],
-                            mode: "payment",
-                            success_url:
-                                "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
-                            cancel_url:
-                                "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
-                        });
+                case "signup":
+                    let bodySignup = "";
 
-                        res.writeHead(200, {
-                            "Content-Type": "application/json",
-                            "Access-Control-Allow-Origin": "*",
-                        });
-                        res.end(JSON.stringify({ url: session.url }));
-                    } catch (err) {
-                        console.error("Stripe error:", err.message);
-                        res.writeHead(500, {
-                            "Content-Type": "application/json",
-                            "Access-Control-Allow-Origin": "*",
-                        });
-                        res.end(JSON.stringify({ error: err.message }));
-                    }
-                });
-                //for POST on signup page
-            } else if (req.url === "/signup") {
-                let body = "";
+                    // Listen for incoming data and append it to the body
+                    req.on("data", (chunk) => {
+                        bodySignup += chunk.toString();
+                    });
 
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
+                    req.on("end", async () => {
+                        try {
+                            const { email, password, name } = JSON.parse(bodySignup);
+                            // Check that required fields are provided
+                            if (!email || !password || !name) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                return res.end(JSON.stringify({ error: "All fields are required" }));
+                            }
 
-                req.on("end", async () => {
-                    try {
-                        const { email, password, name } = JSON.parse(body);
+                            // Hash the password that the user has provided
+                            const hashedPassword = await bcrypt.hash(password, 10);
 
-                        if (!email || !password || !name) {
-                            res.writeHead(400, { "Content-Type": "application/json" });
-                            return res.end(JSON.stringify({ error: "All fields are required" }));
+                            // Insert user into database, name, email and hashedpassword
+                            db.query(
+                                "INSERT INTO users_table (name, email, password) VALUES (?, ?, ?)",
+                                [name, email, hashedPassword],
+                                (err, result) => {
+                                    if (err) {
+                                        console.error("Der eksisterer allerede en bruger med denne mail", err);
+                                        res.writeHead(500, { "Content-Type": "application/json" });
+                                        return res.end(JSON.stringify({ error: "Der eksisterer allerede en bruger med denne mail" }));
+                                    }
+
+                                    res.writeHead(201, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ message: "User registered successfully" }));
+                                }
+                            );
+                        } catch (error) {
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Internal server error 1234" }));
                         }
+                    });
+                    break;
 
-                        // Hash the password
-                        const hashedPassword = await bcrypt.hash(password, 10);
+                case "login":
+                    let bodyLogin = "";
 
-                        // Insert user into database
-                        db.query(
-                            "INSERT INTO users_table (name, email, password) VALUES (?, ?, ?)",
-                            [name, email, hashedPassword],
-                            (err, result) => {
+                    // Listen for incoming data and append it to the body
+                    req.on("data", (chunk) => {
+                        bodyLogin += chunk.toString();
+                    });
+
+                    req.on("end", () => {
+                        try {
+                            const { email, password } = JSON.parse(bodyLogin);
+                            // Check that required fields are provided
+                            if (!email || !password) {
+                                if (!res.headersSent) {
+                                    res.writeHead(400, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: "Email og password skal udfyldes" }));
+                                }
+                                return;
+                            }
+                            
+                            // Look into database and check the users email
+                            db.query("SELECT * FROM users_table WHERE email = ?", [email], (err, results) => {
                                 if (err) {
-                                    console.error("Der eksisterer allerede en bruger med denne mail", err);
-                                    res.writeHead(500, { "Content-Type": "application/json" });
-                                    return res.end(JSON.stringify({ error: "Der eksisterer allerede en bruger med denne mail" }));
+                                    console.error("Database error:", err);
+                                    if (!res.headersSent) {
+                                        res.writeHead(500, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ error: "Internal server error" }));
+                                    }
+                                    return;
+                                }
+                                // if no email match in the database
+                                if (results.length === 0) {
+                                    if (!res.headersSent) {
+                                        res.writeHead(401, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ error: "Forkert email eller password" }));
+                                    }
+                                    return;
                                 }
 
-                                res.writeHead(201, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ message: "User registered successfully" }));
-                            }
-                        );
-                    } catch (error) {
-                        res.writeHead(500, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Internal server error 1234" }));
-                    }
-                });
-                //for POST on login page
-            } else if (req.url === "/login") {
-                let body = "";
+                                const user = results[0];
 
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
-
-                req.on("end", async () => {
-                    try {
-                        const { email, password } = JSON.parse(body);
-
-                        if (!email || !password) {
-                            res.writeHead(400, { "Content-Type": "application/json" });
-                            return res.end(JSON.stringify({ error: "Email og password skal udfyldes" }));
-                        }
-
-                        db.query("SELECT * FROM Users_table WHERE email = ?", [email], async (err, results) => {
-                            if (err) {
-                                console.error("Database error:", err);
+                                // Compare provided password with hashed password in the database (bcrypt does the hashing)
+                                bcrypt.compare(password, user.password, (err, isMatch) => {
+                                    if (err) {
+                                        console.error("Bcrypt error:", err);
+                                        if (!res.headersSent) {
+                                            res.writeHead(500, { "Content-Type": "application/json" });
+                                            res.end(JSON.stringify({ error: "Password comparison failed" }));
+                                        }
+                                        return;
+                                    }
+                                    
+                                    // Create jsonwebtoken for authenticating user
+                                    if (isMatch) {
+                                        const token = jwt.sign({ id: user.ID }, SECRET_KEY_JWT, { expiresIn: "30m" });
+                                        if (!res.headersSent) {
+                                            res.writeHead(200, { "Content-Type": "application/json" });
+                                            res.end(JSON.stringify({ message: "Du er nu logget ind", token }));
+                                        }
+                                    } else {
+                                        if (!res.headersSent) {
+                                            res.writeHead(401, { "Content-Type": "application/json" });
+                                            res.end(JSON.stringify({ error: "Forkert email eller password" }));
+                                        }
+                                    }
+                                });
+                            });
+                        } catch (error) {
+                            console.error("Login error:", error);
+                            if (!res.headersSent) {
                                 res.writeHead(500, { "Content-Type": "application/json" });
-                                return res.end(JSON.stringify({ error: "Internal server error" }));
+                                res.end(JSON.stringify({ error: "Internal server error" }));
                             }
+                        }
+                    });
+                    break;
 
-                            if (results.length === 0) {
-                                res.writeHead(401, { "Content-Type": "application/json" });
-                                return res.end(JSON.stringify({ error: "Forkert email eller password" }));
-                            }
 
-                            const user = results[0];
-                            const isMatch = await bcrypt.compare(password, user.password);
-
-                            if (isMatch) {
-                                //create token for successfully logged in
-                                const token = jwt.sign({ id: user.ID }, SECRET_KEY_JWT, { expiresIn: "30m" });
-
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ message: "Du er nu logget ind", token }));
-                            } else {
-                                res.writeHead(401, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: "Forkert email eller password" }));
-                            }
-                        });
-                    } catch (error) {
-                        console.error("Login error:", error);
-                        res.writeHead(500, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Internal server error" }));
-                    }
-                });
+                default:
+                    console.error("Resource doesn't exist");
             }
-            break;
-        }
+        } break;
+
 
         case "GET":
             {
-              //If the request is a GET, split the path and print
-              let pathElements = queryPath.split("/");
-      
-              //Replace the first "/" with nothing (ex. /index.html becomes index.html)
-              let betterURL = queryPath.startsWith("/")
-                ? queryPath.slice(1)
-                : queryPath;
-      
-              //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
-              switch (pathElements[1]) {
-                //For no path go to landing page.
-                case "":
-                  fileResponse(res, "public/pages/landing/landing.html");
-                  break;
-                case "get-products":
-                  //  When visiting this endpoint the backend should send back all products from DB
-                  try {
-                      const products = await getProducts(); 
-                      res.writeHead(200, { "Content-Type": "application/json" });
-                      res.end(JSON.stringify(products)); 
-                  } catch (error) {
-                      console.error("Error fetching products:", error);
-                      res.writeHead(500, { "Content-Type": "application/json" });
-                      res.end(JSON.stringify({ error: "Failed to fetch products" }));
-                  }
-                  break;
-                /* case "recommend":
-                  exportRecommend()
-                    .then((rec) => {
-                      res.writeHead(200, { "Content-Type": "application/json" });
-                      res.end(JSON.stringify(rec));
-                    })
-                    .catch((err) => {
-                      console.error("Error with fetching recommended list", err);
-                      res.writeHead(500, { "Content-Type": "application/json" });
-                      res.end(
-                        JSON.stringify({ error: "Failed to fetch products list" })
-                      );
-                    });
-                  break; */
-                /*case "public/pages/events/event-detail.html?id=1":
-                                          console.log("TEST");
-                                          const [test] = connection.query(
-                                            "SELECT * FROM user_event ORDER BY userID"
-                                          );
-                                          const rows = test.map((row) => Object.values(row));
-                                          console.log(rows);
-                                          break;*/
-                //Otherwise respond with the given path
-                default:
-                  fileResponse(res, betterURL);
-                  break;
-              }
+                //If the request is a GET, split the path and print
+                let pathElements = queryPath.split("/");
+
+                //Replace the first "/" with nothing (ex. /index.html becomes index.html)
+                let betterURL = queryPath.startsWith("/")
+                    ? queryPath.slice(1)
+                    : queryPath;
+
+                //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
+                switch (pathElements[1]) {
+                    //For no path go to landing page.
+                    case "":
+                        fileResponse(res, "public/pages/landing/landing.html");
+                        break;
+                    case "get-products":
+                        //  When visiting this endpoint the backend should send back all products from DB
+                        try {
+                            const products = await getProducts();
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify(products));
+                        } catch (error) {
+                            console.error("Error fetching products:", error);
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Failed to fetch products" }));
+                        }
+                        break;
+                    /*case "recommend":
+                      exportRecommend()
+                        .then((rec) => {
+                          res.writeHead(200, { "Content-Type": "application/json" });
+                          res.end(JSON.stringify(rec));
+                        })
+                        .catch((err) => {
+                          console.error("Error with fetching recommended list", err);
+                          res.writeHead(500, { "Content-Type": "application/json" });
+                          res.end(
+                            JSON.stringify({ error: "Failed to fetch products list" })
+                          );
+                        });
+                    break;*/
+                    /*case "public/pages/events/event-detail.html?id=1":
+                                              console.log("TEST");
+                                              const [test] = connection.query(
+                                                "SELECT * FROM user_event ORDER BY userID"
+                                              );
+                                              const rows = test.map((row) => Object.values(row));
+                                              console.log(rows);
+                                              break;*/
+                    //Otherwise respond with the given path
+                    default:
+                        fileResponse(res, betterURL);
+                        break;
+                }
             }
             break;
-          default:
+        default:
             reportError(res, new Error("No Such Resource"));
-        }
-      }
+    }
+}
+
 
 // helper functions for POST part
 
