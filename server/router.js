@@ -16,7 +16,6 @@ const __dirname = path.dirname(__filename);
 // Finding .evn file in root
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
