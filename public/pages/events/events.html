@@ -5,22 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Events Page</title>
     <link rel="stylesheet" href="/public/css/components/event.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
     <div id="navbar"></div>
     <div class="customContainer">
-      <div class="sidebar">
-        <h2>Events</h2>
-        <ul>
-          <li><a href="#" class="sidebar-link">Søg</a></li>
-          <li><a href="#" class="sidebar-link">Sorter</a></li>
-          <li><a href="#" class="sidebar-link">Test</a></li>
-        </ul>
-      </div>
-
+      <div id="sidebar-container"></div>
       <div class="events-container" id="events-container"></div>
     </div>
     <div id="footer"></div>
+    <script src="/public/js/components/sidebarEvent.js"></script>
     <script src="/public/js/components/navbar.js"></script>
     <script src="/public/js/components/footer.js"></script>
     <script>

@@ -1,67 +1,9 @@
-/* Basic reset for margin and padding */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body styling */
-body {
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    padding: 20px;
-}
-
-/* Konto heading */
-#konto {
-    margin-top: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-/* Sidebar styling */
-#sidebar {
-    width: 200px;
-    background-color: #f1f1f1;
-    padding: 20px;
-    margin-top: 20px;
-    display: inline-block;
-    vertical-align: top;
-    border-radius: 5px;
-}
-
-/* Liked shops and items sections */
-#likedshops, #likeditems {
-    margin-left: 220px;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Liked shops and items title */
-#likedshops h2, #likeditems h2 {
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Styling for the image container */
-#likedshops div, #likeditems div {
+#main-content {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: row;
 }
 
-/* Styling for individual images */
-#likedshops img, #likeditems img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+#sidebar-container {
+    width: 250px; /* or whatever width you want */
+    background-color: #f8f9fa; /* optional, for visibility */
 }
