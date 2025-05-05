@@ -11,6 +11,7 @@
         return;
     }
 
+    // POST request to send signup data to server
     try {
         const response = await fetch("http://localhost:3000/signup", { 
             method: "POST",
@@ -19,6 +20,7 @@
         });
 
         let result = {};
+        // Attempt to parse JSON response
         try {
             const text = await response.text();
             result = text.trim() ? JSON.parse(text) : {};
@@ -27,6 +29,7 @@
         }
 
         if (response.ok) {
+            // Signup succes - tell user and redirect to login
             alert("Du er nu registreret og kan logge ind!");
             window.location.href = "/public/pages/login/login.html";
         } else {
