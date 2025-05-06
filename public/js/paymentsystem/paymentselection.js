@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Parsing the saved products in the local storage into the basket
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
 
+    // This function gets the total price from the local storage
     const totalPrice = localStorage.getItem("lastTotalPrice") || 0;
 
     // Change the text on the checkout button to show the total price

@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        // Calculates the total price of the items in the basket
         const totalPrice = basket.reduce((sum, item) => {
             const price = typeof item.price === 'string' 
                 ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
