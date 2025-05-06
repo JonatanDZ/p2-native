@@ -36,6 +36,16 @@ function displayFromDB(data) {
         const title = document.createElement('h4');
         title.textContent = event.name || 'Untitled Event';
 
+        const img = document.createElement('img');
+        img.src = event.image || '';
+        img.alt = event.name || 'Event image';
+        img.style.width = '200px';
+        img.style.height = '250px';
+        img.style.objectFit = 'cover';
+        img.style.objectPosition = 'center'; 
+
+        card.appendChild(img);
+
         const place = document.createElement('p');
         place.innerHTML = `<strong>Place:</strong> ${event.place || 'Unknown'}`;
 
