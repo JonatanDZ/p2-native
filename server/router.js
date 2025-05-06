@@ -65,16 +65,6 @@ async function processReq(req, res) {
             .then((productData) => {
               productData.forEach((product) => {
                 createProduct(product);
-                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
-                            .then((productData) => {
-                              productData.forEach((product) => {
-                                createProduct(
-                                  product.name,
-                                  product.price,
-                                  product.amount,
-                                  product.filters
-                                );
-                                */
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
