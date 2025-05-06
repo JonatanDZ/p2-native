@@ -42,7 +42,7 @@ export async function getLikedProducts() {
   return rows;
 }
 export async function getEvents() {
-  const result = await pool.query("SELECT * FROM products_table");
+  const result = await pool.query("SELECT * FROM events_table");
   //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
   //  the array index to only recieve the DB rows.
   const rows = result[0];
