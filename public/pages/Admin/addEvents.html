@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add event</title>
+    <title>Add events</title>
     <link rel="stylesheet" href="/public/css/global.css">
     <link rel="stylesheet" href="/public/css/admin/addevents.css">
-    <link rel="stylesheet" href="/public/css/components/components.css">
 </head>
 <body>
     <div id="navbar">
-        
-    </div>
-    <div id="sidebar-container">
 
     </div>
+    <div class="main-container">
+        <div id="sidebar-container">
+        </div>
+    <div class="container-fluid">
+        <div class="content" id ="content">
+            <h1> Upload your events </h1>
+            <input type="file" id="file_upload" accept=".csv">
+            <button type="button" class="btn btn-primary" id="upload_to_db_events">Gem i database!</button>
+        </div>
+    </div>
+</div>
 
     <div id="footer"></div>
-    <script type="module" src="/public/js/admin/addevents.js"></script>
-    <script src="/public/js/components/navbar.js"></script>
+<script type="module" src="/public/js/admin/addevents.js"></script>
+<script src="/public/js/components/navbar.js"></script>
 <script src="/public/js/components/footer.js"></script>
 <script src="/public/js/components/sidebar.js"></script>
 </body>
-
 </html>

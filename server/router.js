@@ -1,5 +1,5 @@
 //Import from other files:
-import { createProduct, getProducts } from "./dbserver.js";
+import { createProduct, getProducts, createEvent, getEvents } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 
@@ -55,31 +55,56 @@ async function processReq(req, res) {
   //Check for the request method:
   //  POST logic is from BMI app
 
-  switch (req.method) {
-    case "POST": {
-      let pathElements = queryPath.split("/");
-      switch (pathElements[1]) {
-        case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+    switch (req.method) {
+        case "POST": {
+            let pathElements = queryPath.split("/");
+            switch (pathElements[1]) {
+                case "save-products": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+                    extractJSON(req)
+                        //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+                        .then(productData => {
+                            productData.forEach(product => {
+                                createProduct(product);
+                                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
+                            .then((productData) => {
+                              productData.forEach((product) => {
+                                createProduct(
+                                  product.name,
+                                  product.price,
+                                  product.amount,
+                                  product.filters
+                                );
+                                */
+                            });
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(
+                                JSON.stringify({ message: "Products saved successfully." })
+                            );
+                        })
+                        .catch((err) => console.error(err));
+                    break;
+
+                case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
           extractJSON(req)
             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
-            .then((productData) => {
-              productData.forEach((product) => {
-                createProduct(product);
+            .then(productEvent => {
+              productEvent.forEach(event => {
+                //createProduct(product);
+                createEvent(event);
               });
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(
-                JSON.stringify({ message: "Products saved successfully." })
+                JSON.stringify({ message: "Events saved successfully." })
               );
             })
-            .catch((err) => console.error(err));
+            .catch((err) => reportError(res, err));
           break;
-
         case "create-checkout-session":
-          let body = "";
-          req.on("data", (chunk) => (body += chunk.toString()));
-          req.on("end", async () => {
-            try {
-              const { totalPrice, email, basket } = JSON.parse(body);
+                    let body = "";
+                    req.on("data", (chunk) => (body += chunk.toString()));
+                    req.on("end", async () => {
+                        try {
+                            const { totalPrice, email, basket } = JSON.parse(body);
 
               if (!totalPrice || !email || !basket) {
                 res.writeHead(400, { "Content-Type": "application/json" });
@@ -470,6 +495,60 @@ async function processReq(req, res) {
               });
             break;
           /*case "public/pages/events/event-detail.html?id=1":
+        case "GET":
+            {
+              //If the request is a GET, split the path and print
+              let pathElements = queryPath.split("/");
+      
+              //Replace the first "/" with nothing (ex. /index.html becomes index.html)
+              let betterURL = queryPath.startsWith("/")
+                ? queryPath.slice(1)
+                : queryPath;
+                    //Look at the first path element (ex. for localhost:3000/index.html look at index.html)
+              switch (pathElements[1]) {
+                //For no path go to landing page.
+                case "":
+                  fileResponse(res, "public/pages/landing/landing.html");
+                  break;
+                case "get-events":
+            //  When visiting this endpoint the backend should send back all products from DB
+            try {
+                const events = await getEvents(); 
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(events)); 
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Failed to fetch products" }));
+            }
+            break;
+          case "get-products":
+                  //  When visiting this endpoint the backend should send back all products from DB
+                  try {
+                      const products = await getProducts(); 
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify(products)); 
+                  } catch (error) {
+                      console.error("Error fetching products:", error);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: "Failed to fetch products" }));
+                  }
+                  break;
+                /* case "recommend":
+                  exportRecommend()
+                    .then((rec) => {
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify(rec));
+                    })
+                    .catch((err) => {
+                      console.error("Error with fetching recommended list", err);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(
+                        JSON.stringify({ error: "Failed to fetch products list" })
+                      );
+                    });
+                  break; */
+                /*case "public/pages/events/event-detail.html?id=1":
                                           console.log("TEST");
                                           const [test] = connection.query(
                                             "SELECT * FROM user_event ORDER BY userID"
