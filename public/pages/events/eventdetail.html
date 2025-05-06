@@ -1,81 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Event Details</title>
     <style>
-      
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-        h1 {
-            font-size: 28px;
-            margin: 10px 0;
-        }
-        p {
-            font-size: 18px;
-            font-weight: bold;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 10px 0;
+      }
+      p {
+        font-size: 18px;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="container" id="event-detail">
-        <p>Loading event details...</p>
+      <p>Loading event details...</p>
     </div>
 
     <script>
-        function getEventIdFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('id');
+      function getEventIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("id");
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const eventId = getEventIdFromUrl();
+        if (!eventId) {
+          document.getElementById("event-detail").innerHTML =
+            "<p>Event not found.</p>";
+          return;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const eventId = getEventIdFromUrl();
-            if (!eventId) {
-                document.getElementById("event-detail").innerHTML = "<p>Event not found.</p>";
-                return;
+        fetch("events.json")
+          .then((response) => response.json())
+          .then((events) => {
+            const event = events.find((e) => e.id.toString() === eventId);
+
+            if (!event) {
+              document.getElementById("event-detail").innerHTML =
+                "<p>Event not found.</p>";
+              return;
             }
 
-            fetch('events.json')
-                .then(response => response.json())
-                .then(events => {
-                    const event = events.find(e => e.id.toString() === eventId);
-
-                    if (!event) {
-                        document.getElementById("event-detail").innerHTML = "<p>Event not found.</p>";
-                        return;
-                    }
-
-                    document.getElementById("event-detail").innerHTML = `
+            document.getElementById("event-detail").innerHTML = `
                         <img src="${event.image}" alt="${event.name}">
                         <h1>${event.name}</h1>
                         <p>${event.info}</p>
                         <p>Price: ${event.price}</p>
                     `;
-                })
-                .catch(error => console.error("Error fetching event details:", error));
-        });
+          })
+          .catch((error) =>
+            console.error("Error fetching event details:", error)
+          );
+      });
     </script>
-
-</body>
+  </body>
 </html>

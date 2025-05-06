@@ -194,16 +194,12 @@ async function processReq(req, res) {
 
             req.on("end", async () => {
               try {
-                const { userID, eventID } = JSON.parse(bodyEventDetail);
+                const { userID, eventId } = JSON.parse(bodyEventDetail);
                 //Insert the given data into user_events
                 db.query(
                   "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-                  [userID, eventID]
+                  [userID, eventId]
                 );
-                /*For testing:
-                            const [test] = await db.query("SELECT * FROM user_events");
-                            const rows = test.map((row) => Object.values(row));
-                            console.log(rows);*/
               } catch (error) {
                 res.writeHead(500, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ error: "Internal server error" }));
@@ -481,13 +477,13 @@ async function processReq(req, res) {
             break;
           case "get-events":
             try {
-                const events = await getEvents();
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify(events));
+              const events = await getEvents();
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(events));
             } catch (error) {
-                console.error("Error fetching events:", error);
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Failed to fetch events" }));
+              console.error("Error fetching events:", error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Failed to fetch events" }));
             }
             break;
           case "recommend":
