@@ -45,8 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${item.name}</h3>
                 <p>${item.info || ''}</p>
                 <p>Pris: DKK ${priceNumber}</p><br>
-                <p>Antal:
-                    <input type="number" class="quantity-input" data-index="${index}" value="${quantity}" min="1" max="99">
+                <p>Antal: <input type="number" class="quantity-input" data-index="${index}" value="${quantity}" min="1" max="99">
                 </label><br>
                 <p>Subtotal: DKK ${itemTotal}</p><br>
                 <a href="#" class="remove-item" data-index="${index}">Fjern</a>
@@ -98,6 +97,14 @@ document.addEventListener("DOMContentLoaded", function () {
         checkoutForm.addEventListener("submit", async function (event) {
             event.preventDefault();
 
+        // Get name and surname from the form
+        const fornavn = document.querySelector('input[name="Fornavn"]').value;
+        const efternavn = document.querySelector('input[name="Efternavn"]').value;
+
+        localStorage.setItem("userFornavn", fornavn);
+        localStorage.setItem("userEfternavn", efternavn);
+
+        
         // Saves the email in the checkout form to local storage
         const emailInput = document.getElementById("email");
         if (emailInput && emailInput.value) {
