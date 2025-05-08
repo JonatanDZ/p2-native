@@ -2,6 +2,7 @@
 import { createProduct, getProducts, getEvents } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
 
 //Import libraries
 import Stripe from "stripe";
@@ -500,14 +501,24 @@ async function processReq(req, res) {
                 );
               });
             break;
-          /*case "public/pages/events/event-detail.html?id=1":
-                                          console.log("TEST");
-                                          const [test] = connection.query(
-                                            "SELECT * FROM user_event ORDER BY userID"
-                                          );
-                                          const rows = test.map((row) => Object.values(row));
-                                          console.log(rows);
-                                          break;*/
+          case "event-recommend":
+            await recommenderAlgorithmForEvents()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error(
+                  "Error with fetching recommended event list",
+                  err
+                );
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch events list" })
+                );
+              });
+            break;
+            break;
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);

@@ -91,29 +91,4 @@ function displayFromDB(data) {
       }
     }
   });
-
-  /*///////////////////////////////
-  //When clicking event, add to user_events table (which is used for event reccomender)
-  let event_number = document.getElementsByClassName("container");
-  console.log("TEST");
-  console.log("HERE!!!", event_number);
-  for (let i = 0; i < event_number.length; i++) {
-    event_number[i].addEventListener("click", async function () {
-      console.log("CLICKED!");
-      const userID = 2; //Insert userID here (somehow)
-      const eventID = events[i].id;
-      //Make a POST with userID and eventID
-      try {
-        const response = await fetch("http://localhost:3000/event-detail", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userID, eventID }),
-        });
-      } catch (err) {
-        console.error("Error:", err);
-        alert("Something went wrong. Try again.");
-      }
-    });
-  }
-  //////////////////////*/
 }

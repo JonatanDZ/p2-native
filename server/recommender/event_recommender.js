@@ -7,8 +7,7 @@ import {
 export async function recommenderAlgorithmForEvents() {
   let events = await getAllEventsDB();
   let userEvents = await getAllUserEventsDB();
-  reccomendEvents(userEvents, events);
-  return;
+  return reccomendEvents(userEvents, events);
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
@@ -56,6 +55,7 @@ function reccomendEvents(data, events) {
   console.log(
     `We reccomend event ${result[0][1]}, event ${result[1][1]} and event ${result[2][1]}`
   );
+  return result;
 }
 
 //https://stackoverflow.com/questions/16096872/how-to-sort-2-dimensional-array-by-column-value
