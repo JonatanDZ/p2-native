@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Parsing the saved products in the local storage into the basket
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
 
+    // This function gets the total price from the local storage
     const totalPrice = localStorage.getItem("lastTotalPrice") || 0;
 
     // Change the text on the checkout button to show the total price
@@ -20,7 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
 
         }
-        
+
+        const fornavn = localStorage.getItem("userFornavn");
+        const efternavn = localStorage.getItem("userEfternavn");
+
         // Gets the email from local storage
         const email = localStorage.getItem("userEmail");
         if (!email) {
@@ -38,7 +42,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     totalPrice: totalPrice,
                     basket: basket,
                     email: email,
-                    paymentMethod: selectedPaymentMethod.value
+                    paymentMethod: selectedPaymentMethod.value,
+                    fornavn: fornavn,
+                    efternavn: efternavn
                 })
             });
 
@@ -48,7 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // If the session URL is available, redirect to it with the total price
             if (session.url) {
                 localStorage.setItem("lastTotalPrice", totalPrice);
+
                 window.location.href = session.url;
+
             } else {
                 alert("Fejl: Kunne ikke oprette en betalingssession.");
             }

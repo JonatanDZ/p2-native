@@ -92,3 +92,26 @@ function displayFromDB(data) {
 }
 }
    
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+  
+    if (searchInput) {
+      searchInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+  
+        if (query.length === 0) {
+          readFromDB("/get-products"); // fallback to all products
+          return;
+        }
+  
+        try {
+          const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+          const products = await res.json();
+          displayFromDB(products); // your existing function to render
+        } catch (err) {
+          console.error("Error searching products:", err);
+        }
+      });
+    }
+  });
+  

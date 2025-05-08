@@ -18,47 +18,6 @@ body {
 .customContainer {
     display: flex;
 }
-
-/* Sidebar styling */
-.sidebar {
-    width: 220px;
-    background-color: #2c3e50;
-    padding: 20px;
-    color: white;
-    position: auto;
-    top: 60px;
-    left: 0;
-    bottom: 0;
-    height: calc(100vh - 60px);
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    z-index: 5;
-}
-
-.sidebar h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.sidebar ul {
-    list-style-type: none;
-}
-
-.sidebar li {
-    margin: 10px 0;
-}
-
-.sidebar-link {
-    text-decoration: none;
-    color: #ecf0f1;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-.sidebar-link:hover {
-    color: #3498db;
-}
-
 /* Main content styling */
 .events-container {
     margin-left: 0px; /* Adjusted for sidebar width */
