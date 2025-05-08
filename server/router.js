@@ -1,7 +1,8 @@
 //Import from other files:
-import { createProduct, getProducts, getEvents } from "./dbserver.js";
+import { createProduct, getProducts, createEvent, getEvents } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
 
 //Import libraries
 // Stripe library to interact with Stripe's API
@@ -87,6 +88,68 @@ async function processReq(req, res) {
               .catch((err) => console.error(err));
             break;
 
+                case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+          extractJSON(req)
+            //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+            .then(productEvent => {
+              productEvent.forEach(event => {
+                //createProduct(product);
+                createEvent(event);
+              });
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({ message: "Events saved successfully." })
+              );
+            })
+            .catch((err) => reportError(res, err));
+          break;
+        case "create-checkout-session":
+                    let body = "";
+                    req.on("data", (chunk) => (body += chunk.toString()));
+                    req.on("end", async () => {
+                        try {
+                            const { totalPrice, email, basket } = JSON.parse(body);
+
+                            if (!totalPrice || !email || !basket) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Missing data" }));
+                                return;
+                            }
+
+                            const session = await stripe.checkout.sessions.create({
+                                payment_method_types: ["card"],
+                                line_items: [
+                                    {
+                                        price_data: {
+                                            currency: "dkk",
+                                            product_data: { name: "Din kurv" },
+                                            unit_amount: Math.round(Number(totalPrice) * 100),
+                                        },
+                                        quantity: 1,
+                                    },
+                                ],
+                                mode: "payment",
+                                customer_email: email,
+                                success_url:
+                                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                                cancel_url:
+                                    "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
+                            });
+
+                            res.writeHead(200, {
+                                "Content-Type": "application/json",
+                                "Access-Control-Allow-Origin": "*",
+                            });
+                            res.end(JSON.stringify({ url: session.url }));
+                        } catch (err) {
+                            res.writeHead(500, {
+                                "Content-Type": "application/json",
+                                "Access-Control-Allow-Origin": "*",
+                            });
+                            res.end(JSON.stringify({ error: err.message }));
+                        }
+                    });
+                    return;
           case "send-confirmation-email":
             let bodyConfirmationMail = "";
 
@@ -199,16 +262,12 @@ async function processReq(req, res) {
 
             req.on("end", async () => {
               try {
-                const { userID, eventID } = JSON.parse(bodyEventDetail);
+                const { userID, eventId } = JSON.parse(bodyEventDetail);
                 //Insert the given data into user_events
                 db.query(
                   "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-                  [userID, eventID]
+                  [userID, eventId]
                 );
-                /*For testing:
-                            const [test] = await db.query("SELECT * FROM user_events");
-                            const rows = test.map((row) => Object.values(row));
-                            console.log(rows);*/
               } catch (error) {
                 res.writeHead(500, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ error: "Internal server error" }));
@@ -486,13 +545,13 @@ async function processReq(req, res) {
             break;
           case "get-events":
             try {
-                const events = await getEvents();
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify(events));
+              const events = await getEvents();
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(events));
             } catch (error) {
-                console.error("Error fetching events:", error);
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Failed to fetch events" }));
+              console.error("Error fetching events:", error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Failed to fetch events" }));
             }
             break;
           case "recommend":
@@ -509,14 +568,24 @@ async function processReq(req, res) {
                 );
               });
             break;
-          /*case "public/pages/events/event-detail.html?id=1":
-                                          console.log("TEST");
-                                          const [test] = connection.query(
-                                            "SELECT * FROM user_event ORDER BY userID"
-                                          );
-                                          const rows = test.map((row) => Object.values(row));
-                                          console.log(rows);
-                                          break;*/
+          case "event-recommend":
+            await recommenderAlgorithmForEvents()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error(
+                  "Error with fetching recommended event list",
+                  err
+                );
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch events list" })
+                );
+              });
+            break;
+            break;
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);
