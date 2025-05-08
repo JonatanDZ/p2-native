@@ -4,10 +4,15 @@ import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 
 //Import libraries
+// Stripe library to interact with Stripe's API
 import Stripe from "stripe";
 
+// dotenv library to load environment variables from .env file
 import dotenv from "dotenv";
+
+// path library to handle and manipulate file paths
 import path from "path";
+
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +34,7 @@ let db = mysql.createConnection({
   port: process.env.DB_PORT,
 });
 
-//Use dotenv to access stripe key
+//Use dotenv to access stripe secret key
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT;
@@ -93,10 +98,10 @@ async function processReq(req, res) {
 
             req.on("end", async () => {
               try {
-                const { email, basket } = JSON.parse(bodyConfirmationMail);
+                const{ email, basket, fornavn, efternavn } = JSON.parse(bodyConfirmationMail);
                 const shopNames = [...new Set(basket.map((item) => item.info))];
 
-                await sendConfirmationEmail(email, basket, shopNames);
+                await sendConfirmationEmail(email, basket, shopNames, fornavn, efternavn);
 
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ success: true }));
@@ -246,9 +251,9 @@ async function processReq(req, res) {
                   ],
                   mode: "payment",
                   success_url:
-                    "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
+                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
                   cancel_url:
-                    "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
+                    "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
                 });
 
                 res.writeHead(200, {
@@ -526,7 +531,7 @@ async function processReq(req, res) {
 
 // helper functions for POST part
 
-async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
+async function sendConfirmationEmail(recipientEmail, basket, shopNames, fornavn, efternavn) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -549,7 +554,8 @@ async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
     to: recipientEmail,
     subject: "Din ordrebekræftelse",
     html: `
-          <h2>Tak for din ordre!</h2>
+          <h2>Hej ${fornavn} ${efternavn},</h2>
+          <p>Tak for din ordre!</p>
           <p>Her er dine varer:</p>
           <ul>${itemList}</ul>
           <p><strong>Afhentes i butik:</strong></p>
