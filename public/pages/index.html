@@ -252,6 +252,37 @@
                       }
                     }
                   });
+                  // Add click listeners to each event card button
+                  container.addEventListener("click", function (e) {
+                    if (e.target && e.target.classList.contains("event-link")) {
+                      e.preventDefault();
+                      const eventId = parseInt(
+                        e.target.getAttribute("data-id")
+                      );
+                      const event = data.find((ev) => ev.ID === eventId);
+                      if (event) {
+                        console.log("CLICKED!");
+
+                        const userID = 2; //Insert userID here (somehow)
+                        console.log("USER", userID, "EVENT", eventId);
+                        //Make a POST with userID and eventID
+                        try {
+                          const response = fetch(
+                            "http://localhost:3000/event-detail",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ userID, eventId }),
+                            }
+                          );
+                        } catch (err) {
+                          console.error("Error:", err);
+                          alert("Something went wrong. Try again.");
+                        }
+                        addToUserEvents(event);
+                      }
+                    }
+                  });
                 };
                 //Find the latest products
                 let last = [];
