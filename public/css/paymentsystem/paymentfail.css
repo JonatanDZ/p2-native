@@ -1,4 +1,5 @@
 
+/* Container for the cancellation/failure screen */
 .cancel-container {
     display: flex;
     justify-content: center;
@@ -8,6 +9,7 @@
     font-family: 'Arial', sans-serif;
 }
 
+/* Card-style box in the center of the screen */
 .cancel-card {
     background: #fff;
     padding: 40px;
@@ -18,17 +20,20 @@
     width: 90%;
 }
 
+/* Main heading style */
 h1 {
     font-size: 28px;
     color: #dc3545;
 }
 
+/* Paragraphs inside the cancel card */
 .cancel-card p {
     font-size: 18px;
     color: #333;
     margin: 10px 0;
 }
 
+/* Shared button style */
 .retry-button, .home-button {
     display: inline-block;
     margin-top: 20px;
@@ -41,18 +46,22 @@ h1 {
     transition: 0.3s;
 }
 
+/* Style for the retry button */
 .retry-button {
     background-color: #f44336;
 }
 
+/* Hover effect for retry button */
 .retry-button:hover {
     background-color: #d32f2f;
 }
 
+/* Style for the home button) */
 .home-button {
     background-color: #3c56fb;
 }
 
+/* Hover effect for home button */
 .home-button:hover {
     background-color: #5248e5;
 }

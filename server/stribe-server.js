@@ -1,9 +1,12 @@
+// Import required libraries
 //const http = require("http");
 const Stripe = require("stripe");
 const dotenv = require("dotenv");
 
+// load environment variables from .env file
 dotenv.config();
 
+// initialize Stripe with API secret key
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Creates a HTTP server
@@ -19,6 +22,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Handle POST request to create a Stripe checkout session
   if (req.url === "/create-checkout-session" && req.method === "POST") {
     let body = "";
 
@@ -40,6 +44,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
+        // Create a Stripe checkout session
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ["card"],
           line_items: [
