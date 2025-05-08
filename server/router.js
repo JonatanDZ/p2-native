@@ -2,6 +2,7 @@
 import { createProduct, getProducts, getEvents } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
 
 //Import libraries
 // Stripe library to interact with Stripe's API
@@ -199,16 +200,12 @@ async function processReq(req, res) {
 
             req.on("end", async () => {
               try {
-                const { userID, eventID } = JSON.parse(bodyEventDetail);
+                const { userID, eventId } = JSON.parse(bodyEventDetail);
                 //Insert the given data into user_events
                 db.query(
                   "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-                  [userID, eventID]
+                  [userID, eventId]
                 );
-                /*For testing:
-                            const [test] = await db.query("SELECT * FROM user_events");
-                            const rows = test.map((row) => Object.values(row));
-                            console.log(rows);*/
               } catch (error) {
                 res.writeHead(500, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ error: "Internal server error" }));
@@ -486,13 +483,13 @@ async function processReq(req, res) {
             break;
           case "get-events":
             try {
-                const events = await getEvents();
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify(events));
+              const events = await getEvents();
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(events));
             } catch (error) {
-                console.error("Error fetching events:", error);
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Failed to fetch events" }));
+              console.error("Error fetching events:", error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Failed to fetch events" }));
             }
             break;
           case "recommend":
@@ -509,14 +506,24 @@ async function processReq(req, res) {
                 );
               });
             break;
-          /*case "public/pages/events/event-detail.html?id=1":
-                                          console.log("TEST");
-                                          const [test] = connection.query(
-                                            "SELECT * FROM user_event ORDER BY userID"
-                                          );
-                                          const rows = test.map((row) => Object.values(row));
-                                          console.log(rows);
-                                          break;*/
+          case "event-recommend":
+            await recommenderAlgorithmForEvents()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error(
+                  "Error with fetching recommended event list",
+                  err
+                );
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch events list" })
+                );
+              });
+            break;
+            break;
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);

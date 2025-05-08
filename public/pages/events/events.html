@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products Page</title>
+    <title>Events Page</title>
     <link rel="stylesheet" href="/public/css/global.css">
     <link rel="stylesheet" href="/public/css/admin/viewproducts.css">
     <link rel="stylesheet" href="/public/css/components/components.css">
@@ -26,31 +26,7 @@
     </div>
     <div id="footer"></div>
     <script>
-            ///////////////////////////////
-            //When clicking event, add to user_events table (which is used for event reccomender)
-            let event_number = document.getElementsByClassName("event-link");
-            for (let i = 0; i < event_number.length; i++) {
-              event_number[i].addEventListener("click", async function () {
-                console.log("CLICKED!");
-                const userID = 2; //Insert userID here (somehow)
-                const eventID = events[i].id;
-                //Make a POST with userID and eventID
-                try {
-                  const response = await fetch(
-                    "http://localhost:3000/event-detail",
-                    {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ userID, eventID }),
-                    }
-                  );
-                } catch (err) {
-                  console.error("Error:", err);
-                  alert("Something went wrong. Try again.");
-                }
-              });
-            }
-              //////////////////////
+            
     </script>
      </script>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
