@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+        // Gets the first name and last name from local storage
         const fornavn = localStorage.getItem("userFornavn");
         const efternavn = localStorage.getItem("userEfternavn");
 

@@ -251,7 +251,7 @@ async function processReq(req, res) {
                   ],
                   mode: "payment",
                   success_url:
-                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
+                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html", 
                   cancel_url:
                     "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
                 });
