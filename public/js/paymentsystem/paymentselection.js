@@ -1,15 +1,18 @@
-
+// Waits for the DOM to fully load before executing the script to ensure all elements are available
 document.addEventListener("DOMContentLoaded", function () {
     const payButton = document.getElementById("checkout-button");
     const paymentForm = document.getElementById("payment-form");
+
+    // Parsing the saved products in the local storage into the basket
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
-    let totalPrice = 0;
-    basket.forEach(item => {
-        const price = parseInt(item.price.replace(/[^\d]/g, ''), 10);
-        const quantity = item.quantity || 1;
-        totalPrice += price * quantity;
-    });
+
+    // This function gets the total price from the local storage
+    const totalPrice = localStorage.getItem("lastTotalPrice") || 0;
+
+    // Change the text on the checkout button to show the total price
     payButton.textContent = `Godkend og betal DKK ${totalPrice}`;
+
+    // Submit event for the payment form 
     paymentForm.addEventListener("submit", async function (event) {
         event.preventDefault();
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
@@ -18,7 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
 
         }
-        
+
+        const fornavn = localStorage.getItem("userFornavn");
+        const efternavn = localStorage.getItem("userEfternavn");
+
+        // Gets the email from local storage
         const email = localStorage.getItem("userEmail");
         if (!email) {
         alert("Ingen e-mail fundet. Gå tilbage og udfyld din e-mail.");
@@ -26,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
         
+        // Makes a POST request to the backend server to create a checkout session
         try {
             const response = await fetch("http://localhost:3000/create-checkout-session", {
                 method: "POST",
@@ -34,15 +42,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     totalPrice: totalPrice,
                     basket: basket,
                     email: email,
-                    paymentMethod: selectedPaymentMethod.value
+                    paymentMethod: selectedPaymentMethod.value,
+                    fornavn: fornavn,
+                    efternavn: efternavn
                 })
             });
 
+            // Awaits for the response from the server
             const session = await response.json();
             
+            // If the session URL is available, redirect to it with the total price
             if (session.url) {
                 localStorage.setItem("lastTotalPrice", totalPrice);
+
                 window.location.href = session.url;
+
             } else {
                 alert("Fejl: Kunne ikke oprette en betalingssession.");
             }

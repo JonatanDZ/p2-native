@@ -7,6 +7,7 @@ form.addEventListener("submit", async (e) => {
     const password = form.password.value;
     const rememberMe = form.remember.checked;
 
+    // POST request to send login info to server
     try {
         const response = await fetch("http://localhost:3000/login", {
             method: "POST",
@@ -20,10 +21,11 @@ form.addEventListener("submit", async (e) => {
 
         if (response.ok) {
             const { message, token } = data;
-
             if (rememberMe) {
+                // Store token in localstorage if 'husk mig' on page is checked
                 localStorage.setItem("token", token); //localstorage saves and needs to be cleared manually
             } else {
+                // Store token in sessionStorage if 'husk mig' on page is not checked
                 sessionStorage.setItem("token", token); //sessionstorage clears when the browser is closed
             }
 
