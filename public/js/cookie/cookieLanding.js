@@ -1,5 +1,3 @@
-let city;
-
 function makeCookie(cookieName, value, expire) {
   const date = new Date();
   date.setTime(date.getTime() + expire * 24 * 60 * 60 * 1000);

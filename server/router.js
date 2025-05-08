@@ -177,7 +177,7 @@ async function processReq(req, res) {
                     // Respond with authorized admin
                     res.writeHead(200, { "Content-Type": "application/json" });
                     return res.end(
-                      JSON.stringify({ isAuthenticated: true, isAdmin })
+                      JSON.stringify({ isAuthenticated: true, isAdmin, userId })
                     );
                   }
                 );
