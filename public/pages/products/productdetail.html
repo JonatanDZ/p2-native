@@ -102,7 +102,9 @@
                     document.getElementById("product-detail").innerHTML = "<p>Error loading product details.</p>";
                 });
 
-                    function addToBasket(product) {
+            
+            // Function to add a product to the basket
+                function addToBasket(product) {
             let basket = JSON.parse(localStorage.getItem("basket")) || [];
             const existingProduct = basket.find(item => item.id === product.id);
             if (existingProduct) {
