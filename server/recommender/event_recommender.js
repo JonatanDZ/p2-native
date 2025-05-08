@@ -15,7 +15,7 @@ function reccomendEvents(data, events) {
   let currentUser = 1; //Get currentUser from database (somehow?) SHOULD BE CHANGED
   let user = []; //User holds the event id's of the events the user attends
   let result = []; //Holds the score and id of the events
-
+  
   //Initialize score to [0,eventID]
   for (let i = 0; i < events.length; i++) {
     result[i] = [];

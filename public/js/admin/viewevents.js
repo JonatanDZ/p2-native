@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Stuff loaded!")
   const apiContainers = document.querySelectorAll(".api-call");
   apiContainers.forEach((container) => {
     const endpoint = container.dataset.endpoint;
@@ -23,7 +24,7 @@ async function readFromDB(endpoint) {
 }
 
 function displayFromDB(data) {
-  const eventsContainer = document.getElementById("products-container"); // reuse existing container
+  const eventsContainer = document.getElementById("events-container"); // reuse existing container
   if (!eventsContainer) return;
 
   eventsContainer.innerHTML = "";

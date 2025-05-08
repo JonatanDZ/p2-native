@@ -150,14 +150,6 @@ async function processReq(req, res) {
                         }
                     });
                     return;
-
-                case "send-confirmation-email":
-                    let body2 = "";
-                    req.on("data", (chunk) => (body2 += chunk.toString()));
-                    req.on("end", async () => {
-                        try {
-                            const { email, basket } = JSON.parse(body2);
-                            const shopNames = [...new Set(basket.map((item) => item.info))];
           case "send-confirmation-email":
             let bodyConfirmationMail = "";
 
