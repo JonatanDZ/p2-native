@@ -21,16 +21,18 @@ export async function getProducts() {
   //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
   //  the array index to only recieve the DB rows.
   const rows = result[0];
-  console.log(rows);
+  //console.log(rows);
   return rows;
 }
+
+//  these three functions do the exact same? 
 
 export async function getRecommendedProducts() {
   const result = await pool.query("SELECT * FROM products_table");
   //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
   //  the array index to only recieve the DB rows.
   const rows = result[0];
-  console.log(rows);
+  //console.log(rows);
   return rows;
 }
 
@@ -39,7 +41,7 @@ export async function getLikedProducts() {
   //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
   //  the array index to only recieve the DB rows.
   const rows = result[0];
-  console.log(rows);
+  //console.log(rows);
   return rows;
 }
 
@@ -52,7 +54,17 @@ export async function getProduct(id) {
   return rows[0];
 }
 
+export async function getProductFilters(id) {
+  //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
+  const result = await pool.query("SELECT * FROM products_filters WHERE productID = ?", [
+    id,
+  ]);
+  const rows = result[0];
+  return rows[0];
+}
+
 export async function createProduct(product) {
+  // initializing one object twice since they are passed into two different tables
   const { name, shopID, picture, info, price, amount } = product;
   //  ProductID works as a placeholder it is init further down
   const {
@@ -87,7 +99,8 @@ export async function createProduct(product) {
     [name, shopID, picture, info, price, amount]
   );
 
-  const id_table = result_table[0].insertId; // <- get the product ID
+  //  getting product id to insert into second table as FK 
+  const id_table = result_table[0].insertId; 
 
   const result_filter = await pool.query(
     `INSERT INTO products_filters (
@@ -130,8 +143,16 @@ export async function createProduct(product) {
 
   //  TODO: revisit this.
   const id_filters = result_filter.insertId;
-  getProduct(id_filters);
-  return getProduct(id_table);
+  
+  const productTableOutput = await getProduct(id_table);
+
+  // querying products_filters instead of products_table
+  const productFiltersTableOutput = await getProductFilters(id_table);
+
+  return {
+    productTableOutput,
+    productFiltersTableOutput
+  }
 }
 
 // event functions
