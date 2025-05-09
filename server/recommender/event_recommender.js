@@ -12,6 +12,7 @@ export async function recommenderAlgorithmForEvents() {
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
 function reccomendEvents(data, events) {
+  if (!data || !events) return;
   let currentUser = 1; //Get currentUser from database (somehow?) SHOULD BE CHANGED
   let user = []; //User holds the event id's of the events the user attends
   let result = []; //Holds the score and id of the events
