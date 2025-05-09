@@ -1,5 +1,10 @@
 //Import from other files:
-import { createProduct, getProducts, createEvent, getEvents } from "./dbserver.js";
+import {
+  createProduct,
+  getProducts,
+  createEvent,
+  getEvents,
+} from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
@@ -88,68 +93,68 @@ async function processReq(req, res) {
               .catch((err) => console.error(err));
             break;
 
-                case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
-          extractJSON(req)
-            //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
-            .then(productEvent => {
-              productEvent.forEach(event => {
-                //createProduct(product);
-                createEvent(event);
-              });
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(
-                JSON.stringify({ message: "Events saved successfully." })
-              );
-            })
-            .catch((err) => reportError(res, err));
-          break;
-        case "create-checkout-session":
-                    let body = "";
-                    req.on("data", (chunk) => (body += chunk.toString()));
-                    req.on("end", async () => {
-                        try {
-                            const { totalPrice, email, basket } = JSON.parse(body);
+          case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+            extractJSON(req)
+              //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+              .then((productEvent) => {
+                productEvent.forEach((event) => {
+                  //createProduct(product);
+                  createEvent(event);
+                });
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ message: "Events saved successfully." })
+                );
+              })
+              .catch((err) => reportError(res, err));
+            break;
+          case "create-checkout-session":
+            let body = "";
+            req.on("data", (chunk) => (body += chunk.toString()));
+            req.on("end", async () => {
+              try {
+                const { totalPrice, email, basket } = JSON.parse(body);
 
-                            if (!totalPrice || !email || !basket) {
-                                res.writeHead(400, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: "Missing data" }));
-                                return;
-                            }
+                if (!totalPrice || !email || !basket) {
+                  res.writeHead(400, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: "Missing data" }));
+                  return;
+                }
 
-                            const session = await stripe.checkout.sessions.create({
-                                payment_method_types: ["card"],
-                                line_items: [
-                                    {
-                                        price_data: {
-                                            currency: "dkk",
-                                            product_data: { name: "Din kurv" },
-                                            unit_amount: Math.round(Number(totalPrice) * 100),
-                                        },
-                                        quantity: 1,
-                                    },
-                                ],
-                                mode: "payment",
-                                customer_email: email,
-                                success_url:
-                                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
-                                cancel_url:
-                                    "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
-                            });
+                const session = await stripe.checkout.sessions.create({
+                  payment_method_types: ["card"],
+                  line_items: [
+                    {
+                      price_data: {
+                        currency: "dkk",
+                        product_data: { name: "Din kurv" },
+                        unit_amount: Math.round(Number(totalPrice) * 100),
+                      },
+                      quantity: 1,
+                    },
+                  ],
+                  mode: "payment",
+                  customer_email: email,
+                  success_url:
+                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                  cancel_url:
+                    "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
+                });
 
-                            res.writeHead(200, {
-                                "Content-Type": "application/json",
-                                "Access-Control-Allow-Origin": "*",
-                            });
-                            res.end(JSON.stringify({ url: session.url }));
-                        } catch (err) {
-                            res.writeHead(500, {
-                                "Content-Type": "application/json",
-                                "Access-Control-Allow-Origin": "*",
-                            });
-                            res.end(JSON.stringify({ error: err.message }));
-                        }
-                    });
-                    return;
+                res.writeHead(200, {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                });
+                res.end(JSON.stringify({ url: session.url }));
+              } catch (err) {
+                res.writeHead(500, {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                });
+                res.end(JSON.stringify({ error: err.message }));
+              }
+            });
+            return;
           case "send-confirmation-email":
             let bodyConfirmationMail = "";
 
@@ -161,10 +166,17 @@ async function processReq(req, res) {
 
             req.on("end", async () => {
               try {
-                const{ email, basket, fornavn, efternavn } = JSON.parse(bodyConfirmationMail);
+                const { email, basket, fornavn, efternavn } =
+                  JSON.parse(bodyConfirmationMail);
                 const shopNames = [...new Set(basket.map((item) => item.info))];
 
-                await sendConfirmationEmail(email, basket, shopNames, fornavn, efternavn);
+                await sendConfirmationEmail(
+                  email,
+                  basket,
+                  shopNames,
+                  fornavn,
+                  efternavn
+                );
 
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ success: true }));
@@ -240,7 +252,11 @@ async function processReq(req, res) {
                     // Respond with authorized admin
                     res.writeHead(200, { "Content-Type": "application/json" });
                     return res.end(
-                      JSON.stringify({ isAuthenticated: true, isAdmin })
+                      JSON.stringify({
+                        isAuthenticated: true,
+                        isAdmin,
+                        userId: userId,
+                      })
                     );
                   }
                 );
@@ -310,7 +326,7 @@ async function processReq(req, res) {
                   ],
                   mode: "payment",
                   success_url:
-                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html", 
+                    "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
                   cancel_url:
                     "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
                 });
@@ -585,7 +601,6 @@ async function processReq(req, res) {
                 );
               });
             break;
-            break;
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);
@@ -600,7 +615,13 @@ async function processReq(req, res) {
 
 // helper functions for POST part
 
-async function sendConfirmationEmail(recipientEmail, basket, shopNames, fornavn, efternavn) {
+async function sendConfirmationEmail(
+  recipientEmail,
+  basket,
+  shopNames,
+  fornavn,
+  efternavn
+) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
