@@ -8,6 +8,7 @@ import {
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
 import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
+import { updateUserFilters } from "./recommender/updateUserFilters.js";
 
 //Import libraries
 // Stripe library to interact with Stripe's API
@@ -92,20 +93,28 @@ async function processReq(req, res) {
                             })
                             .catch((err) => console.error(err));
                         break;
-                        
+
                     case "update-user-filters":
                         extractJSON(req)
                             .then(({ userId, itemId }) => {
-                            updateUserFilters(userId, itemId)
-                                .then(() => {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ message: "User filters updated successfully." }));
-                                })
-                                .catch((err) => reportError(res, err));
+                                updateUserFilters(userId, itemId)
+                                    .then(() => {
+                                        res.writeHead(200, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ message: "User filters updated successfully." }));
+                                    })
+                                    .catch((err) => {
+                                        console.error("Error updating user filters:", err);
+                                        res.writeHead(500, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ error: "Failed to update user filters." }));
+                                    });
                             })
-                            .catch((err) => reportError(res, err));
+                            .catch((err) => {
+                                console.error("Error parsing request body:", err);
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Invalid request data." }));
+                            });
                         break;
-                          
+
                     case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
                         extractJSON(req)
                             //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
@@ -672,7 +681,7 @@ async function sendConfirmationEmail(
     console.log("Message ID:", info.messageId);
 }
 
-function extractJSON(req) {
+/* function extractJSON(req) {
     if (isJsonEncoded(req.headers["content-type"]))
         return collectPostBody(req).then((body) => {
             let x = JSON.parse(body);
@@ -680,7 +689,23 @@ function extractJSON(req) {
             return x;
         });
     else return Promise.reject(new Error(ValidationError)); //create a rejected promise
+} */
+
+function extractJSON(req) {
+    console.log('Content-Type:', req.headers["content-type"]);
+
+    if (isJsonEncoded(req.headers["content-type"]))
+        return collectPostBody(req).then((body) => {
+            let x = JSON.parse(body);
+            return x;
+        });
+    else {
+        console.warn('Invalid Content-Type — expected application/json');
+        return Promise.reject(new Error('Invalid Content-Type'));
+    }
 }
+
+
 function isJsonEncoded(contentType) {
     //Format
     //Content-Type: application/json; encoding

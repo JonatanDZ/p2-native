@@ -75,25 +75,64 @@
             return params.get('id');
         }
 
-        // Update User filters.
-        const userId = 0;
-        const itemId = getProductIdFromUrl();
+        async function getUserId() {
+            // Get token from localStorage
+            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-        try {
-            const res = await fetch('/update-user-filters', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId, itemId })
-            });
+            if (!token) {
+                console.warn("No token found");
+                return null;
+            }
 
-            const result = await res.json();
-            responseBox.textContent = result.message;
-        } catch (err) {
-            responseBox.textContent = 'Something went wrong: ' + err.message;
+            try {
+                // Send POST request to server to verify authentication and admin status
+                const response = await fetch('/verify-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: token })
+                });
+
+                const data = await response.json();
+
+
+                return await data.userId;
+
+            } catch (err) {
+                // Handle fetch errors or server issues
+                console.error('Error verifying token:', err);
+                localStorage.removeItem("token");
+                window.location.href = '/public/pages/login/login.html';
+            }
         }
-    
+
+        // Update User filters.
+        async function updateUserFiltersHTML() {
+            const userId = await getUserId();
+            const itemId = getProductIdFromUrl();
+
+            if (!userId || !itemId) {
+                console.warn("Missing userId or itemId");
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/update-user-filters', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, itemId })
+                });
+
+                const result = await res.json();
+            } catch (err) {
+                console.log("Something went wrong", err);
+            }
+        }
+
+        updateUserFiltersHTML();
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();
