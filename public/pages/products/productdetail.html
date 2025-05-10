@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             text-align: center;
             background-color: #f4f4f4;
         }
+
         .container {
             max-width: 600px;
             margin: auto;
@@ -23,20 +25,24 @@
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         img {
             width: 100%;
             height: 400px;
             object-fit: cover;
             border-radius: 10px;
         }
+
         h1 {
             font-size: 28px;
             margin: 10px 0;
         }
+
         p {
             font-size: 18px;
             font-weight: bold;
         }
+
         button {
             padding: 10px 20px;
             margin: 10px 0;
@@ -49,6 +55,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="navbar"></div>
@@ -59,14 +66,34 @@
 
     <div id="footer"></div>
 
-  <script src="/public/js/components/navbar.js"></script>
-  <script src="/public/js/components/footer.js"></script>
-  
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
+
     <script>
         function getProductIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
+
+        // Update User filters.
+        const userId = 0;
+        const itemId = getProductIdFromUrl();
+
+        try {
+            const res = await fetch('/update-user-filters', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId, itemId })
+            });
+
+            const result = await res.json();
+            responseBox.textContent = result.message;
+        } catch (err) {
+            responseBox.textContent = 'Something went wrong: ' + err.message;
+        }
+    
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();
@@ -76,16 +103,16 @@
             }
 
             fetch('/get-products')
-        .then(response => response.json())
-        .then(products => {
-            const product = products.find(p => p.ID.toString() === productId);
+                .then(response => response.json())
+                .then(products => {
+                    const product = products.find(p => p.ID.toString() === productId);
 
-            if (!product) {
-                document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
-                return;
-            }
+                    if (!product) {
+                        document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
+                        return;
+                    }
 
-            document.getElementById("product-detail").innerHTML = `
+                    document.getElementById("product-detail").innerHTML = `
                 <img src="${product.picture}" alt="${product.name}">
                 <h1>${product.name}</h1>
                 <p>${product.info}</p>
@@ -93,18 +120,17 @@
                 <button id="add-to-basket" data-id="${product.ID}">Tilføj til kurv</button>
             `;
 
-            document.getElementById("add-to-basket").addEventListener("click", function () {
-                addToBasket(product);
-            });
-        })
-        .catch(error => console.error("Error fetching product details:", error));
+                    document.getElementById("add-to-basket").addEventListener("click", function () {
+                        addToBasket(product);
+                    });
+                })
+                .catch(error => console.error("Error fetching product details:", error));
 
-                    document.getElementById("product-detail").innerHTML = "<p>Error loading product details.</p>";
-                });
+            document.getElementById("product-detail").innerHTML = "<p>Error loading product details.</p>";
+        });
 
-            
-            // Function to add a product to the basket
-                function addToBasket(product) {
+        // Function to add a product to the basket
+        function addToBasket(product) {
             let basket = JSON.parse(localStorage.getItem("basket")) || [];
             const existingProduct = basket.find(item => item.id === product.id);
             if (existingProduct) {
@@ -115,7 +141,8 @@
             }
             localStorage.setItem("basket", JSON.stringify(basket));
             alert("Produktet er tilføjet til kurven!");
-            }
+        }
     </script>
 </body>
+
 </html>
