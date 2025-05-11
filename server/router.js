@@ -6,7 +6,7 @@ import {
     getEvents,
 } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForUser, recommenderAlgorithmForItem } from "./recommender/recommenderAlgorithms.js";
 import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
 import { updateUserFilters } from "./recommender/updateUserFilters.js";
 
@@ -592,7 +592,7 @@ async function processReq(req, res) {
                             res.end(JSON.stringify({ error: "Failed to fetch events" }));
                         }
                         break;
-                        case "recommend": {
+                        case "recommendItems": {  
                             const urlObj = new URL(req.url, `http://${req.headers.host}`);
                             const userId = parseInt(urlObj.searchParams.get("userId"));
                         
@@ -605,17 +605,40 @@ async function processReq(req, res) {
                             recommenderAlgorithmForUser(parseInt(userId))
                                 .then((recommendations) => {
                                     res.writeHead(200, { "Content-Type": "application/json" });
-                                    res.end(JSON.stringify(recommendations)); // ✅ just the list
+                                    res.end(JSON.stringify(recommendations)); // just the list
                                 })
                                 .catch((err) => {
                                     console.error("Error generating recommendations:", err);
                                     res.writeHead(500, { "Content-Type": "application/json" });
-                                    res.end(JSON.stringify([])); // ✅ return empty list on error
+                                    res.end(JSON.stringify([])); // return empty list on error
                                 });
                         
                             break;
                         }
                         
+                        case "similarItems": {  
+                            const urlObj = new URL(req.url, `http://${req.headers.host}`);
+                            const itemId = parseInt(urlObj.searchParams.get("itemId"));
+                        
+                            if (!itemId) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify([])); // return empty array instead of error object
+                                break;
+                            }
+                        
+                            recommenderAlgorithmForItem(parseInt(itemId))
+                                .then((similarItems) => {
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify(similarItems)); // just the list
+                                })
+                                .catch((err) => {
+                                    console.error("Error generating similarItems:", err);
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify([])); // return empty list on error
+                                });
+                        
+                            break;
+                        }
                     case "event-recommend":
                         await recommenderAlgorithmForEvents()
                             .then((rec) => {

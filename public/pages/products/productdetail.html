@@ -64,12 +64,15 @@
         <p>Loading product details...</p>
     </div>
 
-    <h2>Recommended Items</h2>
-
-    <div id="recommended-items" class="container">
+    <h2>Anbefalede varer</h2>
+    <div class="container">
         <div id="recommendation-list"></div>
     </div>
 
+    <h2>Lignende varer</h2>
+    <div class="container">
+        <div id="similarItems-list"></div>
+    </div>
 
     <div id="footer"></div>
 
@@ -142,11 +145,11 @@
         async function getRecommendedItemsHTML() {
             const userId = await getUserId();
 
-            await fetch(`/recommend?userId=${userId}`)
+            await fetch(`/recommendItems?userId=${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Recommendations:', data);
-                    displayRecommendedItems(data); // ✅ pass the actual data here
+                    displayRecommendedItems(data); 
                 })
                 .catch(err => {
                     console.error("Failed to load recommendations:", err);
@@ -156,34 +159,85 @@
         async function displayRecommendedItems(recommendationList) {
             const top10 = recommendationList.slice(0, 10);
 
+            if (top10.length > 0) {
+                const allRes = await fetch('/get-products');
+                const allProducts = await allRes.json();
+
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                for (const rec of top10) {
+                    const product = allProducts.find(p => p.ID === rec.ID);
+                    if (!product) continue;
+
+                    const itemHTML = document.createElement("div");
+                    itemHTML.innerHTML = `
+                <img src="${product.picture}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.info}</p>
+                <p>Price: ${product.price} DKK</p>
+                <p>Match Score: ${rec.score}%</p>
+                <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+            `;
+                    container.appendChild(itemHTML);
+                }
+            } else {
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                const itemHTML = document.createElement("div"); 
+                itemHTML.innerHTML = `
+        <h3>Login for at se dine anbefalede varer</h3>
+    `;
+                container.appendChild(itemHTML);
+            }
+        }
+
+        async function displaySimilarItems(similarItems) {
+            const top10 = similarItems.slice(0, 10);
+
+
+
             const allRes = await fetch('/get-products');
             const allProducts = await allRes.json();
 
-            const container = document.getElementById("recommendation-list");
+            const container = document.getElementById("similarItems-list");
             container.innerHTML = ""; // clear previous content if any
-
             for (const rec of top10) {
                 const product = allProducts.find(p => p.ID === rec.ID);
                 if (!product) continue;
 
                 const itemHTML = document.createElement("div");
                 itemHTML.innerHTML = `
-            <img src="${product.picture}" alt="${product.name}">
-            <h3>${product.name}</h3>
-            <p>${product.info}</p>
-            <p>Price: ${product.price} DKK</p>
-            <p>Match Score: ${rec.score}%</p>
-            <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
-        `;
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <p>Match Score: ${rec.score}%</p>
+                        <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+                    `;
                 container.appendChild(itemHTML);
             }
+
         }
 
+        async function getSimilarItems() {
+            const itemId = await getProductIdFromUrl();
 
+            await fetch(`/similarItems?itemId=${itemId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('similar:', data);
+                    displaySimilarItems(data);
+                })
+                .catch(err => {
+                    console.error("Failed to load similar items:", err);
+                });
+        }
 
-
-        //updateUserFiltersHTML();
+        updateUserFiltersHTML();
         getRecommendedItemsHTML();
+        getSimilarItems()
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();
