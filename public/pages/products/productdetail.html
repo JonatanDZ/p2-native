@@ -132,7 +132,25 @@
             }
         }
 
-        updateUserFiltersHTML();
+
+        async function getRecommendedItemsHTML() {
+            const userId = await getUserId();
+
+            const res = await fetch(`/recommend?userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Recommendations:', data);
+                });
+
+            console.log(res);
+
+            
+        }
+
+
+        //updateUserFiltersHTML();
+        getRecommendedItemsHTML();
+
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();

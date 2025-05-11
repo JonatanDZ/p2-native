@@ -592,20 +592,30 @@ async function processReq(req, res) {
                             res.end(JSON.stringify({ error: "Failed to fetch events" }));
                         }
                         break;
-                    case "recommend":
-                        await recommenderAlgorithmForUser(2)
-                            .then((rec) => {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(rec));
-                            })
-                            .catch((err) => {
-                                console.error("Error with fetching recommended list", err);
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(
-                                    JSON.stringify({ error: "Failed to fetch products list" })
-                                );
-                            });
-                        break;
+                        case "recommend": {
+                            const urlObj = new URL(req.url, `http://${req.headers.host}`);
+                            const userId = parseInt(urlObj.searchParams.get("userId"));
+                        
+                            if (!userId) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify([])); // return empty array instead of error object
+                                break;
+                            }
+                        
+                            recommenderAlgorithmForUser(parseInt(userId))
+                                .then((recommendations) => {
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify(recommendations)); // ✅ just the list
+                                })
+                                .catch((err) => {
+                                    console.error("Error generating recommendations:", err);
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify([])); // ✅ return empty list on error
+                                });
+                        
+                            break;
+                        }
+                        
                     case "event-recommend":
                         await recommenderAlgorithmForEvents()
                             .then((rec) => {
