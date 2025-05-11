@@ -4,20 +4,20 @@ import {
   getAllUserEventsDB,
 } from "./recommenderAlgorithmsServer.js";
 
-export async function recommenderAlgorithmForEvents() {
+export async function recommenderAlgorithmForEvents(userID) {
   //Get data from database
   let events = await getAllEventsDB();
   let userEvents = await getAllUserEventsDB();
   //Call recommender with the data
-  return reccomendEvents(userEvents, events);
+  return reccomendEvents(userEvents, events, userID);
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
-function reccomendEvents(data, events) {
+function reccomendEvents(data, events, userID) {
   //If either data is NULL then stop
   if (!data || !events) return;
 
-  let currentUser = 1; //Get currentUser from database (somehow?) SHOULD BE CHANGED
+  let currentUser = userID; //Get currentUser from database (somehow?) SHOULD BE CHANGED
 
   let result = []; //Holds the score and id of the events
 

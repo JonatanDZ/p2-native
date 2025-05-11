@@ -106,7 +106,7 @@ function displayFromDB(data) {
   });
 }
 
-async function getCurrentUserID() {
+export async function getCurrentUserID() {
   // Get token from localStorage
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");

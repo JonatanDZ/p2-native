@@ -524,11 +524,45 @@ async function processReq(req, res) {
               }
             });
             break;
+          case "event-recommend":
+            let bodyEventRecommend = "";
+
+            // Listen for incoming data and append it to the body
+            req.on("data", (chunk) => {
+              bodyEventRecommend += chunk.toString();
+            });
+
+            req.on("end", async () => {
+              try {
+                const { userID } = JSON.parse(bodyEventRecommend);
+                await recommenderAlgorithmForEvents(userID)
+                  .then((rec) => {
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify(rec));
+                  })
+                  .catch((err) => {
+                    console.error(
+                      "Error with fetching recommended event list",
+                      err
+                    );
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(
+                      JSON.stringify({ error: "Failed to fetch events list" })
+                    );
+                  });
+              } catch (error) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Internal server error" }));
+              }
+            });
+
+            break;
 
           default:
             console.error("Resource doesn't exist");
         }
       }
+
       break;
 
     case "GET":
@@ -584,23 +618,7 @@ async function processReq(req, res) {
                 );
               });
             break;
-          case "event-recommend":
-            await recommenderAlgorithmForEvents()
-              .then((rec) => {
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify(rec));
-              })
-              .catch((err) => {
-                console.error(
-                  "Error with fetching recommended event list",
-                  err
-                );
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(
-                  JSON.stringify({ error: "Failed to fetch events list" })
-                );
-              });
-            break;
+
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);

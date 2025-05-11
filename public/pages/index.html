@@ -172,10 +172,11 @@
         fetch("/get-events")
           .then((res) => res.json())
           .then((data) => {
-            ///////////
+            /////////////////////////////////////////////////////////////////////////////
             fetch("http://localhost:3000/event-recommend", {
-              method: "GET",
+              method: "POST",
               headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userID: 2 }),
             })
               .then((res) => res.json())
               .then((data1) => {
