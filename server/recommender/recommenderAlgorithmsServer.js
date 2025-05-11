@@ -22,6 +22,7 @@ export async function getUserFiltersDB(userId) {
       return null;
     }
 
+    console.log("UserFilter is updated");
     // Object.values ensures that we only get the values (such as 1 and 0), meaning we do not get the field names (labels).
     // The result is delivered inside another array, so we need to access the first element with [0]
     return Object.values(userResults[0]);

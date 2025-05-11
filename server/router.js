@@ -6,8 +6,12 @@ import {
   getEvents,
 } from "./dbserver.js";
 import { fileResponse } from "./server.js";
-import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import {
+  recommenderAlgorithmForUser,
+  recommenderAlgorithmForItem,
+} from "./recommender/recommenderAlgorithms.js";
 import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
+import { updateUserFilters } from "./recommender/updateUserFilters.js";
 
 //Import libraries
 // Stripe library to interact with Stripe's API
@@ -75,15 +79,15 @@ async function processReq(req, res) {
                 productData.forEach((product) => {
                   createProduct(product);
                   /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
-                            .then((productData) => {
-                              productData.forEach((product) => {
-                                createProduct(
-                                  product.name,
-                                  product.price,
-                                  product.amount,
-                                  product.filters
-                                );
-                                */
+                                              .then((productData) => {
+                                                productData.forEach((product) => {
+                                                  createProduct(
+                                                    product.name,
+                                                    product.price,
+                                                    product.amount,
+                                                    product.filters
+                                                  );
+                                                  */
                 });
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(
@@ -91,6 +95,35 @@ async function processReq(req, res) {
                 );
               })
               .catch((err) => console.error(err));
+            break;
+
+          case "update-user-filters":
+            extractJSON(req)
+              .then(({ userId, itemId }) => {
+                updateUserFilters(userId, itemId)
+                  .then(() => {
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(
+                      JSON.stringify({
+                        message: "User filters updated successfully.",
+                      })
+                    );
+                  })
+                  .catch((err) => {
+                    console.error("Error updating user filters:", err);
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(
+                      JSON.stringify({
+                        error: "Failed to update user filters.",
+                      })
+                    );
+                  });
+              })
+              .catch((err) => {
+                console.error("Error parsing request body:", err);
+                res.writeHead(400, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Invalid request data." }));
+              });
             break;
 
           case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
@@ -524,45 +557,11 @@ async function processReq(req, res) {
               }
             });
             break;
-          case "event-recommend":
-            let bodyEventRecommend = "";
-
-            // Listen for incoming data and append it to the body
-            req.on("data", (chunk) => {
-              bodyEventRecommend += chunk.toString();
-            });
-
-            req.on("end", async () => {
-              try {
-                const { userID } = JSON.parse(bodyEventRecommend);
-                await recommenderAlgorithmForEvents(userID)
-                  .then((rec) => {
-                    res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify(rec));
-                  })
-                  .catch((err) => {
-                    console.error(
-                      "Error with fetching recommended event list",
-                      err
-                    );
-                    res.writeHead(500, { "Content-Type": "application/json" });
-                    res.end(
-                      JSON.stringify({ error: "Failed to fetch events list" })
-                    );
-                  });
-              } catch (error) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Internal server error" }));
-              }
-            });
-
-            break;
 
           default:
             console.error("Resource doesn't exist");
         }
       }
-
       break;
 
     case "GET":
@@ -604,6 +603,54 @@ async function processReq(req, res) {
               res.end(JSON.stringify({ error: "Failed to fetch events" }));
             }
             break;
+          case "recommendItems":
+            const urlObjRec = new URL(req.url, `http://${req.headers.host}`);
+            const userId = parseInt(urlObjRec.searchParams.get("userId"));
+
+            if (!userId) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify([])); // return empty array instead of error object
+              break;
+            }
+
+            recommenderAlgorithmForUser(parseInt(userId))
+              .then((recommendations) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(recommendations)); // just the list
+              })
+              .catch((err) => {
+                console.error("Error generating recommendations:", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify([])); // return empty list on error
+              });
+
+            break;
+          case "similarItems":
+            const urlObjSimilar = new URL(
+              req.url,
+              `http://${req.headers.host}`
+            );
+            const itemId = parseInt(urlObjSimilar.searchParams.get("itemId"));
+
+            if (!itemId) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify([])); // return empty array instead of error object
+              break;
+            }
+
+            recommenderAlgorithmForItem(parseInt(itemId))
+              .then((similarItems) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(similarItems)); // just the list
+              })
+              .catch((err) => {
+                console.error("Error generating similarItems:", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify([])); // return empty list on error
+              });
+
+            break;
+          // skal evt slettes også brug den case over :)
           case "recommend":
             await recommenderAlgorithmForUser(2)
               .then((rec) => {
@@ -618,7 +665,23 @@ async function processReq(req, res) {
                 );
               });
             break;
-
+          case "event-recommend":
+            await recommenderAlgorithmForEvents()
+              .then((rec) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(rec));
+              })
+              .catch((err) => {
+                console.error(
+                  "Error with fetching recommended event list",
+                  err
+                );
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({ error: "Failed to fetch events list" })
+                );
+              });
+            break;
           //Otherwise respond with the given path
           default:
             fileResponse(res, betterURL);
@@ -677,15 +740,30 @@ async function sendConfirmationEmail(
   console.log("Message ID:", info.messageId);
 }
 
+/* function extractJSON(req) {
+    if (isJsonEncoded(req.headers["content-type"]))
+        return collectPostBody(req).then((body) => {
+            let x = JSON.parse(body);
+            //console.log(x);
+            return x;
+        });
+    else return Promise.reject(new Error(ValidationError)); //create a rejected promise
+} */
+
 function extractJSON(req) {
+  console.log("Content-Type:", req.headers["content-type"]);
+
   if (isJsonEncoded(req.headers["content-type"]))
     return collectPostBody(req).then((body) => {
       let x = JSON.parse(body);
-      //console.log(x);
       return x;
     });
-  else return Promise.reject(new Error(ValidationError)); //create a rejected promise
+  else {
+    console.warn("Invalid Content-Type — expected application/json");
+    return Promise.reject(new Error("Invalid Content-Type"));
+  }
 }
+
 function isJsonEncoded(contentType) {
   //Format
   //Content-Type: application/json; encoding
