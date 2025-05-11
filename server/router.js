@@ -592,9 +592,9 @@ async function processReq(req, res) {
                             res.end(JSON.stringify({ error: "Failed to fetch events" }));
                         }
                         break;
-                    case "recommendItems": {
-                        const urlObj = new URL(req.url, `http://${req.headers.host}`);
-                        const userId = parseInt(urlObj.searchParams.get("userId"));
+                    case "recommendItems":
+                        const urlObjRec = new URL(req.url, `http://${req.headers.host}`);
+                        const userId = parseInt(urlObjRec.searchParams.get("userId"));
 
                         if (!userId) {
                             res.writeHead(400, { "Content-Type": "application/json" });
@@ -614,11 +614,9 @@ async function processReq(req, res) {
                             });
 
                         break;
-                    }
-
-                    case "similarItems": {
-                        const urlObj = new URL(req.url, `http://${req.headers.host}`);
-                        const itemId = parseInt(urlObj.searchParams.get("itemId"));
+                    case "similarItems":
+                        const urlObjSimilar = new URL(req.url, `http://${req.headers.host}`);
+                        const itemId = parseInt(urlObjSimilar.searchParams.get("itemId"));
 
                         if (!itemId) {
                             res.writeHead(400, { "Content-Type": "application/json" });
@@ -638,7 +636,21 @@ async function processReq(req, res) {
                             });
 
                         break;
-                    }
+                    // skal evt slettes også brug den case over :)
+                    case "recommend":
+                        await recommenderAlgorithmForUser(2)
+                            .then((rec) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(rec));
+                            })
+                            .catch((err) => {
+                                console.error("Error with fetching recommended list", err);
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(
+                                    JSON.stringify({ error: "Failed to fetch products list" })
+                                );
+                            });
+                        break;
                     case "event-recommend":
                         await recommenderAlgorithmForEvents()
                             .then((rec) => {
