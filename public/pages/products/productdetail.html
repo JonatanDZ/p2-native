@@ -64,6 +64,13 @@
         <p>Loading product details...</p>
     </div>
 
+    <h2>Recommended Items</h2>
+
+    <div id="recommended-items" class="container">
+        <div id="recommendation-list"></div>
+    </div>
+
+
     <div id="footer"></div>
 
     <script src="/public/js/components/navbar.js"></script>
@@ -126,7 +133,6 @@
                     body: JSON.stringify({ userId, itemId })
                 });
 
-                const result = await res.json();
             } catch (err) {
                 console.log("Something went wrong", err);
             }
@@ -136,21 +142,48 @@
         async function getRecommendedItemsHTML() {
             const userId = await getUserId();
 
-            const res = await fetch(`/recommend?userId=${userId}`)
+            await fetch(`/recommend?userId=${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Recommendations:', data);
+                    displayRecommendedItems(data); // ✅ pass the actual data here
+                })
+                .catch(err => {
+                    console.error("Failed to load recommendations:", err);
                 });
-
-            console.log(res);
-
-            
         }
+
+        async function displayRecommendedItems(recommendationList) {
+            const top10 = recommendationList.slice(0, 10);
+
+            const allRes = await fetch('/get-products');
+            const allProducts = await allRes.json();
+
+            const container = document.getElementById("recommendation-list");
+            container.innerHTML = ""; // clear previous content if any
+
+            for (const rec of top10) {
+                const product = allProducts.find(p => p.ID === rec.ID);
+                if (!product) continue;
+
+                const itemHTML = document.createElement("div");
+                itemHTML.innerHTML = `
+            <img src="${product.picture}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>${product.info}</p>
+            <p>Price: ${product.price} DKK</p>
+            <p>Match Score: ${rec.score}%</p>
+            <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+        `;
+                container.appendChild(itemHTML);
+            }
+        }
+
+
 
 
         //updateUserFiltersHTML();
         getRecommendedItemsHTML();
-
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();
