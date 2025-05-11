@@ -172,13 +172,13 @@
 
                     const itemHTML = document.createElement("div");
                     itemHTML.innerHTML = `
-                <img src="${product.picture}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <p>${product.info}</p>
-                <p>Price: ${product.price} DKK</p>
-                <p>Match Score: ${rec.score}%</p>
-                <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
-            `;
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <p>Match Score: ${rec.score}%</p>
+                        <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+                    `;
                     container.appendChild(itemHTML);
                 }
             } else {
@@ -187,8 +187,8 @@
 
                 const itemHTML = document.createElement("div");
                 itemHTML.innerHTML = `
-        <h3>Login for at se dine anbefalede varer</h3>
-    `;
+                    <h3>Login for at se dine anbefalede varer</h3>
+                `;
                 container.appendChild(itemHTML);
             }
         }
@@ -257,12 +257,12 @@
                     }
 
                     document.getElementById("product-detail").innerHTML = `
-                <img src="${product.picture}" alt="${product.name}">
-                <h1>${product.name}</h1>
-                <p>${product.info}</p>
-                <p>Price: ${product.price} DKK</p>
-                <button id="add-to-basket" data-id="${product.ID}">Tilføj til kurv</button>
-            `;
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h1>${product.name}</h1>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <button id="add-to-basket" data-id="${product.ID}">Tilføj til kurv</button>
+                    `;
 
                     document.getElementById("add-to-basket").addEventListener("click", function () {
                         addToBasket(product);
