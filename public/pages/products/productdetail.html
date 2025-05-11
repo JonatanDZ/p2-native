@@ -149,7 +149,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Recommendations:', data);
-                    displayRecommendedItems(data); 
+                    displayRecommendedItems(data);
                 })
                 .catch(err => {
                     console.error("Failed to load recommendations:", err);
@@ -185,7 +185,7 @@
                 const container = document.getElementById("recommendation-list");
                 container.innerHTML = ""; // clear previous content if any
 
-                const itemHTML = document.createElement("div"); 
+                const itemHTML = document.createElement("div");
                 itemHTML.innerHTML = `
         <h3>Login for at se dine anbefalede varer</h3>
     `;
