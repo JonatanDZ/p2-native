@@ -1,5 +1,6 @@
-import { dotProduct } from "../../../server/recommender/recommenderAlgorithms"
+import { compareLists, dotProduct } from "../../../server/recommender/recommenderAlgorithms"
 
+// every test follows the principle of arrange, act and assert
 
 //  testing recommenderAlgorithm functions
 test('dotProduct properly returns a dotproduct between two vectors', async ()=>{
@@ -42,6 +43,18 @@ test('dotProduct properly returns a dotproduct between two vectors', async ()=>{
 
 })
 
-test('compareLists properly returns the list which is largest', async ()=>{
-
-})
+test('compareLists properly compares objects and returns a sorted list of objects', async ()=>{
+    const input = [
+        { ID: 1, score: 3 },
+        { ID: 2, score: 7 },
+        { ID: 3, score: 5 }
+    ];
+    
+    const sorted = compareLists(input);
+    const expected =  
+    [{ ID: 2, score: 7 },
+    { ID: 3, score: 5 },
+    { ID: 1, score: 3 }]
+    
+    expect(sorted).toEqual(expected);
+});
