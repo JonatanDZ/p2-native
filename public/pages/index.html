@@ -426,7 +426,7 @@
               container.appendChild(card);
             }
           } else {
-            const container = document.getElementById("recommendation-list");
+            const container = document.getElementById(placement);
             container.innerHTML = ""; // clear previous content if any
 
             const itemHTML = document.createElement("div");
@@ -512,7 +512,7 @@
               container.appendChild(card);
             }
           } else {
-            const container = document.getElementById("recommendation-list");
+            const container = document.getElementById(placement);
             container.innerHTML = ""; // clear previous content if any
 
             const itemHTML = document.createElement("div");
