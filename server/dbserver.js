@@ -142,7 +142,7 @@ export async function createProduct(product) {
   );
 
   //  TODO: revisit this.
-  const id_filters = result_filter.insertId;
+  //const id_filters = result_filter.insertId;
   
   const productTableOutput = await getProduct(id_table);
 
