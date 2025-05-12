@@ -625,6 +625,33 @@ async function processReq(req, res) {
               });
 
             break;
+          case "recommendEvents":
+            const urlObjRecEvent = new URL(
+              req.url,
+              `http://${req.headers.host}`
+            );
+            const userIdEvent = parseInt(
+              urlObjRecEvent.searchParams.get("userId")
+            );
+
+            if (!userIdEvent) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify([])); // return empty array instead of error object
+              break;
+            }
+
+            recommenderAlgorithmForEvents(parseInt(userIdEvent))
+              .then((recommendations) => {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(recommendations)); // just the list
+              })
+              .catch((err) => {
+                console.error("Error generating recommendations:", err);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify([])); // return empty list on error
+              });
+
+            break;
           case "similarItems":
             const urlObjSimilar = new URL(
               req.url,
