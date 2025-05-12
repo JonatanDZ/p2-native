@@ -53,6 +53,14 @@ export async function getProduct(id) {
   const rows = result[0];
   return rows[0];
 }
+export async function getEvent(id) {
+  //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
+  const result = await pool.query("SELECT * FROM events_table WHERE id = ?", [
+    id,
+  ]);
+  const rows = result[0];
+  return rows[0];
+}
 
 export async function getProductFilters(id) {
   //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
