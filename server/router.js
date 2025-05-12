@@ -428,7 +428,7 @@ async function processReq(req, res) {
                 cotton, linnen, polyester
             ) VALUES (?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)`,
                                             [userId],
-                                            (err2, result2) => {
+                                            (err2) => {
                                                 if (err2) {
                                                     console.error("Fejl under oprettelse af brugerfiltre", err2);
                                                     res.writeHead(500, { "Content-Type": "application/json" });
