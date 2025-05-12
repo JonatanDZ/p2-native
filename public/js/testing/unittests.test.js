@@ -1,10 +1,6 @@
 import { createProduct, getLikedProducts, getProduct, getProducts, getRecommendedProducts } from "../../../server/dbserver";
 import { onLoadTest } from "./unitTestSnippets/onLoadTest";
 
-import mysql from "mysql2";
-import dotenv from "dotenv";
-dotenv.config();
-
 // every test follows the principle of arrange, act and assert
 
 // testing parsing of CSV file to JSON-format object. 
@@ -109,20 +105,6 @@ test('getProduct properly returns a single, specific product', async () =>{
     } 
 })
 
-//  Connecting to DB to create transaction:
-
-const pool = mysql
-  .createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    //  Making it a promise so we can use async await functions !!
-  })
-  .promise();
-
-
 test('createProduct properly returns both a row in products_table and products_filter. The function is dependent on getProduct working.. ', async () =>{
     const input = {
         name: "White pants",
@@ -151,7 +133,8 @@ test('createProduct properly returns both a row in products_table and products_f
     //  The transaction is a sort of testing environment. Everything in between start transaction and rollback will not be applied to the actual database.
 
     // TODO: fix the transaction aspect so it actually doesnt save in the DB. 
-    await pool.query('START TRANSACTION');
+    //await pool.query('START TRANSACTION');
+    // Issue 
     const output = await createProduct(input);
     expect(output.productTableOutput).toEqual({
         ID: expect.any(Number),
@@ -182,5 +165,5 @@ test('createProduct properly returns both a row in products_table and products_f
         polyester: 1
       });
 
-    await pool.query('ROLLBACK');
+    //await pool.query('ROLLBACK');
 })
