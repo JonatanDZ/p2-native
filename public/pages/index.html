@@ -43,18 +43,18 @@
     <main>
       <div id="navbar"></div>
       <div>
+        <h1>Events</h1>
+        <div class="image-container" id="events">
+          <!-- images will be displayed here -->
+        </div>
+
         <h1>Anbefalede produkter</h1>
         <div class="image-container" id="recommendations">
-          <!-- images will be displayed here -->
+            <div id="recommendation-list"></div>
         </div>
 
         <h1>Nyeste produkter</h1>
         <div class="image-container" id="products">
-          <!-- images will be displayed here -->
-        </div>
-
-        <h1>Events</h1>
-        <div class="image-container" id="events">
           <!-- images will be displayed here -->
         </div>
       </div>
@@ -64,7 +64,7 @@
       <script src="/public/js/components/footer.js"></script>
       <!--Nedestående skal være i sin egen js fil?-->
       <script>
-        let frontpageAmount = 7;
+        /* let frontpageAmount = 5;
         //Products:
         fetch("/get-products")
           .then((res) => res.json())
@@ -252,6 +252,37 @@
                       }
                     }
                   });
+                  // Add click listeners to each event card button
+                  container.addEventListener("click", function (e) {
+                    if (e.target && e.target.classList.contains("event-link")) {
+                      e.preventDefault();
+                      const eventId = parseInt(
+                        e.target.getAttribute("data-id")
+                      );
+                      const event = data.find((ev) => ev.ID === eventId);
+                      if (event) {
+                        console.log("CLICKED!");
+
+                        const userID = 2; //Insert userID here (somehow)
+                        console.log("USER", userID, "EVENT", eventId);
+                        //Make a POST with userID and eventID
+                        try {
+                          const response = fetch(
+                            "http://localhost:3000/event-detail",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ userID, eventId }),
+                            }
+                          );
+                        } catch (err) {
+                          console.error("Error:", err);
+                          alert("Something went wrong. Try again.");
+                        }
+                        addToUserEvents(event);
+                      }
+                    }
+                  });
                 };
                 //Find the latest products
                 let last = [];
@@ -298,6 +329,105 @@
           .catch((err) =>
             console.error("Failed to load dynamic product data:", err)
           );
+     */
+
+        async function getUserId() {
+            // Get token from localStorage
+            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+            if (!token) {
+                console.warn("No token found");
+                return null;
+            }
+
+            try {
+                // Send POST request to server to verify authentication and admin status
+                const response = await fetch('/verify-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: token })
+                });
+
+                const data = await response.json();
+
+
+                return await data.userId;
+
+            } catch (err) {
+                // Handle fetch errors or server issues
+                console.error('Error verifying token:', err);
+                localStorage.removeItem("token");
+                window.location.href = '/public/pages/login/login.html';
+            }
+        }
+
+        async function getRecommendedItemsHTML() {
+            const userId = await getUserId();
+
+            await fetch(`/recommendItems?userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Recommendations:', data);
+                    displayRecommendedItems(data);
+                })
+                .catch(err => {
+                    console.error("Failed to load recommendations:", err);
+                });
+        }
+
+        async function displayRecommendedItems(recommendationList) {
+            const top10 = recommendationList.slice(0, 10);
+
+            if (top10.length > 0) {
+                const allRes = await fetch('/get-products');
+                const allProducts = await allRes.json();
+
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                for (const rec of top10) {
+                    const product = allProducts.find(p => p.ID === rec.ID);
+                    if (!product) continue;
+
+                    const itemHTML = document.createElement("div");
+                    itemHTML.innerHTML = `
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <p>Match Score: ${rec.score}%</p>
+                        <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+                    `;
+                    container.appendChild(itemHTML);
+                }
+            } else {
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                const itemHTML = document.createElement("div");
+                itemHTML.innerHTML = `
+                    <h3>Login for at se dine anbefalede varer</h3>
+                `;
+                container.appendChild(itemHTML);
+            }
+        }
+
+        getRecommendedItemsHTML();
+
+        function addToBasket(product) {
+            let basket = JSON.parse(localStorage.getItem("basket")) || [];
+            const existingProduct = basket.find(item => item.id === product.id);
+            if (existingProduct) {
+                existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+            } else {
+                product.quantity = 1;
+                basket.push(product);
+            }
+            localStorage.setItem("basket", JSON.stringify(basket));
+            alert("Produktet er tilføjet til kurven!");
+        }
       </script>
     </main>
   </body>
