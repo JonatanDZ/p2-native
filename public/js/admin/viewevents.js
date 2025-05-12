@@ -45,8 +45,8 @@ function displayFromDB(data) {
     img.style.objectFit = "cover";
     img.style.objectPosition = "center";
     img.onclick = () => {
-            window.location.href = `eventdetail.html?id=${event.ID}`;
-        };
+      window.location.href = `eventdetail.html?id=${event.ID}`;
+    };
 
     card.appendChild(img);
 
@@ -89,21 +89,25 @@ function displayFromDB(data) {
         console.log("CLICKED!");
 
         const userID = await getCurrentUserID(); //Insert userID here (somehow)
-        console.log(userID);
+        if (userID != null) {
+          console.log(userID);
 
-        console.log("USER", userID, "EVENT", eventId);
-        //Make a POST with userID and eventID
-        try {
-          const response = fetch("http://localhost:3000/event-detail", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userID, eventId }),
-          });
-        } catch (err) {
-          console.error("Error:", err);
-          alert("Something went wrong. Try again.");
+          console.log("USER", userID, "EVENT", eventId);
+          //Make a POST with userID and eventID
+          try {
+            const response = fetch("http://localhost:3000/event-detail", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userID, eventId }),
+            });
+          } catch (err) {
+            console.error("Error:", err);
+            alert("Something went wrong. Try again.");
+          }
+          addToUserEvents(event);
+        } else {
+          console.log("log in to add to reccommender");
         }
-        addToUserEvents(event);
       }
     }
   });
