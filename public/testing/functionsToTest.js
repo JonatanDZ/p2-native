@@ -1,4 +1,4 @@
-export async function authenticateToken() {
+/*export async function authenticateToken() {
     // Get token from localStorage
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
@@ -49,6 +49,6 @@ export async function authenticateToken() {
         localStorage.removeItem("token");
         window.location.href = '/public/pages/login/login.html';
     }
-};
+};*/
 
 

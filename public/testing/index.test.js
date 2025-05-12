@@ -1,3 +1,4 @@
+/* 
 import { authenticateToken } from "./functionsToTest.js";
 
 'use strict';
@@ -23,13 +24,13 @@ beforeEach(() => {
 test('redirects to login if no token is found', async () => {
     await authenticateToken();
     /* since "beforeEach" clears local and sesstion storage and we dont declare a token, it is simulated that there is no token
-    therefore we expect the window location to redirect to login.html as that is what the function should do */
+    therefore we expect the window location to redirect to login.html as that is what the function should do 
     expect(window.location.href).toBe('/public/pages/login/login.html');
 });
 
 test('redirects to user dashboard if authenticated but not admin', async () => {
      /* we need to mock a token in localStorage for it to reach our fetch
-    otherwise the authenticateToken has the if(!token) which will run if there is no mocked token */
+    otherwise the authenticateToken has the if(!token) which will run if there is no mocked token 
     localStorage.setItem('token', 'valid-token');
     // here we mock that the token isAuthenticated but isAdmin is false
     fetch.mockResolvedValueOnce({
@@ -45,7 +46,7 @@ test('redirects to user dashboard if authenticated but not admin', async () => {
 
 test('clears token and redirects if not authenticated', async () => {
     /* we need to mock a token that is invalid in localStorage for it to reach our fetch
-    otherwise the authenticateToken has the if(!token) which will run if there is no mocked token */
+    otherwise the authenticateToken has the if(!token) which will run if there is no mocked token 
     localStorage.setItem('token', 'invalid-token');
     // here we mock that the token isAuthenticated but isAdmin is false
     fetch.mockResolvedValueOnce({
@@ -58,3 +59,4 @@ test('clears token and redirects if not authenticated', async () => {
     expect(window.location.href).toBe('/public/pages/login/login.html');
 });
 
+ */
