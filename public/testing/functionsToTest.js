@@ -1,4 +1,4 @@
-async function authenticateToken() {
+export async function authenticateToken() {
     // Get token from localStorage
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
@@ -51,6 +51,4 @@ async function authenticateToken() {
     }
 };
 
-
-module.exports = { authenticateToken };
 

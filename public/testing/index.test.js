@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+import { authenticateToken } from "./functionsToTest.js";
 
 'use strict';
 
@@ -21,7 +19,6 @@ beforeEach(() => {
     });
 });
 // Test authenticateToken
-const { authenticateToken } = require('./functionsToTest');
 
 test('redirects to login if no token is found', async () => {
     await authenticateToken();
