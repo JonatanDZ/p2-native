@@ -208,7 +208,8 @@
       }
 
       async function displaySimilarItems(similarItems) {
-        const top10 = similarItems.slice(0, 10);
+        // starter fra 1 i stedet for 0, så den ikke viser det samme item som man er trykket ind på.
+        const top10 = similarItems.slice(1, 10);
 
         const allRes = await fetch("/get-products");
         const allProducts = await allRes.json();
