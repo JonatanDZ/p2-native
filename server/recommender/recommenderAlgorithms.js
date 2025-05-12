@@ -10,7 +10,7 @@ export async function recommenderAlgorithmForUser(userId) {
   let userFilters = await getUserFiltersDB(userId);
   let allItems = await getAllItemFiltersDB();
 
-  console.log("Item for user recommended: ");
+  //console.log("Item for user recommended: ");
 
   // To get result use: await recommenderAlgorithmForUser(userId)
   return recommendItem(userFilters, allItems);
@@ -22,7 +22,7 @@ export async function recommenderAlgorithmForItem(itemId) {
   let itemFilters = await getSpecificItemFiltersDB(itemId);
   let allItems = await getAllItemFiltersDB();
 
-  console.log("A like items recommended: ");
+  //console.log("A like items recommended: ");
 
   // To get result use: await recommenderAlgorithmForItem(itemId)
   return recommendItem(itemFilters, allItems);
@@ -41,8 +41,8 @@ export function recommendItem(userFilters, allItems) {
   let resultsCompared = compareLists(resultsOfDotProduct);
 
   // Prints the number one
-  console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
-  console.log(); // New line
+  //console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
+  //console.log(); // New line
 
   // prints all recommended items sorted
   resultsComparedPrinted(resultsCompared);
@@ -71,6 +71,6 @@ export function compareLists(results) {
 // Prints the recommended result
 export function resultsComparedPrinted(resultsCompared) {
   for (let list of resultsCompared) {
-    console.log(list);
+    //console.log(list);
   }
 }
