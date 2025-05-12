@@ -44,6 +44,9 @@ function displayFromDB(data) {
     img.style.height = "250px";
     img.style.objectFit = "cover";
     img.style.objectPosition = "center";
+    img.onclick = () => {
+            window.location.href = `eventdetail.html?id=${event.ID}`;
+        };
 
     card.appendChild(img);
 

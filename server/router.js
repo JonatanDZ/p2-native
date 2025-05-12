@@ -4,6 +4,8 @@ import {
     getProducts,
     createEvent,
     getEvents,
+    getProduct,
+    getEvent
 } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser, recommenderAlgorithmForItem } from "./recommender/recommenderAlgorithms.js";
@@ -668,13 +670,65 @@ async function processReq(req, res) {
                                 );
                             });
                         break;
-                    //Otherwise respond with the given path
-                    default:
-                        fileResponse(res, betterURL);
+                    case "get-product":
+                        try {
+                            const productId = new URL(req.url, `http://${req.headers.host}`).searchParams.get('id');
+                            if (!productId) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Product ID is required" }));
+                                return;
+                            }
+                            
+                            const product = await getProduct(productId);
+                            if (!product) {
+                                res.writeHead(404, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Product not found" }));
+                                return;
+                            }
+
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify(product));
+                        } catch (error) {
+                            console.error("Error fetching product:", error);
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Failed to fetch product" }));
+                        }
                         break;
-                }
-            }
-            break;
+                    case "get-event":
+                        try {
+                            const eventId = new URL(req.url, `http://${req.headers.host}`).searchParams.get('id');
+                            
+                            if (!eventId) {
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Event ID is required" }));
+                                return;
+                            }
+                            const event = await getEvent(eventId);
+
+                            if (!event) {
+                                res.writeHead(404, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Event not found" }));
+                                return;
+                            }
+
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify(event));
+
+                        } catch (error) {
+                            console.error("Error fetching event:", error);
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Failed to fetch event" }));
+                        }
+                        break;
+
+                                //Otherwise respond with the given path
+                                default:
+                                    fileResponse(res, betterURL);
+                                    break;
+                                
+                            }
+                        }
+                        break;
         default:
             reportError(res, new Error("No Such Resource"));
     }
