@@ -1,4 +1,4 @@
-function onLoad(e) {
+export function onLoad(e) {
     let data = e.target.result;
     console.log(data);
     //  Splitting data each time there is a new line. Given that the user provides a correctly formatted csv file, index 0 will be the columnNames

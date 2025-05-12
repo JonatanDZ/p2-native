@@ -1,13 +1,25 @@
 //Import from other files:
-import { createProduct, getProducts, getEvents } from "./dbserver.js";
+import {
+    createProduct,
+    getProducts,
+    createEvent,
+    getEvents,
+} from "./dbserver.js";
 import { fileResponse } from "./server.js";
-import { recommenderAlgorithmForUser } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForUser, recommenderAlgorithmForItem } from "./recommender/recommenderAlgorithms.js";
+import { recommenderAlgorithmForEvents } from "./recommender/event_recommender.js";
+import { updateUserFilters } from "./recommender/updateUserFilters.js";
 
 //Import libraries
+// Stripe library to interact with Stripe's API
 import Stripe from "stripe";
 
+// dotenv library to load environment variables from .env file
 import dotenv from "dotenv";
+
+// path library to handle and manipulate file paths
 import path from "path";
+
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +41,7 @@ let db = mysql.createConnection({
     port: process.env.DB_PORT,
 });
 
-//Use dotenv to access stripe key
+//Use dotenv to access stripe secret key
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT;
@@ -82,6 +94,89 @@ async function processReq(req, res) {
                             .catch((err) => console.error(err));
                         break;
 
+                    case "update-user-filters":
+                        extractJSON(req)
+                            .then(({ userId, itemId }) => {
+                                updateUserFilters(userId, itemId)
+                                    .then(() => {
+                                        res.writeHead(200, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ message: "User filters updated successfully." }));
+                                    })
+                                    .catch((err) => {
+                                        console.error("Error updating user filters:", err);
+                                        res.writeHead(500, { "Content-Type": "application/json" });
+                                        res.end(JSON.stringify({ error: "Failed to update user filters." }));
+                                    });
+                            })
+                            .catch((err) => {
+                                console.error("Error parsing request body:", err);
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Invalid request data." }));
+                            });
+                        break;
+
+                    case "save-events": //just to be nice. So, given that the url after "/" is save-products, it does the following:
+                        extractJSON(req)
+                            //  When converted to JSON it loops through every object and saves it to DB via the createProduct helper function.
+                            .then((productEvent) => {
+                                productEvent.forEach((event) => {
+                                    //createProduct(product);
+                                    createEvent(event);
+                                });
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(
+                                    JSON.stringify({ message: "Events saved successfully." })
+                                );
+                            })
+                            .catch((err) => reportError(res, err));
+                        break;
+                    case "create-checkout-session":
+                        let body = "";
+                        req.on("data", (chunk) => (body += chunk.toString()));
+                        req.on("end", async () => {
+                            try {
+                                const { totalPrice, email, basket } = JSON.parse(body);
+
+                                if (!totalPrice || !email || !basket) {
+                                    res.writeHead(400, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: "Missing data" }));
+                                    return;
+                                }
+
+                                const session = await stripe.checkout.sessions.create({
+                                    payment_method_types: ["card"],
+                                    line_items: [
+                                        {
+                                            price_data: {
+                                                currency: "dkk",
+                                                product_data: { name: "Din kurv" },
+                                                unit_amount: Math.round(Number(totalPrice) * 100),
+                                            },
+                                            quantity: 1,
+                                        },
+                                    ],
+                                    mode: "payment",
+                                    customer_email: email,
+                                    success_url:
+                                        "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                                    cancel_url:
+                                        "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
+                                });
+
+                                res.writeHead(200, {
+                                    "Content-Type": "application/json",
+                                    "Access-Control-Allow-Origin": "*",
+                                });
+                                res.end(JSON.stringify({ url: session.url }));
+                            } catch (err) {
+                                res.writeHead(500, {
+                                    "Content-Type": "application/json",
+                                    "Access-Control-Allow-Origin": "*",
+                                });
+                                res.end(JSON.stringify({ error: err.message }));
+                            }
+                        });
+                        return;
                     case "send-confirmation-email":
                         let bodyConfirmationMail = "";
 
@@ -93,10 +188,17 @@ async function processReq(req, res) {
 
                         req.on("end", async () => {
                             try {
-                                const { email, basket } = JSON.parse(bodyConfirmationMail);
+                                const { email, basket, fornavn, efternavn } =
+                                    JSON.parse(bodyConfirmationMail);
                                 const shopNames = [...new Set(basket.map((item) => item.info))];
 
-                                await sendConfirmationEmail(email, basket, shopNames);
+                                await sendConfirmationEmail(
+                                    email,
+                                    basket,
+                                    shopNames,
+                                    fornavn,
+                                    efternavn
+                                );
 
                                 res.writeHead(200, { "Content-Type": "application/json" });
                                 res.end(JSON.stringify({ success: true }));
@@ -172,7 +274,11 @@ async function processReq(req, res) {
                                         // Respond with authorized admin
                                         res.writeHead(200, { "Content-Type": "application/json" });
                                         return res.end(
-                                            JSON.stringify({ isAuthenticated: true, isAdmin, userId })
+                                            JSON.stringify({
+                                                isAuthenticated: true,
+                                                isAdmin,
+                                                userId: userId,
+                                            })
                                         );
                                     }
                                 );
@@ -194,16 +300,12 @@ async function processReq(req, res) {
 
                         req.on("end", async () => {
                             try {
-                                const { userID, eventID } = JSON.parse(bodyEventDetail);
+                                const { userID, eventId } = JSON.parse(bodyEventDetail);
                                 //Insert the given data into user_events
                                 db.query(
                                     "INSERT INTO user_events (userID,eventID) VALUES (?,?)",
-                                    [userID, eventID]
+                                    [userID, eventId]
                                 );
-                                /*For testing:
-                                            const [test] = await db.query("SELECT * FROM user_events");
-                                            const rows = test.map((row) => Object.values(row));
-                                            console.log(rows);*/
                             } catch (error) {
                                 res.writeHead(500, { "Content-Type": "application/json" });
                                 res.end(JSON.stringify({ error: "Internal server error" }));
@@ -246,9 +348,9 @@ async function processReq(req, res) {
                                     ],
                                     mode: "payment",
                                     success_url:
-                                        "http://localhost:5500/public/pages/paymentsystem/paymentsuccess.html", //CHANGE LOCAL HOST TO ACTUAL NUMBER EX. 3000
+                                        "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
                                     cancel_url:
-                                        "http://localhost:5500/public/pages/paymentsystem/paymentfail.html",
+                                        "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
                                 });
 
                                 res.writeHead(200, {
@@ -490,6 +592,51 @@ async function processReq(req, res) {
                             res.end(JSON.stringify({ error: "Failed to fetch events" }));
                         }
                         break;
+                    case "recommendItems":
+                        const urlObjRec = new URL(req.url, `http://${req.headers.host}`);
+                        const userId = parseInt(urlObjRec.searchParams.get("userId"));
+
+                        if (!userId) {
+                            res.writeHead(400, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify([])); // return empty array instead of error object
+                            break;
+                        }
+
+                        recommenderAlgorithmForUser(parseInt(userId))
+                            .then((recommendations) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(recommendations)); // just the list
+                            })
+                            .catch((err) => {
+                                console.error("Error generating recommendations:", err);
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify([])); // return empty list on error
+                            });
+
+                        break;
+                    case "similarItems":
+                        const urlObjSimilar = new URL(req.url, `http://${req.headers.host}`);
+                        const itemId = parseInt(urlObjSimilar.searchParams.get("itemId"));
+
+                        if (!itemId) {
+                            res.writeHead(400, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify([])); // return empty array instead of error object
+                            break;
+                        }
+
+                        recommenderAlgorithmForItem(parseInt(itemId))
+                            .then((similarItems) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(similarItems)); // just the list
+                            })
+                            .catch((err) => {
+                                console.error("Error generating similarItems:", err);
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify([])); // return empty list on error
+                            });
+
+                        break;
+                    // skal evt slettes også brug den case over :)
                     case "recommend":
                         await recommenderAlgorithmForUser(2)
                             .then((rec) => {
@@ -504,14 +651,23 @@ async function processReq(req, res) {
                                 );
                             });
                         break;
-                    /*case "public/pages/events/event-detail.html?id=1":
-                                                    console.log("TEST");
-                                                    const [test] = connection.query(
-                                                      "SELECT * FROM user_event ORDER BY userID"
-                                                    );
-                                                    const rows = test.map((row) => Object.values(row));
-                                                    console.log(rows);
-                                                    break;*/
+                    case "event-recommend":
+                        await recommenderAlgorithmForEvents()
+                            .then((rec) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(rec));
+                            })
+                            .catch((err) => {
+                                console.error(
+                                    "Error with fetching recommended event list",
+                                    err
+                                );
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(
+                                    JSON.stringify({ error: "Failed to fetch events list" })
+                                );
+                            });
+                        break;
                     //Otherwise respond with the given path
                     default:
                         fileResponse(res, betterURL);
@@ -526,7 +682,13 @@ async function processReq(req, res) {
 
 // helper functions for POST part
 
-async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
+async function sendConfirmationEmail(
+    recipientEmail,
+    basket,
+    shopNames,
+    fornavn,
+    efternavn
+) {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -549,7 +711,8 @@ async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
         to: recipientEmail,
         subject: "Din ordrebekræftelse",
         html: `
-          <h2>Tak for din ordre!</h2>
+          <h2>Hej ${fornavn} ${efternavn},</h2>
+          <p>Tak for din ordre!</p>
           <p>Her er dine varer:</p>
           <ul>${itemList}</ul>
           <p><strong>Afhentes i butik:</strong></p>
@@ -563,7 +726,7 @@ async function sendConfirmationEmail(recipientEmail, basket, shopNames) {
     console.log("Message ID:", info.messageId);
 }
 
-function extractJSON(req) {
+/* function extractJSON(req) {
     if (isJsonEncoded(req.headers["content-type"]))
         return collectPostBody(req).then((body) => {
             let x = JSON.parse(body);
@@ -571,7 +734,23 @@ function extractJSON(req) {
             return x;
         });
     else return Promise.reject(new Error(ValidationError)); //create a rejected promise
+} */
+
+function extractJSON(req) {
+    console.log('Content-Type:', req.headers["content-type"]);
+
+    if (isJsonEncoded(req.headers["content-type"]))
+        return collectPostBody(req).then((body) => {
+            let x = JSON.parse(body);
+            return x;
+        });
+    else {
+        console.warn('Invalid Content-Type — expected application/json');
+        return Promise.reject(new Error('Invalid Content-Type'));
+    }
 }
+
+
 function isJsonEncoded(contentType) {
     //Format
     //Content-Type: application/json; encoding

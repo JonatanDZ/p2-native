@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             text-align: center;
             background-color: #f4f4f4;
         }
+
         .container {
             max-width: 600px;
             margin: auto;
@@ -23,20 +25,24 @@
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         img {
             width: 100%;
             height: 400px;
             object-fit: cover;
             border-radius: 10px;
         }
+
         h1 {
             font-size: 28px;
             margin: 10px 0;
         }
+
         p {
             font-size: 18px;
             font-weight: bold;
         }
+
         button {
             padding: 10px 20px;
             margin: 10px 0;
@@ -49,6 +55,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="navbar"></div>
@@ -57,16 +64,180 @@
         <p>Loading product details...</p>
     </div>
 
+    <h2>Anbefalede varer</h2>
+    <div class="container">
+        <div id="recommendation-list"></div>
+    </div>
+
+    <h2>Lignende varer</h2>
+    <div class="container">
+        <div id="similarItems-list"></div>
+    </div>
+
     <div id="footer"></div>
 
-  <script src="/public/js/components/navbar.js"></script>
-  <script src="/public/js/components/footer.js"></script>
-  
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
+
     <script>
         function getProductIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
+
+        async function getUserId() {
+            // Get token from localStorage
+            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+            if (!token) {
+                console.warn("No token found");
+                return null;
+            }
+
+            try {
+                // Send POST request to server to verify authentication and admin status
+                const response = await fetch('/verify-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: token })
+                });
+
+                const data = await response.json();
+
+
+                return await data.userId;
+
+            } catch (err) {
+                // Handle fetch errors or server issues
+                console.error('Error verifying token:', err);
+                localStorage.removeItem("token");
+                window.location.href = '/public/pages/login/login.html';
+            }
+        }
+
+        // Update User filters.
+        async function updateUserFiltersHTML() {
+            const userId = await getUserId();
+            const itemId = getProductIdFromUrl();
+
+            if (!userId || !itemId) {
+                console.warn("Missing userId or itemId");
+                return;
+            }
+
+            try {
+                const res = await fetch('/update-user-filters', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, itemId })
+                });
+
+            } catch (err) {
+                console.log("Something went wrong", err);
+            }
+        }
+
+
+        async function getRecommendedItemsHTML() {
+            const userId = await getUserId();
+
+            await fetch(`/recommendItems?userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Recommendations:', data);
+                    displayRecommendedItems(data);
+                })
+                .catch(err => {
+                    console.error("Failed to load recommendations:", err);
+                });
+        }
+
+        async function displayRecommendedItems(recommendationList) {
+            const top10 = recommendationList.slice(0, 10);
+
+            if (top10.length > 0) {
+                const allRes = await fetch('/get-products');
+                const allProducts = await allRes.json();
+
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                for (const rec of top10) {
+                    const product = allProducts.find(p => p.ID === rec.ID);
+                    if (!product) continue;
+
+                    const itemHTML = document.createElement("div");
+                    itemHTML.innerHTML = `
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <p>Match Score: ${rec.score}%</p>
+                        <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+                    `;
+                    container.appendChild(itemHTML);
+                }
+            } else {
+                const container = document.getElementById("recommendation-list");
+                container.innerHTML = ""; // clear previous content if any
+
+                const itemHTML = document.createElement("div");
+                itemHTML.innerHTML = `
+                    <h3>Login for at se dine anbefalede varer</h3>
+                `;
+                container.appendChild(itemHTML);
+            }
+        }
+
+        async function displaySimilarItems(similarItems) {
+            const top10 = similarItems.slice(0, 10);
+
+
+
+            const allRes = await fetch('/get-products');
+            const allProducts = await allRes.json();
+
+            const container = document.getElementById("similarItems-list");
+            container.innerHTML = ""; // clear previous content if any
+            for (const rec of top10) {
+                const product = allProducts.find(p => p.ID === rec.ID);
+                if (!product) continue;
+
+                const itemHTML = document.createElement("div");
+                itemHTML.innerHTML = `
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <p>Match Score: ${rec.score}%</p>
+                        <button onclick='addToBasket(${JSON.stringify(product)})'>Tilføj til kurv</button>
+                    `;
+                container.appendChild(itemHTML);
+            }
+
+        }
+
+        async function getSimilarItems() {
+            const itemId = await getProductIdFromUrl();
+
+            await fetch(`/similarItems?itemId=${itemId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('similar:', data);
+                    displaySimilarItems(data);
+                })
+                .catch(err => {
+                    console.error("Failed to load similar items:", err);
+                });
+        }
+
+        updateUserFiltersHTML();
+        getRecommendedItemsHTML();
+        getSimilarItems()
 
         document.addEventListener("DOMContentLoaded", function () {
             const productId = getProductIdFromUrl();
@@ -76,33 +247,34 @@
             }
 
             fetch('/get-products')
-        .then(response => response.json())
-        .then(products => {
-            const product = products.find(p => p.ID.toString() === productId);
+                .then(response => response.json())
+                .then(products => {
+                    const product = products.find(p => p.ID.toString() === productId);
 
-            if (!product) {
-                document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
-                return;
-            }
+                    if (!product) {
+                        document.getElementById("product-detail").innerHTML = "<p>Product not found.</p>";
+                        return;
+                    }
 
-            document.getElementById("product-detail").innerHTML = `
-                <img src="${product.picture}" alt="${product.name}">
-                <h1>${product.name}</h1>
-                <p>${product.info}</p>
-                <p>Price: ${product.price} DKK</p>
-                <button id="add-to-basket" data-id="${product.ID}">Tilføj til kurv</button>
-            `;
+                    document.getElementById("product-detail").innerHTML = `
+                        <img src="${product.picture}" alt="${product.name}">
+                        <h1>${product.name}</h1>
+                        <p>${product.info}</p>
+                        <p>Price: ${product.price} DKK</p>
+                        <button id="add-to-basket" data-id="${product.ID}">Tilføj til kurv</button>
+                    `;
 
-            document.getElementById("add-to-basket").addEventListener("click", function () {
-                addToBasket(product);
-            });
-        })
-        .catch(error => console.error("Error fetching product details:", error));
+                    document.getElementById("add-to-basket").addEventListener("click", function () {
+                        addToBasket(product);
+                    });
+                })
+                .catch(error => console.error("Error fetching product details:", error));
 
-                    document.getElementById("product-detail").innerHTML = "<p>Error loading product details.</p>";
-                });
+            document.getElementById("product-detail").innerHTML = "<p>Error loading product details.</p>";
+        });
 
-                    function addToBasket(product) {
+        // Function to add a product to the basket
+        function addToBasket(product) {
             let basket = JSON.parse(localStorage.getItem("basket")) || [];
             const existingProduct = basket.find(item => item.id === product.id);
             if (existingProduct) {
@@ -113,7 +285,8 @@
             }
             localStorage.setItem("basket", JSON.stringify(basket));
             alert("Produktet er tilføjet til kurven!");
-            }
+        }
     </script>
 </body>
+
 </html>

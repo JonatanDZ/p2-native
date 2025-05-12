@@ -1,3 +1,4 @@
+/* Set default font and background color for the entire page */
 html, body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -5,6 +6,7 @@ html, body {
     background-color: #f5f5f5;
 }
 
+/* Style for the main heading on the checkout page */
 h1 {
     text-align: left;
     margin-bottom: 30px;
@@ -12,6 +14,7 @@ h1 {
     font-weight: bold;
 }
 
+/* Layout container for the entire checkout section. Form on left, basket on right */
 .checkout-container {
     display: flex;
     justify-content: space-between; 
@@ -23,14 +26,18 @@ h1 {
     gap: 60px;
 }
 
+/* Flex children of checkout-container share equal width */
 .checkout-container1, .checkout-container2 {
     flex: 1; 
 }
 
+
+/* Add vertical spacing above the basket section */
 .checkout-container2 {
     margin-top: 70px;
 }
 
+/* Styling for the checkout form box */
 .checkout-form {
     max-width: 65%; 
     padding: 35px;
@@ -40,6 +47,14 @@ h1 {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15); 
 }
 
+/* Align each form field in a vertical stack */
+form div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }  
+
+/* Container for the basket summary section on the right */
 .basket-overview {
     max-width: 300px; 
     padding: 30px;
@@ -49,6 +64,7 @@ h1 {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
 }
 
+/* Style for form field labels */
 label {
     display: block;
     margin-bottom: 10px;
@@ -57,6 +73,7 @@ label {
     margin-top: 10px;
 }
 
+/* Styling for text and email inputs */
 input[type="text"], input[type="email"] {
     width: 300px; 
     padding: 10px; 
@@ -65,6 +82,7 @@ input[type="text"], input[type="email"] {
     font-size: 14px;
 }
 
+/* Style for the green checkout submit button */
 button[type="submit"] {
     width: 200px;
     padding: 10px;
@@ -79,16 +97,19 @@ button[type="submit"] {
     margin-top: 20px; 
 }
 
+/* Button hover effect to darken the green slightly */
 button[type="submit"]:hover {
     background-color: #45a049;
 }
 
+/* Layout for dropdown selectors or similar grouped controls */
 .selectors {
     display: flex;
     gap: 10px; 
     align-items: center;
 }
 
+/* Styling for select elements in the form */
 .selectors select {
     padding: 4px;
     font-size: 13px;
@@ -97,6 +118,7 @@ button[type="submit"]:hover {
     cursor: pointer;
 }
 
+/* Input box used to adjust product quantities in basket */
 .quantity-input {
     width: 40px; 
     padding: 4px;
@@ -106,20 +128,24 @@ button[type="submit"]:hover {
     text-align: center;
 }
 
+/* Footer spacing so it doesn't stick to content */
 #footer {
     margin-top: auto;
 }
 
+/* Styling for the total price text at the bottom of the basket */
 #basket-total-text {
     font-size: 17px;
     font-weight: bold;
     margin-top: 20px;
 }
 
+/* Center-align the basket header */
 .basket-overview h2 {
     text-align: center;
 }
 
+/* Section that lists shop pickup info under the basket */
 .click-collect-info {
     margin-top: 20px;
     font-weight: bold;

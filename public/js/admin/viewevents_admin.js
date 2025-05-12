@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("Stuff loaded!");
+  console.log("Stuff loaded!")
   const apiContainers = document.querySelectorAll(".api-call");
   apiContainers.forEach((container) => {
     const endpoint = container.dataset.endpoint;
@@ -24,7 +24,7 @@ async function readFromDB(endpoint) {
 }
 
 function displayFromDB(data) {
-  const eventsContainer = document.getElementById("products-container"); // reuse existing container
+  const eventsContainer = document.getElementById("events-container"); // reuse existing container
   if (!eventsContainer) return;
 
   eventsContainer.innerHTML = "";
@@ -77,7 +77,7 @@ function displayFromDB(data) {
   });
 
   // Add click listeners to each event card button
-  eventsContainer.addEventListener("click", async function (e) {
+  eventsContainer.addEventListener("click", function (e) {
     if (e.target && e.target.classList.contains("event-link")) {
       e.preventDefault();
       const eventId = parseInt(e.target.getAttribute("data-id"));
@@ -85,9 +85,7 @@ function displayFromDB(data) {
       if (event) {
         console.log("CLICKED!");
 
-        const userID = await getCurrentUserID(); //Insert userID here (somehow)
-        console.log(userID);
-
+        const userID = 2; //Insert userID here (somehow)
         console.log("USER", userID, "EVENT", eventId);
         //Make a POST with userID and eventID
         try {
@@ -104,42 +102,4 @@ function displayFromDB(data) {
       }
     }
   });
-}
-
-async function getCurrentUserID() {
-  // Get token from localStorage
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-
-  // If no token, redirect to login page and return (run no more code)
-  if (!token) {
-    console.log("No token found");
-    return 0;
-  }
-
-  // If token found
-  console.log("Token found");
-
-  try {
-    // Send POST request to server to verify authentication and admin status
-    const response = await fetch("/verify-token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token: token }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    const userid = await data.userId;
-
-    console.log(userid);
-    return userid;
-  } catch (err) {
-    // Handle fetch errors or server issues
-    console.error("Error verifying token:", err);
-    localStorage.removeItem("token");
-  }
 }
