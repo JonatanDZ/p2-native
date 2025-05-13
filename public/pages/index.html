@@ -37,24 +37,62 @@
         height: 300px;
         object-fit: cover;
       }
+      .scrollmenu.image-container {
+        display: block; /* or flex if you prefer */
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        padding: 10px;
+      }
+
+      .scrollmenu.image-container > div {
+        display: inline-block;
+        vertical-align: top;
+        width: 350px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+
+      #detail-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        max-width: 400px;
+        margin: auto;
+      }
+
+      #detail-container.image-container {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <main>
       <div id="navbar"></div>
+
+      <h1>Velkommen til lokaltlivet Aalborg her finder du de nyeste udgivet varer og meget mere</h1>
+      <h4>Hent og returner dine varer hurtigt og nemt med clikc and collect</h4>
+
       <div>
         <h1>Events</h1>
         <div class="image-container" id="events">
           <!-- images will be displayed here -->
         </div>
 
-        <h1>Anbefalede produkter</h1>
-        <div class="image-container" id="recommendations"></div>
 
         <h1>Nyeste produkter</h1>
-        <div class="image-container" id="products">
+        <div class="scrollmenu image-container" id="products">
           <!-- images will be displayed here -->
         </div>
+
+        <h1>Anbefalede produkter</h1>
+        <div class="scrollmenu image-container" id="recommendations"></div>
+
       </div>
       <div id="footer"></div>
 
@@ -279,7 +317,7 @@
 
             const itemHTML = document.createElement("div");
             itemHTML.innerHTML = `
-                            <h3>Login for at se dine anbefalede varer</h3>
+                            <h3>Login for at se dine anbefalede events</h3>
                         `;
             container.appendChild(itemHTML);
           }
