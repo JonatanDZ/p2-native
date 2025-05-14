@@ -41,7 +41,6 @@ test('dotProduct properly returns a dotproduct between two vectors', ()=>{
     const output = dotProduct(user, item);
     const expected = 8;
     expect(output).toEqual(expected);
-
 })
 
 test('compareLists properly compares objects and returns a sorted list of objects', ()=>{
@@ -95,7 +94,7 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
 })
 
 // event recommender algorithm 
-test('', ()=>{
+test('reccomendEvents properly returns a sorted array of recommended events', ()=>{
   const data = [
     { userID: 1, eventID: 1 },
     { userID: 1, eventID: 2 },
@@ -118,5 +117,21 @@ test('', ()=>{
   // expect the type of output to be a 3d array
   expect(Array.isArray(output)).toBe(true);
 
-
+  //  Expecting the following array
+  /*Expecting: 
+    [
+    [2, 1],
+    [2, 4],
+    [1, 2],
+    [1, 3]
+    ]
+    console log: "We reccomend event 1, event 4 and event 2"
+   */
+  expect(output).toEqual([
+    [2, 1],
+    [2, 4],
+    [1, 2],
+    [1, 3]
+  ])
 })
+
