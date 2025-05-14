@@ -36,8 +36,6 @@ function reccomendEvents(data, events, userID) {
     }
   }
 
-  user.sort();
-
   //Reccomender
   for (let n = 0; n < user.length; n++) {
     for (let i = 0; i < data.length; i++) {
