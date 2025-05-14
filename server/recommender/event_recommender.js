@@ -60,7 +60,14 @@ function reccomendEvents(data, events, userID) {
   console.log(
     `We reccomend event ${result[0][1]}, event ${result[1][1]} and event ${result[2][1]}`
   );
-  return result;
+  let resultsEvents = result.map((event) => ({
+    // Saves id on every item in the list
+    ID: event[1],
+    // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero.
+    score: event[0],
+  }));
+  console.log(resultsEvents);
+  return resultsEvents;
 }
 
 //https://stackoverflow.com/questions/16096872/how-to-sort-2-dimensional-array-by-column-value
