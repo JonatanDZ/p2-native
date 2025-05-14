@@ -83,7 +83,7 @@
 
       <div>
         <h1>Events</h1>
-        <div class="image-container" id="events">
+        <div class="scrollmenu image-container" id="events">
           <!-- images will be displayed here -->
         </div>
 
@@ -226,9 +226,7 @@
                   }
                 }
               })
-              .catch((err) =>
-                console.error("Failed to load recommended list:", err)
-              );
+
           } else {
             const container = document.getElementById(placement);
             container.innerHTML = ""; // clear previous content if any
