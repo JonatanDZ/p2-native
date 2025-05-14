@@ -82,17 +82,17 @@
       <h4>Hent og returner dine varer hurtigt og nemt med clikc and collect</h4>
 
       <div>
-        <h1>Events</h1>
-        <div class="scrollmenu image-container" id="events">
-          <!-- images will be displayed here -->
-        </div>
-
+        <h1>Nyeste Events</h1>
         <div class="image-container" id="newevents">
           <!-- images will be displayed here -->
         </div>
 
         <h1>Nyeste produkter</h1>
         <div class="scrollmenu image-container" id="products">
+          <!-- images will be displayed here -->
+        </div>
+        <h1>Anbefalede Events</h1>
+        <div class="scrollmenu image-container" id="events">
           <!-- images will be displayed here -->
         </div>
 
@@ -201,32 +201,29 @@
               card.appendChild(button);
               container.appendChild(card);
             }
-            document.body
-              .addEventListener("click", function (e) {
-                if (e.target && e.target.classList.contains("add-to-basket")) {
-                  e.preventDefault();
+            document.body.addEventListener("click", function (e) {
+              if (e.target && e.target.classList.contains("add-to-basket")) {
+                e.preventDefault();
 
-                  const productId = parseInt(e.target.dataset.id);
-                  const product = allProducts.find((p) => p.ID === productId);
+                const productId = parseInt(e.target.dataset.id);
+                const product = allProducts.find((p) => p.ID === productId);
 
-                  if (product) {
-                    let basket =
-                      JSON.parse(localStorage.getItem("basket")) || [];
-                    const existingProduct = basket.find(
-                      (item) => item.ID === product.ID
-                    );
-                    if (existingProduct) {
-                      existingProduct.quantity = existingProduct.quantity++;
-                    } else {
-                      product.quantity = 1;
-                      basket.push(product);
-                    }
-                    localStorage.setItem("basket", JSON.stringify(basket));
-                    alert("Produktet er tilføjet til kurven!");
+                if (product) {
+                  let basket = JSON.parse(localStorage.getItem("basket")) || [];
+                  const existingProduct = basket.find(
+                    (item) => item.ID === product.ID
+                  );
+                  if (existingProduct) {
+                    existingProduct.quantity = existingProduct.quantity++;
+                  } else {
+                    product.quantity = 1;
+                    basket.push(product);
                   }
+                  localStorage.setItem("basket", JSON.stringify(basket));
+                  alert("Produktet er tilføjet til kurven!");
                 }
-              })
-
+              }
+            });
           } else {
             const container = document.getElementById(placement);
             container.innerHTML = ""; // clear previous content if any
@@ -248,7 +245,7 @@
         async function getNewEvents() {
           const allRes = await fetch("/get-products");
           const allProducts = await allRes.json();
-          displayRecommendedEvents(allProducts, "events");
+          displayRecommendedEvents(allProducts, "newevents");
         }
 
         async function displayRecommendedEvents(recommendationList, placement) {
@@ -324,7 +321,7 @@
             container.appendChild(itemHTML);
           }
         }
-
+        getNewEvents();
         getRecommendedItemsHTML();
         getNewItems();
         getRecommendedEventsHTML();
