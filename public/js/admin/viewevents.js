@@ -67,7 +67,7 @@ function displayFromDB(data) {
     const button = document.createElement("button");
     button.className = "btn btn-primary event-link";
     button.dataset.id = event.ID;
-    button.textContent = "Se event";
+    button.textContent = "Like event";
 
     card.appendChild(title);
     card.appendChild(place);

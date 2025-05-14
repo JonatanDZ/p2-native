@@ -83,7 +83,7 @@
 
       <div>
         <h1>Nyeste Events</h1>
-        <div class="image-container" id="newevents">
+        <div class="scrollmenu image-container" id="newevents">
           <!-- images will be displayed here -->
         </div>
 
@@ -299,7 +299,7 @@
               const button = document.createElement("button");
               button.className = "btn btn-primary event-link";
               button.dataset.id = event.ID;
-              button.textContent = "Se event";
+              button.textContent = "Like event";
 
               card.appendChild(title);
               card.appendChild(place);
@@ -307,9 +307,43 @@
               card.appendChild(price);
               card.appendChild(info);
               card.appendChild(button);
-
               container.appendChild(card);
             }
+            // Add click listeners to each event card button
+            container.addEventListener("click", async function (e) {
+              if (e.target && e.target.classList.contains("event-link")) {
+                e.preventDefault();
+                const eventId = parseInt(e.target.getAttribute("data-id"));
+                const event = allEvents.find((ev) => ev.ID === eventId);
+                if (event) {
+                  console.log("CLICKED!");
+
+                  const userID = await getUserId(); //Insert userID here (somehow)
+                  if (userID != null) {
+                    console.log(userID);
+
+                    console.log("USER", userID, "EVENT", eventId);
+                    //Make a POST with userID and eventID
+                    try {
+                      const response = fetch(
+                        "http://localhost:3000/event-detail",
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ userID, eventId }),
+                        }
+                      );
+                    } catch (err) {
+                      console.error("Error:", err);
+                      alert("Something went wrong. Try again.");
+                    }
+                    addToUserEvents(event);
+                  } else {
+                    console.log("log in to add to reccommender");
+                  }
+                }
+              }
+            });
           } else {
             const container = document.getElementById(placement);
             container.innerHTML = ""; // clear previous content if any
