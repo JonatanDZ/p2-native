@@ -13,7 +13,7 @@ export async function recommenderAlgorithmForEvents() {
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
-function reccomendEvents(data, events) {
+export function reccomendEvents(data, events) {              
   //If either data is NULL then stop
   if (!data || !events) return;
 

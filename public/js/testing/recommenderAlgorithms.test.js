@@ -1,3 +1,4 @@
+import { reccomendEvents } from "../../../server/recommender/event_recommender";
 import { compareLists, dotProduct, recommenderAlgorithmForItem, recommendItem } from "../../../server/recommender/recommenderAlgorithms"
 
 // every test follows the principle of arrange, act and assert
@@ -91,4 +92,31 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
           expect(object).toHaveProperty('score');
         });
       }
+})
+
+// event recommender algorithm 
+test('', ()=>{
+  const data = [
+    { userID: 1, eventID: 1 },
+    { userID: 1, eventID: 2 },
+    { userID: 2, eventID: 1 },
+    { userID: 2, eventID: 3 },
+    { userID: 3, eventID: 2 },
+    { userID: 3, eventID: 4 },
+    { userID: 4, eventID: 1 },
+    { userID: 4, eventID: 4 }
+  ];
+  const events = [
+    { ID: 1, name: "Yoga" },
+    { ID: 2, name: "Jazz" },
+    { ID: 3, name: "Food Fest" },
+    { ID: 4, name: "Fashion Show" }
+  ];
+  
+  const output = reccomendEvents(data,events);
+
+  // expect the type of output to be a 3d array
+  expect(Array.isArray(output)).toBe(true);
+
+
 })
