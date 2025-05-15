@@ -1,5 +1,6 @@
 export { getUserId };
 import { displayEvent } from "./events/viewevents.js";
+import { displayProduct } from "./products/viewproducts.js";
 
 async function getUserId() {
   // Get token from localStorage
@@ -72,29 +73,8 @@ async function displayRecommendedItems(recommendationList, placement) {
     for (const rec of top10) {
       const product = allProducts.find((p) => p.ID === rec.ID);
       if (!product) continue;
-      const card = document.createElement("div");
-      card.className = "card";
 
-      const img = document.createElement("img");
-      img.src = product.picture;
-      img.alt = product.name;
-
-      const title = document.createElement("h3");
-      title.textContent = product.name;
-
-      const price = document.createElement("p");
-      price.textContent = `${product.price} DKK`;
-
-      const button = document.createElement("button");
-      button.className = "add-to-basket";
-      button.dataset.id = product.ID;
-      button.textContent = "Tilføj til kurv";
-
-      card.appendChild(img);
-      card.appendChild(title);
-      card.appendChild(price);
-      card.appendChild(button);
-      container.appendChild(card);
+      container.appendChild(displayProduct(product));
     }
     document.body.addEventListener("click", function (e) {
       if (e.target && e.target.classList.contains("add-to-basket")) {
