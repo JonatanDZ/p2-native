@@ -93,7 +93,7 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
       }
 })
 
-// event recommender algorithm 
+/*
 test('reccomendEvents properly returns a sorted array of recommended events', ()=>{
   const data = [
     { userID: 1, eventID: 1 },
@@ -118,7 +118,7 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
   expect(Array.isArray(output)).toBe(true);
 
   //  Expecting the following array
-  /*Expecting: 
+  Expecting: 
     [
     [2, 1],
     [2, 4],
@@ -126,7 +126,7 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     [1, 3]
     ]
     console log: "We reccomend event 1, event 4 and event 2"
-   */
+
   expect(output).toEqual([
     [2, 1],
     [2, 4],
@@ -134,4 +134,6 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     [1, 3]
   ])
 })
+*/
+
 

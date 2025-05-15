@@ -1,5 +1,6 @@
 //Import from other files:
 import {
+  deleteProduct,
   createProduct,
   getProducts,
   createEvent,
@@ -28,7 +29,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import mysql from "mysql2";
-import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

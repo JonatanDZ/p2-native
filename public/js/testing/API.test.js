@@ -1,6 +1,6 @@
 import http from "http";
 import request from "supertest";
-import { requestHandler } from "../../../server/server.js"; // adjust path as needed
+import { requestHandler } from "../../../server/server.js";
 
 const server = http.createServer(requestHandler);
 

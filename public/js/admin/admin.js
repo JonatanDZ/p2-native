@@ -1,6 +1,9 @@
-document.addEventListener("DOMContentLoaded", function () {
+// putting inside if, since testing suite fails because it uses the DOM. Need another testing env for that
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", function () {
     readFromDB();
-});
+  });
+}
 
 export async function fetchUserIdFromToken(token) {
   try {
