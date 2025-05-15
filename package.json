@@ -17,5 +17,9 @@
     "require": "^0.4.4",
     "stripe": "^17.7.0",
     "supertest": "^7.1.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }

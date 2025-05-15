@@ -33,13 +33,12 @@ function displayFromDB(data) {
         card.className = 'card';
 
         const productLink = document.createElement('a');
-        productLink.href = `productdetail.html?id=${product.ID || product.id}`;
+        productLink.href = `productdetail.html?id=${product.ID}`;
         productLink.target = "_blank";
 
         const img = document.createElement('img');
-        img.src = product.image || product.picture;
+        img.src = product.picture;
         img.alt = product.name || 'Product image';
-        
         img.style.width = '200px';
         img.style.height = '250px';
         img.style.objectFit = 'cover';

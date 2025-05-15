@@ -4,20 +4,20 @@ import {
   getAllUserEventsDB,
 } from "./recommenderAlgorithmsServer.js";
 
-export async function recommenderAlgorithmForEvents() {
+export async function recommenderAlgorithmForEvents(userID) {
   //Get data from database
   let events = await getAllEventsDB();
   let userEvents = await getAllUserEventsDB();
   //Call recommender with the data
-  return reccomendEvents(userEvents, events);
+  return reccomendEvents(userEvents, events, userID);
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
 export function reccomendEvents(data, events) {              
   //If either data is NULL then stop
-  if (!data || !events) return;
+  if (!data || !events) return events;
 
-  let currentUser = 1; //Get currentUser from database (somehow?) SHOULD BE CHANGED
+  let currentUser = userID; //Get currentUser from database (somehow?) SHOULD BE CHANGED
 
   let result = []; //Holds the score and id of the events
 
@@ -35,8 +35,6 @@ export function reccomendEvents(data, events) {
       user.push(data[i].eventID);
     }
   }
-
-  user.sort();
 
   //Reccomender
   for (let n = 0; n < user.length; n++) {
@@ -60,7 +58,14 @@ export function reccomendEvents(data, events) {
   console.log(
     `We reccomend event ${result[0][1]}, event ${result[1][1]} and event ${result[2][1]}`
   );
-  return result;
+  let resultsEvents = result.map((event) => ({
+    // Saves id on every item in the list
+    ID: event[1],
+    // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero.
+    score: event[0],
+  }));
+  console.log(resultsEvents);
+  return resultsEvents;
 }
 
 //https://stackoverflow.com/questions/16096872/how-to-sort-2-dimensional-array-by-column-value
