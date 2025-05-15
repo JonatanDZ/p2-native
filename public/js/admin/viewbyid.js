@@ -18,6 +18,7 @@ async function loadDetailPage() {
         if (!data) throw new Error("Not found");
         
         renderDetailPage(data, type);
+        setupEventListeners(type);
     } catch (error) {
         console.error(`Error loading ${type}:`, error);
         document.getElementById("detail-container").innerHTML = `
@@ -56,6 +57,47 @@ function renderDetailPage(data, type) {
                 <button class="register" data-id="${data.id}">Register</button>
             </div>
         `;
+    }
+}
+
+function setupEventListeners(type) {
+    const container = document.getElementById("detail-container");
+    
+    if (type === 'product') {
+        container.addEventListener("click", function(e) {
+            if (e.target && e.target.classList.contains("add-to-cart")) {
+                e.preventDefault();
+                const productId = e.target.getAttribute("data-id");
+                addToBasket(productId);
+            }
+        });
+    } else {
+        // Event registration logic would go here
+    }
+}
+
+async function addToBasket(productId) {
+    try {
+        const response = await fetch(`/get-product?id=${productId}`);
+        const product = await response.json();
+        
+        if (!product) throw new Error("Product not found");
+        
+        let basket = JSON.parse(localStorage.getItem("basket")) || [];
+        const existingProduct = basket.find(item => item.id == productId);
+        
+        if (existingProduct) {
+            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+        } else {
+            product.quantity = 1;
+            basket.push(product);
+        }
+        
+        localStorage.setItem("basket", JSON.stringify(basket));
+        alert("Product added to basket!");
+    } catch (error) {
+        console.error("Error adding to basket:", error);
+        alert("Could not add product to basket");
     }
 }
 
