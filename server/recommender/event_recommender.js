@@ -1,4 +1,5 @@
 //import DB functions;
+import { fetchUserIdFromToken } from "../../public/js/admin/admin.js";
 import {
   getAllEventsDB,
   getAllUserEventsDB,
@@ -13,11 +14,11 @@ export async function recommenderAlgorithmForEvents(userID) {
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
-function reccomendEvents(data, events, userID) {
+export async function reccomendEvents(data, events) {              
   //If either data is NULL then stop
   if (!data || !events) return events;
 
-  let currentUser = userID; //Get currentUser from database (somehow?) SHOULD BE CHANGED
+  let currentUser = userId; //Get currentUser from database (somehow?) SHOULD BE CHANGED
 
   let result = []; //Holds the score and id of the events
 

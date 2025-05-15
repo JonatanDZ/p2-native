@@ -19,7 +19,7 @@ function errorResponse(res, code, reason) {
   res.end("\n");
 }
 
-function requestHandler(req, res) {
+export function requestHandler(req, res) {
   try {
     //Try to proceess the request
     processReq(req, res);

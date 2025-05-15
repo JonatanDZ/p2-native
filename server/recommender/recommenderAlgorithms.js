@@ -10,7 +10,7 @@ export async function recommenderAlgorithmForUser(userId) {
   let userFilters = await getUserFiltersDB(userId);
   let allItems = await getAllItemFiltersDB();
 
-  console.log("Item for user recommended: ");
+  //console.log("Item for user recommended: ");
 
   // To get result use: await recommenderAlgorithmForUser(userId)
   return recommendItem(userFilters, allItems);
@@ -22,14 +22,14 @@ export async function recommenderAlgorithmForItem(itemId) {
   let itemFilters = await getSpecificItemFiltersDB(itemId);
   let allItems = await getAllItemFiltersDB();
 
-  console.log("A like items recommended: ");
+  //console.log("A like items recommended: ");
 
   // To get result use: await recommenderAlgorithmForItem(itemId)
   return recommendItem(itemFilters, allItems);
 }
 
-function recommendItem(userFilters, allItems) {
-  // map returns an array to resultsOfDotProduct, where every item has an id and a score for the different items
+export function recommendItem(userFilters, allItems) {
+  // map returns an array to resultsOfDotProduct, where every item is mapped to an object with an id and a score for the different items
   let resultsOfDotProduct = allItems.map((item) => ({
     // Saves id on every item in the list
     ID: item[0],
@@ -41,8 +41,8 @@ function recommendItem(userFilters, allItems) {
   let resultsCompared = compareLists(resultsOfDotProduct);
 
   // Prints the number one
-  console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
-  console.log(); // New line
+  //console.log("Detter er nummer 1 recommended: ", resultsCompared[0]);
+  //console.log(); // New line
 
   // prints all recommended items sorted
   resultsComparedPrinted(resultsCompared);
@@ -52,7 +52,7 @@ function recommendItem(userFilters, allItems) {
 }
 
 // Multiply the two vectors
-function dotProduct(user, item) {
+export function dotProduct(user, item) {
   let result = 0;
   for (let i in user) {
     result += user[i] * item[i];
@@ -62,15 +62,15 @@ function dotProduct(user, item) {
 
 // Sort the recommended list, goes from highest to lowest score
 // https://www.w3schools.com/js/js_array_sort.asp#mark_sort
-function compareLists(results) {
+export function compareLists(results) {
   return results.sort(function (a, b) {
     return b.score - a.score;
   });
 }
 
 // Prints the recommended result
-function resultsComparedPrinted(resultsCompared) {
+export function resultsComparedPrinted(resultsCompared) {
   for (let list of resultsCompared) {
-    console.log(list);
+    //console.log(list);
   }
 }
