@@ -1,6 +1,7 @@
     document.getElementById("signup").addEventListener("submit", async function(e) {
     e.preventDefault();
 
+    // create values for name, email, password and confirmpassword which comes from the html
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -11,7 +12,7 @@
         return;
     }
 
-    // POST request to send signup data to server
+    // POST request to send signup data to server, name, email and password
     try {
         const response = await fetch("http://localhost:3000/signup", { 
             method: "POST",
@@ -29,7 +30,7 @@
         }
 
         if (response.ok) {
-            // Signup succes - tell user and redirect to login
+            // Signup succes then tells user and redirect to login
             alert("Du er nu registreret og kan logge ind!");
             window.location.href = "/public/pages/login/login.html";
         } else {
