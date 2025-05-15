@@ -17,7 +17,7 @@ async function readFromDB(endpoint) {
       "Content-Type": "application/json",
     },
   })
-    .then((response) => response.json())
+    .then((response) => response.json()) //json conversion
     .then((data) => {
       displayFromDB(data);
     })
