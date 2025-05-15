@@ -1,3 +1,6 @@
+export { getUserId };
+import { displayEvent } from "./events/viewevents.js";
+
 async function getUserId() {
   // Get token from localStorage
   const token =
@@ -151,49 +154,7 @@ async function displayRecommendedEvents(recommendationList, placement) {
     for (const rec of top10) {
       const event = allEvents.find((p) => p.ID === rec.ID);
       if (!event) continue;
-
-      const card = document.createElement("div");
-      card.className = "card p-3";
-      card.style.width = "18rem";
-
-      const title = document.createElement("h4");
-      title.textContent = event.name || "Ingen event titel";
-      const img = document.createElement("img");
-      img.src = event.image || "";
-      img.alt = event.name || "Event image";
-      img.style.width = "250px";
-      img.style.height = "250px";
-      img.style.objectFit = "cover";
-      img.style.objectPosition = "center";
-
-      card.appendChild(img);
-
-      const place = document.createElement("p");
-      place.innerHTML = `<strong>Sted:</strong> ${event.place || "Ukendt"}`;
-
-      const time = document.createElement("p");
-      time.innerHTML = `<strong>Tid:</strong> ${event.time || "TBD"}`;
-
-      const price = document.createElement("p");
-      price.innerHTML = `<strong>Pris:</strong> ${event.price || "N/A"},-`;
-
-      const info = document.createElement("p");
-      info.innerHTML = `<strong>Info:</strong> ${
-        event.info || "Ingen info tilgængelig"
-      }`;
-
-      const button = document.createElement("button");
-      button.className = "btn btn-primary event-link";
-      button.dataset.id = event.ID;
-      button.textContent = "Like event";
-
-      card.appendChild(title);
-      card.appendChild(place);
-      card.appendChild(time);
-      card.appendChild(price);
-      card.appendChild(info);
-      card.appendChild(button);
-      container.appendChild(card);
+      container.appendChild(displayEvent(event));
     }
     // Add click listeners to each event card button
     container.addEventListener("click", async function (e) {

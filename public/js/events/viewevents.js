@@ -1,3 +1,6 @@
+import { getUserId } from "../frontpage.js";
+export { displayEvent };
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("Stuff loaded!");
   const apiContainers = document.querySelectorAll(".api-call");
@@ -30,53 +33,7 @@ function displayFromDB(data) {
   eventsContainer.innerHTML = "";
 
   data.forEach((event) => {
-    const card = document.createElement("div");
-    card.className = "card p-3";
-    card.style.width = "18rem";
-
-    const title = document.createElement("h4");
-    title.textContent = event.name || "Ingen event titel";
-
-    const img = document.createElement("img");
-    img.src = event.image || "";
-    img.alt = event.name || "Event image";
-    img.style.width = "250px";
-    img.style.height = "250px";
-    img.style.objectFit = "cover";
-    img.style.objectPosition = "center";
-    img.onclick = () => {
-      window.location.href = `eventdetail.html?id=${event.ID}`;
-    };
-
-    card.appendChild(img);
-
-    const place = document.createElement("p");
-    place.innerHTML = `<strong>Sted:</strong> ${event.place || "Ukendt"}`;
-
-    const time = document.createElement("p");
-    time.innerHTML = `<strong>Tid:</strong> ${event.time || "TBD"}`;
-
-    const price = document.createElement("p");
-    price.innerHTML = `<strong>Pris:</strong> ${event.price || "N/A"},-`;
-
-    const info = document.createElement("p");
-    info.innerHTML = `<strong>Info:</strong> ${
-      event.info || "Ingen info tilgængelig"
-    }`;
-
-    const button = document.createElement("button");
-    button.className = "btn btn-primary event-link";
-    button.dataset.id = event.ID;
-    button.textContent = "Like event";
-
-    card.appendChild(title);
-    card.appendChild(place);
-    card.appendChild(time);
-    card.appendChild(price);
-    card.appendChild(info);
-    card.appendChild(button);
-
-    eventsContainer.appendChild(card);
+    eventsContainer.appendChild(displayEvent(event));
   });
 
   // Add click listeners to each event card button
@@ -88,7 +45,7 @@ function displayFromDB(data) {
       if (event) {
         console.log("CLICKED!");
 
-        const userID = await getCurrentUserID(); //Insert userID here (somehow)
+        const userID = await getUserId();
         if (userID != null) {
           console.log(userID);
 
@@ -113,40 +70,51 @@ function displayFromDB(data) {
   });
 }
 
-export async function getCurrentUserID() {
-  // Get token from localStorage
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+function displayEvent(event) {
+  const card = document.createElement("div");
+  card.className = "card p-3";
+  card.style.width = "18rem";
 
-  // If no token, redirect to login page and return (run no more code)
-  if (!token) {
-    console.log("No token found");
-    return 0;
-  }
+  const title = document.createElement("h4");
+  title.textContent = event.name || "Ingen event titel";
 
-  // If token found
-  console.log("Token found");
+  const img = document.createElement("img");
+  img.src = event.image || "";
+  img.alt = event.name || "Event image";
+  img.style.width = "250px";
+  img.style.height = "250px";
+  img.style.objectFit = "cover";
+  img.style.objectPosition = "center";
+  img.onclick = () => {
+    window.location.href = `eventdetail.html?id=${event.ID}`;
+  };
 
-  try {
-    // Send POST request to server to verify authentication and admin status
-    const response = await fetch("/verify-token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token: token }),
-    });
+  card.appendChild(img);
 
-    const data = await response.json();
-    console.log(data);
+  const place = document.createElement("p");
+  place.innerHTML = `<strong>Sted:</strong> ${event.place || "Ukendt"}`;
 
-    const userid = await data.userId;
+  const time = document.createElement("p");
+  time.innerHTML = `<strong>Tid:</strong> ${event.time || "TBD"}`;
 
-    console.log(userid);
-    return userid;
-  } catch (err) {
-    // Handle fetch errors or server issues
-    console.error("Error verifying token:", err);
-    localStorage.removeItem("token");
-  }
+  const price = document.createElement("p");
+  price.innerHTML = `<strong>Pris:</strong> ${event.price || "N/A"},-`;
+
+  const info = document.createElement("p");
+  info.innerHTML = `<strong>Info:</strong> ${
+    event.info || "Ingen info tilgængelig"
+  }`;
+
+  const button = document.createElement("button");
+  button.className = "btn btn-primary event-link";
+  button.dataset.id = event.ID;
+  button.textContent = "Like event";
+
+  card.appendChild(title);
+  card.appendChild(place);
+  card.appendChild(time);
+  card.appendChild(price);
+  card.appendChild(info);
+  card.appendChild(button);
+  return card;
 }
