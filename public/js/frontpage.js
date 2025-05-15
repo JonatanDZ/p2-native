@@ -73,7 +73,7 @@ async function displayRecommendedItems(recommendationList, placement) {
     for (const rec of top10) {
       const product = allProducts.find((p) => p.ID === rec.ID);
       if (!product) continue;
-
+      //Display the given product
       container.appendChild(displayProduct(product));
     }
     document.body.addEventListener("click", function (e) {
@@ -134,6 +134,7 @@ async function displayRecommendedEvents(recommendationList, placement) {
     for (const rec of top10) {
       const event = allEvents.find((p) => p.ID === rec.ID);
       if (!event) continue;
+      //Display the given events
       container.appendChild(displayEvent(event));
     }
     // Add click listeners to each event card button
@@ -143,9 +144,7 @@ async function displayRecommendedEvents(recommendationList, placement) {
         const eventId = parseInt(e.target.getAttribute("data-id"));
         const event = allEvents.find((ev) => ev.ID === eventId);
         if (event) {
-          console.log("CLICKED!");
-
-          const userID = await getUserId(); //Insert userID here (somehow)
+          const userID = await getUserId(); //Get userID
           if (userID != null) {
             console.log(userID);
 

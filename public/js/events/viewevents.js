@@ -43,13 +43,9 @@ function displayFromDB(data) {
       const eventId = parseInt(e.target.getAttribute("data-id"));
       const event = data.find((ev) => ev.ID === eventId);
       if (event) {
-        console.log("CLICKED!");
-
+        //Get userID
         const userID = await getUserId();
         if (userID != null) {
-          console.log(userID);
-
-          console.log("USER", userID, "EVENT", eventId);
           //Make a POST with userID and eventID
           try {
             const response = fetch("http://localhost:3000/event-detail", {
