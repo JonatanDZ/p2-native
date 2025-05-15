@@ -4,6 +4,7 @@ export { startServer, fileResponse, sendConfirmationEmail, extractJSON };
 import dotenv from "dotenv";
 dotenv.config();
 
+// Nodemailer is used to send emails
 import nodemailer from "nodemailer";
 
 import http from "http"; //Import http protocol
@@ -96,6 +97,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// Function to send a confirmation email
 async function sendConfirmationEmail(
   recipientEmail,
   basket,
@@ -103,6 +105,7 @@ async function sendConfirmationEmail(
   fornavn,
   efternavn
 ) {
+  // Check if the required environment variables are set
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

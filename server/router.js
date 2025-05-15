@@ -163,6 +163,7 @@ async function processReq(req, res) {
                         })
                         .catch((err) => reportError(res, err));
                     break;
+                    // Stripe checkout session is created if backend receives the URL path "create-checkout-session"
                 case "create-checkout-session":
                     let body = "";
                     req.on("data", (chunk) => (body += chunk.toString()));
@@ -174,6 +175,7 @@ async function processReq(req, res) {
                                 res.end(JSON.stringify({ error: "Missing data" }));
                                 return;
                             }
+                            // Creates a Stripe checkout session with Stripes safe payment page with the given data
                             const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
                                 line_items: [
@@ -186,6 +188,7 @@ async function processReq(req, res) {
                                         quantity: 1,
                                     },
                                 ],
+                                // Tells Stripe it is a one time payment session and will redirect to the given URLs if successful or failed payment
                                 mode: "payment",
                                 customer_email: email,
                                 success_url:
@@ -206,7 +209,10 @@ async function processReq(req, res) {
                             res.end(JSON.stringify({ error: err.message }));
                         }
                     });
+                    // Returns Stripe session URL
                     return;
+                    
+                    // Sends a confirmation email to the user with the given data
                 case "send-confirmation-email":
                     let bodyConfirmationMail = "";
                     // Listen for incoming data and append it to the body
