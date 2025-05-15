@@ -63,6 +63,24 @@ export async function getProductFilters(id) {
   return rows[0];
 }
 
+export async function deleteProduct(id) {
+  try {
+    // each product has a foreign key rooted in product_filters so that has to be deleted first
+    const result_filters = await pool.query("DELETE FROM products_filters WHERE productID = ?", [id]);
+    const result_products = await pool.query("DELETE FROM products_table WHERE id = ?", [id]);
+    // .affectedRows says how many rows in the database were changed by the query
+    return {
+      // we return affected rows for filters since we are dependent upon its deletion but its not the primary intention
+      filtersDeleted: result_filters[0].affectedRows,
+      // we return if affected rows are larger than 0 since that means that some were actually deleted, else we throw an error
+      productDeleted: result_products[0].affectedRows > 0
+    };
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    throw err;
+  }
+}
+
 export async function createProduct(product) {
   // initializing one object twice since they are passed into two different tables
   const { name, shopID, picture, info, price, amount } = product;

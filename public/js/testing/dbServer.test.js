@@ -43,7 +43,6 @@ test('getRecommendedProducts returns an array of recommended products with expec
             expect(recProduct).toHaveProperty('amount');
         });
         }
-
 })
 
 //  Testing retrieval of liked products

@@ -4,6 +4,7 @@ import {
     getProducts,
     createEvent,
     getEvents,
+    deleteProduct,
 } from "./dbserver.js";
 import { fileResponse } from "./server.js";
 import { recommenderAlgorithmForUser, recommenderAlgorithmForItem } from "./recommender/recommenderAlgorithms.js";
@@ -75,16 +76,6 @@ async function processReq(req, res) {
                             .then((productData) => {
                                 productData.forEach((product) => {
                                     createProduct(product);
-                                    /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
-                                              .then((productData) => {
-                                                productData.forEach((product) => {
-                                                  createProduct(
-                                                    product.name,
-                                                    product.price,
-                                                    product.amount,
-                                                    product.filters
-                                                  );
-                                                  */
                                 });
                                 res.writeHead(200, { "Content-Type": "application/json" });
                                 res.end(
@@ -92,6 +83,31 @@ async function processReq(req, res) {
                                 );
                             })
                             .catch((err) => console.error(err));
+                        break;
+
+                    case "delete-product":
+                        extractJSON(req)
+                            .then(async ({ productId }) => {
+                                try {
+                                    const result = await deleteProduct(productId);
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(
+                                        JSON.stringify({
+                                            filtersDeleted: result.filtersDeleted,
+                                            productDeleted: result.productDeleted
+                                        })
+                                    );
+                                } catch (err) {
+                                    console.error("Error deleting product:", err);
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: "Failed to delete product" }));
+                                }
+                            })
+                            .catch((err) => {
+                                console.error("Error parsing request body:", err);
+                                res.writeHead(400, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: "Invalid request data." }));
+                            });
                         break;
 
                     case "update-user-filters":

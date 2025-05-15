@@ -10,7 +10,8 @@ export function onLoad(e) {
     //  .split returns an array of strings therefore .map has to be used to clean up; .map works just as foreach but returns an array which is needed
 
     // Splitting for row data 
-    let rowDataSplit = columnNames.slice(1).map(row => row.replace(/\r/g, "")); // this skips the header row, and removes carriage returns 
+    // this skips the header row, and removes carriage returns 
+    let rowDataSplit = columnNames.slice(1).map(row => row.replace(/\r/g, "")); 
     
 
     // initialize object
@@ -28,7 +29,16 @@ export function onLoad(e) {
     })
     console.log(rowData);
     // save to DB in case of button click
-    saveToDb(rowData);
+    document.getElementById("upload_to_db").addEventListener("click", async function (event){
+        const saveToDbResult = await saveToDbReq(rowData);
+        if(saveToDbResult === 0){
+            alert("Data er ikke gemt, forsøg igen!");
+        } else{
+            alert("Data er gemt!");
+        }
+    })
+
+
     // DOM manipulation // Printing the data to the screen by creating javascript elements. 
 
     // getting content div from html
@@ -84,19 +94,24 @@ function readFile(){
     });
 }
 
-function saveToDb(rowData){
-    document.getElementById("upload_to_db").addEventListener("click", function (event){
-          fetch('/save-products', {
+async function saveToDbReq(rowData){
+    try {
+        const res = await fetch('/save-products', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(rowData)
-            })
-            .catch(error => {
-                console.error("Error sending data to /save-products:", error);
-            });
-    })
+        });
+        // error handling from server response. Returning from function so i can check and display alert
+        if (!res.ok) {
+            return 0;
+        }
+        return 1;
+    } catch (error) {
+        console.error("Error sending data to /save-products:", error);
+        return 0;
+    }
 }
 
 readFile();
