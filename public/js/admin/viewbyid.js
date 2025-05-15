@@ -1,104 +1,109 @@
 async function loadDetailPage() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    const type = window.location.pathname.includes('product') ? 'product' : 'event';
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const type = window.location.pathname.includes("product")
+    ? "product"
+    : "event";
 
-    if (!id) {
-        document.getElementById("detail-container").innerHTML = `
+  if (!id) {
+    document.getElementById("detail-container").innerHTML = `
             <p>${type.charAt(0).toUpperCase() + type.slice(1)} not found</p>
             <a href="/public/pages/${type}s/${type}s.html">Return to ${type}s</a>
         `;
-        return;
-    }
+    return;
+  }
 
-    try {
-        const response = await fetch(`/get-${type}?id=${id}`);
-        const data = await response.json();
-        
-        if (!data) throw new Error("Not found");
-        
-        renderDetailPage(data, type);
-        setupEventListeners(type);
-    } catch (error) {
-        console.error(`Error loading ${type}:`, error);
-        document.getElementById("detail-container").innerHTML = `
+  try {
+    const response = await fetch(`/get-${type}?id=${id}`);
+    const data = await response.json();
+
+    if (!data) throw new Error("Not found");
+    console.log(data);
+
+    renderDetailPage(data, type);
+    setupEventListeners(data, type);
+  } catch (error) {
+    console.error(`Error loading ${type}:`, error);
+    document.getElementById("detail-container").innerHTML = `
             <p>${type.charAt(0).toUpperCase() + type.slice(1)} not found</p>
             <a href="/public/pages/${type}s/${type}s.html">Return to ${type}s</a>
         `;
-    }
+  }
 }
 
 function renderDetailPage(data, type) {
-    const container = document.getElementById("detail-container");
-    console.log("Image URL:", data.image || data.picture);
-    
-    if (type === 'product') {
-        container.innerHTML = `
+  const container = document.getElementById("detail-container");
+  console.log("Image URL:", data.image || data.picture);
+  console.log("ID:", data.ID);
+  if (type === "product") {
+    container.innerHTML = `
             <div class="detail-image">
                 <img src="${data.picture}" alt="${data.name}">
             </div>
             <div class="detail-info">
                 <h1>${data.name}</h1>
-                <p>${data.description || ''}</p>
+                <p>${data.description || ""}</p>
                 <p class="price">${data.price},-</p>
-                <button class="add-to-cart" data-id="${data.id}">Add to Cart</button>
+                <button class="add-to-cart" data-id="${
+                  data.ID
+                }">Add to Cart</button>
             </div>
         `;
-    } else { // Event
-        container.innerHTML = `
+  } else {
+    // Event
+    container.innerHTML = `
             <div class="detail-image">
                 <img src="${data.image}" alt="${data.name}">
             </div>
             <div class="detail-info">
                 <h1>${data.name}</h1>
-                <p>${data.info || ''}</p>
+                <p>${data.info || ""}</p>
                 <p>Date: ${new Date(data.time).toLocaleDateString()}</p>
                 <p>Location: ${data.place}</p>
-                <button class="register" data-id="${data.id}">Register</button>
+                <button class="register" data-id="${data.ID}">Register</button>
             </div>
         `;
-    }
+  }
 }
 
-function setupEventListeners(type) {
-    const container = document.getElementById("detail-container");
-    
-    if (type === 'product') {
-        container.addEventListener("click", function(e) {
-            if (e.target && e.target.classList.contains("add-to-cart")) {
-                e.preventDefault();
-                const productId = e.target.getAttribute("data-id");
-                addToBasket(productId);
-            }
-        });
-    } else {
-        // Event registration logic would go here
-    }
+function setupEventListeners(data, type) {
+  const container = document.getElementById("detail-container");
+
+  if (type === "product") {
+    container.addEventListener("click", function (e) {
+      if (e.target && e.target.classList.contains("add-to-cart")) {
+        e.preventDefault();
+        addToBasket(data);
+      }
+    });
+  } else {
+    // Event registration logic would go here
+  }
 }
 
 async function addToBasket(productId) {
-    try {
-        const response = await fetch(`/get-product?id=${productId}`);
-        const product = await response.json();
-        
-        if (!product) throw new Error("Product not found");
-        
-        let basket = JSON.parse(localStorage.getItem("basket")) || [];
-        const existingProduct = basket.find(item => item.id == productId);
-        
-        if (existingProduct) {
-            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-        } else {
-            product.quantity = 1;
-            basket.push(product);
-        }
-        
-        localStorage.setItem("basket", JSON.stringify(basket));
-        alert("Product added to basket!");
-    } catch (error) {
-        console.error("Error adding to basket:", error);
-        alert("Could not add product to basket");
+  try {
+    const response = await fetch(`/get-product?id=${productId}`);
+    const product = await response.json();
+
+    if (!product) throw new Error("Product not found");
+
+    let basket = JSON.parse(localStorage.getItem("basket")) || [];
+    const existingProduct = basket.find((item) => item.id == productId);
+
+    if (existingProduct) {
+      existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+    } else {
+      product.quantity = 1;
+      basket.push(product);
     }
+
+    localStorage.setItem("basket", JSON.stringify(basket));
+    alert("Product added to basket!");
+  } catch (error) {
+    console.error("Error adding to basket:", error);
+    alert("Could not add product to basket");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", loadDetailPage);
