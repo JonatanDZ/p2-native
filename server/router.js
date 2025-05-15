@@ -96,6 +96,30 @@ async function processReq(req, res) {
             })
             .catch((err) => console.error(err));
           break;
+          case "delete-product":
+                extractJSON(req)
+                    .then(async ({ productId }) => {
+                        try {
+                            const result = await deleteProduct(productId);
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(
+                                JSON.stringify({
+                                    filtersDeleted: result.filtersDeleted,
+                                    productDeleted: result.productDeleted
+                                })
+                            );
+                        } catch (err) {
+                            console.error("Error deleting product:", err);
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Failed to delete product" }));
+                        }
+                    })
+                    .catch((err) => {
+                        console.error("Error parsing request body:", err);
+                        res.writeHead(400, { "Content-Type": "application/json" });
+                        res.end(JSON.stringify({ error: "Invalid request data." }));
+                    });
+                break;
         case "update-user-filters":
           extractJSON(req)
             .then(({ userId, itemId }) => {
