@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1747303124187" clover="3.2.0">
-  <project timestamp="1747303124187" name="All files">
-    <metrics statements="553" coveredstatements="116" conditionals="143" coveredconditionals="12" methods="101" coveredmethods="31" elements="797" coveredelements="159" complexity="0" loc="553" ncloc="553" packages="4" files="9" classes="9"/>
+<coverage generated="1747309689997" clover="3.2.0">
+  <project timestamp="1747309689998" name="All files">
+    <metrics statements="553" coveredstatements="157" conditionals="143" coveredconditionals="28" methods="101" coveredmethods="36" elements="797" coveredelements="221" complexity="0" loc="553" ncloc="553" packages="4" files="9" classes="9"/>
     <package name="public.js.admin">
       <metrics statements="28" coveredstatements="1" conditionals="8" coveredconditionals="1" methods="8" coveredmethods="0"/>
       <file name="admin.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/public/js/admin/admin.js">
@@ -54,9 +54,9 @@
       </file>
     </package>
     <package name="server">
-      <metrics statements="402" coveredstatements="76" conditionals="103" coveredconditionals="8" methods="67" coveredmethods="15"/>
+      <metrics statements="402" coveredstatements="117" conditionals="103" coveredconditionals="24" methods="67" coveredmethods="20"/>
       <file name="dbserver.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/dbserver.js">
-        <metrics statements="42" coveredstatements="29" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="7"/>
+        <metrics statements="42" coveredstatements="32" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="8"/>
         <line num="3" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
         <line num="20" count="2" type="stmt"/>
@@ -68,12 +68,12 @@
         <line num="40" count="1" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
         <line num="45" count="1" type="stmt"/>
-        <line num="50" count="102" type="stmt"/>
-        <line num="53" count="102" type="stmt"/>
-        <line num="54" count="102" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="61" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
+        <line num="50" count="103" type="stmt"/>
+        <line num="53" count="103" type="stmt"/>
+        <line num="54" count="103" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
         <line num="67" count="1" type="stmt"/>
         <line num="70" count="1" type="stmt"/>
         <line num="71" count="1" type="stmt"/>
@@ -101,7 +101,7 @@
         <line num="230" count="0" type="stmt"/>
       </file>
       <file name="router.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/router.js">
-        <metrics statements="294" coveredstatements="31" conditionals="87" coveredconditionals="6" methods="38" coveredmethods="2"/>
+        <metrics statements="294" coveredstatements="69" conditionals="87" coveredconditionals="22" methods="38" coveredmethods="6"/>
         <line num="35" count="1" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
         <line num="39" count="1" type="stmt"/>
@@ -114,13 +114,13 @@
         <line num="58" count="1" type="stmt"/>
         <line num="59" count="1" type="stmt"/>
         <line num="60" count="1" type="stmt"/>
-        <line num="65" count="3" type="stmt"/>
-        <line num="67" count="3" type="stmt"/>
-        <line num="68" count="3" type="stmt"/>
-        <line num="70" count="3" type="stmt"/>
-        <line num="72" count="3" type="cond" truecount="1" falsecount="2"/>
-        <line num="74" count="0" type="stmt"/>
-        <line num="75" count="0" type="cond" truecount="0" falsecount="11"/>
+        <line num="65" count="6" type="stmt"/>
+        <line num="67" count="6" type="stmt"/>
+        <line num="68" count="6" type="stmt"/>
+        <line num="70" count="6" type="stmt"/>
+        <line num="72" count="6" type="cond" truecount="2" falsecount="1"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="75" count="1" type="cond" truecount="1" falsecount="10"/>
         <line num="77" count="0" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
         <line num="81" count="0" type="stmt"/>
@@ -252,42 +252,42 @@
         <line num="400" count="0" type="stmt"/>
         <line num="401" count="0" type="stmt"/>
         <line num="404" count="0" type="stmt"/>
-        <line num="407" count="0" type="stmt"/>
-        <line num="410" count="0" type="stmt"/>
-        <line num="411" count="0" type="stmt"/>
-        <line num="414" count="0" type="stmt"/>
-        <line num="415" count="0" type="stmt"/>
-        <line num="416" count="0" type="stmt"/>
-        <line num="418" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="407" count="1" type="stmt"/>
+        <line num="410" count="1" type="stmt"/>
+        <line num="411" count="1" type="stmt"/>
+        <line num="414" count="1" type="stmt"/>
+        <line num="415" count="1" type="stmt"/>
+        <line num="416" count="1" type="stmt"/>
+        <line num="418" count="1" type="cond" truecount="3" falsecount="1"/>
         <line num="419" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="420" count="0" type="stmt"/>
         <line num="421" count="0" type="stmt"/>
         <line num="427" count="0" type="stmt"/>
-        <line num="431" count="0" type="stmt"/>
-        <line num="435" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="431" count="1" type="stmt"/>
+        <line num="435" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="436" count="0" type="stmt"/>
         <line num="437" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="438" count="0" type="stmt"/>
         <line num="441" count="0" type="stmt"/>
         <line num="445" count="0" type="stmt"/>
-        <line num="448" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="448" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="449" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="450" count="0" type="stmt"/>
         <line num="453" count="0" type="stmt"/>
         <line num="459" count="0" type="stmt"/>
-        <line num="462" count="0" type="stmt"/>
-        <line num="465" count="0" type="stmt"/>
-        <line num="466" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="462" count="1" type="stmt"/>
+        <line num="465" count="1" type="stmt"/>
+        <line num="466" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="467" count="0" type="stmt"/>
         <line num="468" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="469" count="0" type="stmt"/>
         <line num="472" count="0" type="stmt"/>
         <line num="478" count="0" type="stmt"/>
-        <line num="482" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="483" count="0" type="stmt"/>
-        <line num="486" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="487" count="0" type="stmt"/>
-        <line num="490" count="0" type="stmt"/>
+        <line num="482" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="483" count="1" type="stmt"/>
+        <line num="486" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="487" count="1" type="stmt"/>
+        <line num="490" count="1" type="stmt"/>
         <line num="498" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="499" count="0" type="stmt"/>
         <line num="502" count="0" type="stmt"/>
@@ -295,12 +295,12 @@
         <line num="514" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="515" count="0" type="stmt"/>
         <line num="516" count="0" type="stmt"/>
-        <line num="520" count="0" type="stmt"/>
+        <line num="520" count="1" type="stmt"/>
         <line num="523" count="0" type="stmt"/>
-        <line num="526" count="0" type="stmt"/>
-        <line num="531" count="3" type="stmt"/>
-        <line num="534" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="539" count="3" type="cond" truecount="3" falsecount="6"/>
+        <line num="526" count="1" type="stmt"/>
+        <line num="531" count="5" type="stmt"/>
+        <line num="534" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="539" count="5" type="cond" truecount="5" falsecount="4"/>
         <line num="542" count="1" type="stmt"/>
         <line num="543" count="1" type="stmt"/>
         <line num="546" count="1" type="stmt"/>
@@ -358,43 +358,43 @@
         <line num="636" count="0" type="stmt"/>
         <line num="637" count="0" type="stmt"/>
         <line num="640" count="0" type="stmt"/>
-        <line num="642" count="0" type="stmt"/>
-        <line num="643" count="0" type="stmt"/>
-        <line num="647" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="642" count="1" type="stmt"/>
+        <line num="643" count="1" type="stmt"/>
+        <line num="647" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="648" count="0" type="stmt"/>
         <line num="649" count="0" type="stmt"/>
         <line num="650" count="0" type="stmt"/>
-        <line num="653" count="0" type="stmt"/>
-        <line num="654" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="653" count="1" type="stmt"/>
+        <line num="654" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="655" count="0" type="stmt"/>
         <line num="656" count="0" type="stmt"/>
         <line num="657" count="0" type="stmt"/>
-        <line num="660" count="0" type="stmt"/>
-        <line num="661" count="0" type="stmt"/>
+        <line num="660" count="1" type="stmt"/>
+        <line num="661" count="1" type="stmt"/>
         <line num="663" count="0" type="stmt"/>
         <line num="664" count="0" type="stmt"/>
         <line num="665" count="0" type="stmt"/>
-        <line num="667" count="0" type="stmt"/>
-        <line num="669" count="0" type="stmt"/>
-        <line num="670" count="0" type="stmt"/>
-        <line num="675" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="667" count="1" type="stmt"/>
+        <line num="669" count="1" type="stmt"/>
+        <line num="670" count="1" type="stmt"/>
+        <line num="675" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="676" count="0" type="stmt"/>
         <line num="677" count="0" type="stmt"/>
         <line num="678" count="0" type="stmt"/>
-        <line num="680" count="0" type="stmt"/>
-        <line num="682" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="680" count="1" type="stmt"/>
+        <line num="682" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="683" count="0" type="stmt"/>
         <line num="684" count="0" type="stmt"/>
         <line num="685" count="0" type="stmt"/>
-        <line num="688" count="0" type="stmt"/>
-        <line num="689" count="0" type="stmt"/>
+        <line num="688" count="1" type="stmt"/>
+        <line num="689" count="1" type="stmt"/>
         <line num="691" count="0" type="stmt"/>
         <line num="692" count="0" type="stmt"/>
         <line num="693" count="0" type="stmt"/>
-        <line num="695" count="0" type="stmt"/>
+        <line num="695" count="1" type="stmt"/>
         <line num="699" count="0" type="stmt"/>
         <line num="700" count="0" type="stmt"/>
-        <line num="703" count="3" type="stmt"/>
+        <line num="703" count="5" type="stmt"/>
         <line num="705" count="0" type="stmt"/>
       </file>
       <file name="server.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/server.js">
@@ -407,8 +407,8 @@
         <line num="17" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
-        <line num="23" count="3" type="stmt"/>
-        <line num="25" count="3" type="stmt"/>
+        <line num="23" count="6" type="stmt"/>
+        <line num="25" count="6" type="stmt"/>
         <line num="28" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
@@ -517,7 +517,7 @@
         <line num="58" count="3122" type="stmt"/>
         <line num="60" count="223" type="stmt"/>
         <line num="66" count="3" type="stmt"/>
-        <line num="67" count="1041" type="stmt"/>
+        <line num="67" count="1049" type="stmt"/>
         <line num="73" count="2" type="stmt"/>
       </file>
       <file name="recommenderAlgorithmsServer.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/recommender/recommenderAlgorithmsServer.js">
