@@ -1,14 +1,10 @@
+
 INSERT INTO users_table (email, password, name, admin) VALUES
 ('alice@example.com', 'hashedpass1', 'Alice', 1),
 ('bob@example.com', 'hashedpass2', 'Bob', 1),
 ('charlie@example.com', 'hashedpass3', 'Charlie', 0),
 ('dominic@example.com', 'hashedpass4', 'Dominic', 0),
-('erica@example.com', 'hashedpass5', 'Eric', 1),
-('fred@example.com', 'hashedpass6', 'Fred', 0),
-('glinda@example.com', 'hashedpass7', 'Glinda', 0),
-('hassan@example.com', 'hashedpass8', 'Hassan', 0),
-('jacob@example.com', 'hashedpass9', 'Jacob', 1),
-('kris@example.com', 'hashedpass10', 'Kris', 0);
+('erica@example.com', 'hashedpass5', 'Eric', 1);
 
 INSERT INTO products_table (shopID, name, picture, info, price, amount, size) VALUES
 (1, 'Klassisk T-Shirt', 'https://dansk.dk/img/1500/1500/resize/0/5/0510_001_pack_1_web_1.png', 'Bomulds t-shirt med rund hals', 199, 20, 'M'),
@@ -55,6 +51,10 @@ INSERT INTO user_events (userID, eventID) VALUES
 (2, 6),
 (3, 1),
 (5, 6),
-(6, 1),
+(3, 1),
 (4, 1),
 (4, 6);
+
+
+
+
