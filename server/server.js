@@ -4,6 +4,8 @@ export { startServer, fileResponse, sendConfirmationEmail, extractJSON };
 import dotenv from "dotenv";
 dotenv.config();
 
+import nodemailer from "nodemailer";
+
 import http from "http"; //Import http protocol
 import fs from "fs"; //Import file reader
 
