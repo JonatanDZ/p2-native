@@ -3,6 +3,7 @@ const form = document.querySelector("form");
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    // Create values for the email and password on login page and one if the "remember me" button is checked
     const email = form.email.value;
     const password = form.password.value;
     const rememberMe = form.remember.checked;
