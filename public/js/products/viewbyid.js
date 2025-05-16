@@ -30,20 +30,6 @@ async function updateUserFiltersHTML() {
   }
 }
 
-/*async function getRecommendedItemsHTML() {
-  const userId = await getUserId();
-
-  await fetch(`/recommendItems?userId=${userId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Recommendations:", data);
-      displayRecommendedItems(data, "recommendation-list");
-    })
-    .catch((err) => {
-      console.error("Failed to load recommendations:", err);
-    });
-}*/
-
 async function displaySimilarItems(similarItems) {
   // starter fra 1 i stedet for 0, så den ikke viser det samme item som man er trykket ind på.
   const top10 = similarItems.slice(1, 10);
