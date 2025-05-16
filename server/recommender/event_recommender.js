@@ -1,5 +1,4 @@
 //import DB functions;
-import { fetchUserIdFromToken } from "../../public/js/admin/admin.js";
 import {
   getAllEventsDB,
   getAllUserEventsDB,
@@ -10,15 +9,15 @@ export async function recommenderAlgorithmForEvents(userID) {
   let events = await getAllEventsDB();
   let userEvents = await getAllUserEventsDB();
   //Call recommender with the data
-  return reccomendEvents(userEvents, events, userID);
+  return recommendEvents(userEvents, events, userID);
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
-export async function reccomendEvents(data, events) {              
+export async function recommendEvents(data, events, userId) {
   //If either data is NULL then stop
   if (!data || !events) return events;
 
-  let currentUser = userId; //Get currentUser from database (somehow?) SHOULD BE CHANGED
+  let currentUser = userId; //Get currentUser
 
   let result = []; //Holds the score and id of the events
 
@@ -69,7 +68,7 @@ export async function reccomendEvents(data, events) {
   return resultsEvents;
 }
 
-//https://stackoverflow.com/questions/16096872/how-to-sort-2-dimensional-array-by-column-value
+//Sorts array by first column
 function sortFunction(a, b) {
   if (a[0] === b[0]) {
     return 0;
