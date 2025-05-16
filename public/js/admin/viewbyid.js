@@ -1,11 +1,11 @@
 async function loadDetailPage() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+  const id = params.get("id");          //extracts id from url
   const type = window.location.pathname.includes("product")
     ? "product"
-    : "event";
+    : "event";                          //determines if its a single event or products thats to be rendered
 
-  if (!id) {
+  if (!id) {                            //error handling
     document.getElementById("detail-container").innerHTML = `
             <p>${type.charAt(0).toUpperCase() + type.slice(1)} not found</p>
             <a href="/public/pages/${type}s/${type}s.html">Return to ${type}s</a>
@@ -15,10 +15,9 @@ async function loadDetailPage() {
 
   try {
     const response = await fetch(`/get-${type}?id=${id}`);
-    const data = await response.json();
+    const data = await response.json();  //api call to get data by id
 
     if (!data) throw new Error("Not found");
-    console.log(data);
 
     renderDetailPage(data, type);
     setupEventListeners(data, type);
@@ -33,9 +32,8 @@ async function loadDetailPage() {
 
 function renderDetailPage(data, type) {
   const container = document.getElementById("detail-container");
-  console.log("Image URL:", data.image || data.picture);
-  console.log("ID:", data.ID);
   if (type === "product") {
+    //for products
     container.innerHTML = `
             <div class="detail-image">
                 <img src="${data.picture}" alt="${data.name}">
@@ -50,7 +48,7 @@ function renderDetailPage(data, type) {
             </div>
         `;
   } else {
-    // Event
+    //for events
     container.innerHTML = `
             <div class="detail-image">
                 <img src="${data.image}" alt="${data.name}">

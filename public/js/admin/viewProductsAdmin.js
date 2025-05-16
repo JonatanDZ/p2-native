@@ -65,7 +65,6 @@ async function displayFromDB(data) {
             deleteButton.textContent = `Delete product` || 'Deletion is not available';
 
             card.appendChild(productLink); 
-            card.appendChild(productLink);
             card.appendChild(price);
             card.appendChild(title);
             card.appendChild(deleteButton);

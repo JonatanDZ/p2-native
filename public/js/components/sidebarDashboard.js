@@ -5,9 +5,11 @@ async function loadSidebarAndAuth() {
         const html = await res.text();
         document.getElementById("sidebar-container").innerHTML = html;
 
+        // Get token from localtorage and return if there is no token. Stops the rest of code to run
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (!token) return;
 
+        // Call on verify-token which breaks down the token and can parse admin status of the user.
         const response = await fetch('/verify-token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -18,12 +20,15 @@ async function loadSidebarAndAuth() {
         const sidebarLinks = document.getElementById('sidebar-links');
         if (!sidebarLinks) return;
 
+        // data.isAuthenticated and data.isAdmin is parsed from verify-token. This if statement creates the button to admin page,
+        // if the user is admin
         if (data.isAuthenticated && data.isAdmin) {
             const adminLink = document.createElement('li');
             adminLink.classList.add('nav-item');
             adminLink.innerHTML = `<a class="nav-link" href="/public/pages/admin/admin.html"><i class="nav-icon cil-speedometer"></i> Admin side
             </a></a>`;
             const firstItem = sidebarLinks.querySelector('li');
+            // This puts the button at the top of the list
             if (firstItem && firstItem.nextSibling) {
                 sidebarLinks.insertBefore(adminLink, firstItem.nextSibling);
             } else {
@@ -32,7 +37,9 @@ async function loadSidebarAndAuth() {
 
         }
 
+        // Create logout button
         const logoutBtn = document.getElementById('logout-link');
+        // Logic if the button is clicked, it removes the token and redirects to login page
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
