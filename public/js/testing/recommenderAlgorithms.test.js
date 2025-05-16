@@ -5,6 +5,7 @@ import { compareLists, dotProduct, recommenderAlgorithmForItem, recommendItem } 
 
 //  testing recommenderAlgorithm functions
 test('dotProduct properly returns a dotproduct between two vectors', ()=>{
+  // arranging mock user and item filters
     const user = {
         black: 2,
         white: 1,
@@ -38,18 +39,21 @@ test('dotProduct properly returns a dotproduct between two vectors', ()=>{
         polyester: 0
       };
 
+    // expecting the value of these two vectors being dotted with each other. 
     const output = dotProduct(user, item);
     const expected = 8;
     expect(output).toEqual(expected);
 })
 
 test('compareLists properly compares objects and returns a sorted list of objects', ()=>{
+  // arranging mock input 
     const input = [
         { ID: 1, score: 3 },
         { ID: 2, score: 7 },
         { ID: 3, score: 5 }
     ];
     
+    // expecting that the list with the highest score is output
     const sorted = compareLists(input);
     const expected =  
     [{ ID: 2, score: 7 },
@@ -61,6 +65,7 @@ test('compareLists properly compares objects and returns a sorted list of object
 
 
 test('recommendItem properly compares the lists and returns the recommended items as a list of objects', ()=>{
+    // arranging mock user and items filters
     const user = [null, 2, 1, 0, 0, 1, 0, 0, 0, 2, 2, 0, 2, 0, 0];
 
     const items = [
@@ -68,6 +73,7 @@ test('recommendItem properly compares the lists and returns the recommended item
         [2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0] 
       ];
     
+    // the recommended item should be the row in "items" which, when multiplied with the user filter, yields the largest result 
     const output = recommendItem(user, items);
     const expected = [{ID: 1, score: 8}, {ID: 2, score: 6}];
 

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.04% </span>
+                <span class="strong">80.95% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/42</span>
+                <span class='fraction'>34/42</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.04% </span>
+                <span class="strong">80.95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/42</span>
+                <span class='fraction'>34/42</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -343,19 +343,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">102x</span>
+<span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">102x</span>
-<span class="cline-any cline-yes">102x</span>
+<span class="cline-any cline-yes">103x</span>
+<span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -497,10 +497,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -580,13 +580,13 @@ export async function getProduct(id) {
   const rows = result[0];
   return rows[0];
 }
-export async function <span class="fstat-no" title="function not covered" >getEvent(</span>id) {
+export async function getEvent(id) {
   //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
-  const result = <span class="cstat-no" title="statement not covered" >await pool.query("SELECT * FROM events_table WHERE id = ?", [</span>
+  const result = await pool.query("SELECT * FROM events_table WHERE id = ?", [
     id,
   ]);
-  const rows = <span class="cstat-no" title="statement not covered" >result[0];</span>
-<span class="cstat-no" title="statement not covered" >  return rows[0];</span>
+  const rows = result[0];
+  return rows[0];
 }
 &nbsp;
 export async function getProductFilters(id) {
@@ -720,7 +720,7 @@ export async function getEvents() {
     return rows;
 }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >createEvent(</span>event) {
+export async function createEvent(event) {
     const { 
         price, 
         place, 
@@ -728,10 +728,10 @@ export async function <span class="fstat-no" title="function not covered" >creat
         info, 
         name, 
         time
-    } = <span class="cstat-no" title="statement not covered" >event;</span>
+    } = event;
     //  ProductID works as a placeholder it is init further down
 &nbsp;
-    const result_table = <span class="cstat-no" title="statement not covered" >await pool.query(</span>
+    const result_table = await pool.query(
         `INSERT INTO events_table (
             price, 
             place, 
@@ -763,7 +763,7 @@ export async function <span class="fstat-no" title="function not covered" >creat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-05-15T09:58:44.152Z
+                at 2025-05-16T08:15:21.103Z
             </div>
         <script src="../prettify.js"></script>
         <script>
