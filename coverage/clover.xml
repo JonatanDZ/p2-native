@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1747309689997" clover="3.2.0">
-  <project timestamp="1747309689998" name="All files">
-    <metrics statements="553" coveredstatements="157" conditionals="143" coveredconditionals="28" methods="101" coveredmethods="36" elements="797" coveredelements="221" complexity="0" loc="553" ncloc="553" packages="4" files="9" classes="9"/>
+<coverage generated="1747381875811" clover="3.2.0">
+  <project timestamp="1747381875811" name="All files">
+    <metrics statements="553" coveredstatements="183" conditionals="143" coveredconditionals="31" methods="101" coveredmethods="46" elements="797" coveredelements="260" complexity="0" loc="553" ncloc="553" packages="4" files="9" classes="9"/>
     <package name="public.js.admin">
       <metrics statements="28" coveredstatements="1" conditionals="8" coveredconditionals="1" methods="8" coveredmethods="0"/>
       <file name="admin.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/public/js/admin/admin.js">
@@ -54,9 +54,9 @@
       </file>
     </package>
     <package name="server">
-      <metrics statements="402" coveredstatements="117" conditionals="103" coveredconditionals="24" methods="67" coveredmethods="20"/>
+      <metrics statements="402" coveredstatements="143" conditionals="103" coveredconditionals="27" methods="67" coveredmethods="30"/>
       <file name="dbserver.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/dbserver.js">
-        <metrics statements="42" coveredstatements="32" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="8"/>
+        <metrics statements="42" coveredstatements="34" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="9"/>
         <line num="3" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
         <line num="20" count="2" type="stmt"/>
@@ -95,13 +95,13 @@
         <line num="191" count="1" type="stmt"/>
         <line num="192" count="1" type="stmt"/>
         <line num="193" count="1" type="stmt"/>
-        <line num="204" count="0" type="stmt"/>
-        <line num="207" count="0" type="stmt"/>
+        <line num="204" count="1" type="stmt"/>
+        <line num="207" count="1" type="stmt"/>
         <line num="229" count="0" type="stmt"/>
         <line num="230" count="0" type="stmt"/>
       </file>
       <file name="router.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/router.js">
-        <metrics statements="294" coveredstatements="69" conditionals="87" coveredconditionals="22" methods="38" coveredmethods="6"/>
+        <metrics statements="294" coveredstatements="75" conditionals="87" coveredconditionals="23" methods="38" coveredmethods="8"/>
         <line num="35" count="1" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
         <line num="39" count="1" type="stmt"/>
@@ -114,13 +114,13 @@
         <line num="58" count="1" type="stmt"/>
         <line num="59" count="1" type="stmt"/>
         <line num="60" count="1" type="stmt"/>
-        <line num="65" count="6" type="stmt"/>
-        <line num="67" count="6" type="stmt"/>
-        <line num="68" count="6" type="stmt"/>
-        <line num="70" count="6" type="stmt"/>
-        <line num="72" count="6" type="cond" truecount="2" falsecount="1"/>
-        <line num="74" count="1" type="stmt"/>
-        <line num="75" count="1" type="cond" truecount="1" falsecount="10"/>
+        <line num="65" count="7" type="stmt"/>
+        <line num="67" count="7" type="stmt"/>
+        <line num="68" count="7" type="stmt"/>
+        <line num="70" count="7" type="stmt"/>
+        <line num="72" count="7" type="cond" truecount="2" falsecount="1"/>
+        <line num="74" count="2" type="stmt"/>
+        <line num="75" count="2" type="cond" truecount="2" falsecount="9"/>
         <line num="77" count="0" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
         <line num="81" count="0" type="stmt"/>
@@ -151,13 +151,13 @@
         <line num="147" count="0" type="stmt"/>
         <line num="148" count="0" type="stmt"/>
         <line num="150" count="0" type="stmt"/>
-        <line num="152" count="0" type="stmt"/>
-        <line num="155" count="0" type="stmt"/>
-        <line num="157" count="0" type="stmt"/>
-        <line num="159" count="0" type="stmt"/>
-        <line num="160" count="0" type="stmt"/>
+        <line num="152" count="1" type="stmt"/>
+        <line num="155" count="1" type="stmt"/>
+        <line num="157" count="1" type="stmt"/>
+        <line num="159" count="1" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
         <line num="164" count="0" type="stmt"/>
-        <line num="165" count="0" type="stmt"/>
+        <line num="165" count="1" type="stmt"/>
         <line num="167" count="0" type="stmt"/>
         <line num="168" count="0" type="stmt"/>
         <line num="169" count="0" type="stmt"/>
@@ -297,7 +297,7 @@
         <line num="516" count="0" type="stmt"/>
         <line num="520" count="1" type="stmt"/>
         <line num="523" count="0" type="stmt"/>
-        <line num="526" count="1" type="stmt"/>
+        <line num="526" count="2" type="stmt"/>
         <line num="531" count="5" type="stmt"/>
         <line num="534" count="5" type="cond" truecount="1" falsecount="1"/>
         <line num="539" count="5" type="cond" truecount="5" falsecount="4"/>
@@ -398,7 +398,7 @@
         <line num="705" count="0" type="stmt"/>
       </file>
       <file name="server.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/server.js">
-        <metrics statements="66" coveredstatements="16" conditionals="16" coveredconditionals="2" methods="19" coveredmethods="6"/>
+        <metrics statements="66" coveredstatements="34" conditionals="16" coveredconditionals="4" methods="19" coveredmethods="13"/>
         <line num="5" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
@@ -407,8 +407,8 @@
         <line num="17" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
-        <line num="23" count="6" type="stmt"/>
-        <line num="25" count="6" type="stmt"/>
+        <line num="23" count="7" type="stmt"/>
+        <line num="25" count="7" type="stmt"/>
         <line num="28" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
@@ -442,28 +442,28 @@
         <line num="136" count="0" type="stmt"/>
         <line num="137" count="0" type="stmt"/>
         <line num="138" count="0" type="stmt"/>
-        <line num="143" count="0" type="stmt"/>
-        <line num="145" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="146" count="0" type="stmt"/>
-        <line num="147" count="0" type="stmt"/>
-        <line num="148" count="0" type="stmt"/>
+        <line num="143" count="1" type="stmt"/>
+        <line num="145" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="146" count="1" type="stmt"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="148" count="1" type="stmt"/>
         <line num="151" count="0" type="stmt"/>
         <line num="152" count="0" type="stmt"/>
-        <line num="159" count="0" type="stmt"/>
-        <line num="160" count="0" type="stmt"/>
-        <line num="161" count="0" type="stmt"/>
-        <line num="168" count="0" type="stmt"/>
-        <line num="169" count="0" type="stmt"/>
-        <line num="170" count="0" type="stmt"/>
-        <line num="172" count="0" type="stmt"/>
-        <line num="173" count="0" type="stmt"/>
-        <line num="175" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="159" count="1" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="161" count="1" type="stmt"/>
+        <line num="168" count="1" type="stmt"/>
+        <line num="169" count="1" type="stmt"/>
+        <line num="170" count="1" type="stmt"/>
+        <line num="172" count="1" type="stmt"/>
+        <line num="173" count="1" type="stmt"/>
+        <line num="175" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="177" count="0" type="stmt"/>
         <line num="178" count="0" type="stmt"/>
-        <line num="182" count="0" type="stmt"/>
-        <line num="184" count="0" type="stmt"/>
-        <line num="185" count="0" type="stmt"/>
-        <line num="189" count="0" type="stmt"/>
+        <line num="182" count="1" type="stmt"/>
+        <line num="184" count="1" type="stmt"/>
+        <line num="185" count="1" type="stmt"/>
+        <line num="189" count="1" type="stmt"/>
         <line num="192" count="1" type="stmt"/>
       </file>
     </package>
@@ -508,16 +508,16 @@
         <line num="22" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
         <line num="28" count="1" type="stmt"/>
-        <line num="33" count="222" type="stmt"/>
+        <line num="33" count="228" type="stmt"/>
         <line num="41" count="2" type="stmt"/>
         <line num="48" count="2" type="stmt"/>
         <line num="51" count="2" type="stmt"/>
-        <line num="56" count="223" type="stmt"/>
-        <line num="57" count="223" type="stmt"/>
-        <line num="58" count="3122" type="stmt"/>
-        <line num="60" count="223" type="stmt"/>
+        <line num="56" count="229" type="stmt"/>
+        <line num="57" count="229" type="stmt"/>
+        <line num="58" count="3206" type="stmt"/>
+        <line num="60" count="229" type="stmt"/>
         <line num="66" count="3" type="stmt"/>
-        <line num="67" count="1049" type="stmt"/>
+        <line num="67" count="1091" type="stmt"/>
         <line num="73" count="2" type="stmt"/>
       </file>
       <file name="recommenderAlgorithmsServer.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/recommender/recommenderAlgorithmsServer.js">
@@ -545,7 +545,7 @@
         <line num="65" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="66" count="0" type="stmt"/>
         <line num="67" count="0" type="stmt"/>
-        <line num="71" count="440" type="stmt"/>
+        <line num="71" count="452" type="stmt"/>
         <line num="73" count="0" type="stmt"/>
         <line num="74" count="0" type="stmt"/>
         <line num="79" count="0" type="stmt"/>

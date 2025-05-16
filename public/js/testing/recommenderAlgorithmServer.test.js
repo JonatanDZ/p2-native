@@ -3,6 +3,7 @@
 import { getAllItemFiltersDB, getUserFiltersDB } from "../../../server/recommender/recommenderAlgorithmsServer"
 
 test('getUserFiltersDB properly returns the filter row from the DB given a user id', async () => {
+  // assumes that there actually is a row with id = 7, this can cause issues 
     const id = 7;
     const output = await getUserFiltersDB(id);
 

@@ -4,13 +4,14 @@ import { createProduct, getLikedProducts, getProduct, getProducts, getRecommende
 // All functions getting or sending data to database / primarily from dbserver.js
 //  These are integration tests, since they actually test our live DB 
 //  Issue is that this assumes you have correct data in the DB, not that the function retrieves properly. 
+// when posting to the DB it does so to the live DB so there are rows with test data 
 test('getProducts returns an array of products with expected fields', async () => {
     const products = await getProducts();
   
-    // check that it's an array
+    // check that its an array
     expect(Array.isArray(products)).toBe(true);
   
-    // if not empty, check shape of first product
+    // if not empty, check properties of product 
     if (products.length > 0) {
         products.forEach(product => {
           expect(product).toHaveProperty('ID');
@@ -28,10 +29,10 @@ test('getProducts returns an array of products with expected fields', async () =
 test('getRecommendedProducts returns an array of recommended products with expected fields', async () =>{
     const recProducts = await getRecommendedProducts();
 
-    // check that it's an array
+    // check that its an array
     expect(Array.isArray(recProducts)).toBe(true);
 
-    // if not empty, check shape of first product
+    // if not empty check properties of product
     if (recProducts.length > 0) {
         recProducts.forEach(recProduct => {
             expect(recProduct).toHaveProperty('ID');
@@ -49,10 +50,10 @@ test('getRecommendedProducts returns an array of recommended products with expec
 test('getLikedProducts returns an array of liked products with expected fields', async () =>{
     const likedProducts = await getLikedProducts();
 
-    // check that it's an array
+    // check that its an array
     expect(Array.isArray(likedProducts)).toBe(true);
 
-    // if not empty, check shape of first product
+    // if not empty check properties of product
     if (likedProducts.length > 0) {
         likedProducts.forEach(likedProduct => {
             expect(likedProduct).toHaveProperty('ID');
@@ -76,6 +77,7 @@ test('getProduct properly returns a single, specific product', async () =>{
     let tries = 0;
     let maxTries = 100;
 
+    // simply put: all the arranging code is to loop through every row in the database to find a row with data. 
     //  if every element in the row is null, we skip to the next product (there should be no NULL rows in the DB)
     while(output === undefined && tries < maxTries){
         mockId++;
@@ -95,6 +97,7 @@ test('getProduct properly returns a single, specific product', async () =>{
 })
 
 test('createProduct properly returns both a row in products_table and products_filter. The function is dependent on getProduct working.. ', async () =>{
+    // arranging a mock product with filters
     const input = {
         name: "White pants",
         shopID: "1",
@@ -118,12 +121,9 @@ test('createProduct properly returns both a row in products_table and products_f
         polyester: 1
       };    
       
-      // Starting transaction in mysql 
-    //  The transaction is a sort of testing environment. Everything in between start transaction and rollback will not be applied to the actual database.
 
-    // TODO: fix the transaction aspect so it actually doesnt save in the DB. 
-    //await pool.query('START TRANSACTION');
-    // Issue 
+    // this creates a test row in the database and potentially displays on website... 
+    // checking the products_table
     const output = await createProduct(input);
     expect(output.productTableOutput).toEqual({
         ID: expect.any(Number),
@@ -133,9 +133,10 @@ test('createProduct properly returns both a row in products_table and products_f
         amount: 6,
         picture: "test.jpg",
         info: "Perfect for everyday use.",
-        size: null  // or optional if not needed
+        size: null
       });
 
+    // checking the products_filters table 
     expect(output.productFiltersTableOutput).toEqual({
         productID: output.productTableOutput.ID,  
         black: 0,
@@ -153,6 +154,4 @@ test('createProduct properly returns both a row in products_table and products_f
         linnen: 0,
         polyester: 1
       });
-
-    //await pool.query('ROLLBACK');
 })

@@ -4,6 +4,7 @@ import { onLoadTest } from "./unitTestSnippets/onLoadTest";
 
 // testing parsing of CSV file to JSON-format object. 
 test('onLoadTest properly parses CSV file to object in PRODUCTS.', ()=>{
+    // inputting mock "name" row and data row
     const input = "name;price\ntshirt;199\nhoodie;5.99";
     const output = onLoadTest(input);
     
