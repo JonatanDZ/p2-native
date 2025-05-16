@@ -22,22 +22,22 @@ document.addEventListener("DOMContentLoaded", function () {
             location.reload();
         });
     }
-    
+
     // Displays items in basket
     // If the basket/local storage is empty, it shows a message indicating that the basket is empty
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
         totalText.textContent = "Total (0 varer) DKK 0";
         clickAndCollectElement.innerHTML = "";
-        
-    // If the local storage is not empty, it displays the items in the basket
+
+        // If the local storage is not empty, it displays the items in the basket
     } else {
         basket.forEach((item, index) => {
             const itemDiv = document.createElement("div");
             itemDiv.classList.add("item-details");
-            const priceNumber = typeof item.price === 'string' 
-            ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
-            : item.price;
+            const priceNumber = typeof item.price === 'string'
+                ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
+                : item.price;
             const quantity = item.quantity || 1;
             const itemTotal = priceNumber * quantity;
             total += itemTotal;
@@ -53,22 +53,34 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             basketItemsContainer.appendChild(itemDiv);
         });
-        
+
         // Calculates the total amount of products in the basket
         const totalQuantity = basket.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        
+
         // Displays the total quantity and price of the items in the basket
         totalText.textContent = `Total (${totalQuantity} vare${totalQuantity > 1 ? "r" : ""}) DKK ${total}`;
 
+        // give each shopId a name
+        const shopIdToName = {
+            1: "Kålbutikken",
+            2: "Tøjhjørnet",
+            3: "ModeMekka",
+            4: "Stil & Stof",
+            5: "Den Lille Garderobe"
+        };
+
         // Displays click and collect information on the buttom of the basket
-        const shopNames = [...new Set(basket.map(item => item.info).filter(Boolean))];
-        if (shopNames.length > 0) {
-            const shopLines = shopNames.map(shop => `<p><strong>Afhent i butik:</strong> ${shop}</p>`).join("");
+        const shopIds = [...new Set(basket.map(item => item.shopID).filter(Boolean))];
+        if (shopIds.length > 0) {
+            const shopLines = shopIds.map(id => {
+                const shopName = shopIdToName[id] || `Ukendt butik (${id})`;
+                return `<p><strong>Afhent i butik:</strong> ${shopName}</p>`;
+            }).join("");
             clickAndCollectElement.innerHTML = shopLines;
         } else {
             clickAndCollectElement.innerHTML = "";
         }
-        
+
     }
     // Removes the individual items from basket
     basketItemsContainer.addEventListener("click", function (e) {
@@ -89,13 +101,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (newQty > 99) newQty = 99;
             basket[index].quantity = newQty;
             localStorage.setItem("basket", JSON.stringify(basket));
-            location.reload(); 
+            location.reload();
         }
     });
-    
-        // Submit button for the checkout form
-        checkoutForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
+
+    // Submit button for the checkout form
+    checkoutForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
         // Get name and surname from the form
         const fornavn = document.querySelector('input[name="Fornavn"]').value;
@@ -104,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("userFornavn", fornavn);
         localStorage.setItem("userEfternavn", efternavn);
 
-        
+
         // Saves the email in the checkout form to local storage
         const emailInput = document.getElementById("email");
         if (emailInput && emailInput.value) {
@@ -120,18 +132,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Calculates the total price of the items in the basket
         const totalPrice = basket.reduce((sum, item) => {
-            const price = typeof item.price === 'string' 
+            const price = typeof item.price === 'string'
                 ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
                 : item.price;
             const quantity = item.quantity || 1;
             return sum + price * quantity;
         }, 0);
-    
+
         // Save total price to local storage
         localStorage.setItem("lastTotalPrice", totalPrice);
 
         // Redirects to the payment selection page
         window.location.href = `paymentselection.html`;
-        
+
     });
 });
