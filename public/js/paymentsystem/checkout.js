@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // give each shopId a name
         const shopIdToName = {
-            1: "Kålbutikken",
+            1: "Lucy's Tøjbutik",
             2: "Tøjhjørnet",
             3: "ModeMekka",
             4: "Stil & Stof",
