@@ -1,4 +1,4 @@
-export { displayProduct };
+export { displayProduct, addToBasket };
 
 document.addEventListener("DOMContentLoaded", async () => {
   // udvidet den lidt så den kan tage flere kald på en side
@@ -46,19 +46,19 @@ function displayFromDB(data) {
       }
     }
   });
+}
 
-  function addToBasket(product) {
-    let basket = JSON.parse(localStorage.getItem("basket")) || [];
-    const existingProduct = basket.find((item) => item.ID === product.ID);
-    if (existingProduct) {
-      existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-    } else {
-      product.quantity = 1;
-      basket.push(product);
-    }
-    localStorage.setItem("basket", JSON.stringify(basket));
-    alert("Produktet er tilføjet til kurven!");
+function addToBasket(product) {
+  let basket = JSON.parse(localStorage.getItem("basket")) || [];
+  const existingProduct = basket.find((item) => item.ID === product.ID);
+  if (existingProduct) {
+    existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+  } else {
+    product.quantity = 1;
+    basket.push(product);
   }
+  localStorage.setItem("basket", JSON.stringify(basket));
+  alert("Produktet er tilføjet til kurven!");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -86,12 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function displayProduct(product) {
+//path is for when you're not in the product folder
+function displayProduct(product, path = "") {
   const card = document.createElement("div");
   card.className = "card";
 
   const productLink = document.createElement("a");
-  productLink.href = `productdetail.html?id=${product.ID}`;
+  productLink.href = `${path}productdetail.html?id=${product.ID}`;
   productLink.target = "_blank";
 
   const img = document.createElement("img");

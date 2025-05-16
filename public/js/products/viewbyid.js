@@ -1,5 +1,5 @@
-import { getUserId } from "../frontpage.js";
-import { displayProduct } from "./viewproducts.js";
+import { getUserId, getRecommendedItemsHTML } from "../frontpage.js";
+import { displayProduct, addToBasket } from "./viewproducts.js";
 document.addEventListener("DOMContentLoaded", loadDetailPage);
 
 function getProductIdFromUrl() {
@@ -30,58 +30,19 @@ async function updateUserFiltersHTML() {
   }
 }
 
-async function getRecommendedItemsHTML() {
+/*async function getRecommendedItemsHTML() {
   const userId = await getUserId();
 
   await fetch(`/recommendItems?userId=${userId}`)
     .then((response) => response.json())
     .then((data) => {
       console.log("Recommendations:", data);
-      displayRecommendedItems(data);
+      displayRecommendedItems(data, "recommendation-list");
     })
     .catch((err) => {
       console.error("Failed to load recommendations:", err);
     });
-}
-
-async function displayRecommendedItems(recommendationList) {
-  const top10 = recommendationList.slice(0, 10);
-
-  if (top10.length > 0) {
-    const allRes = await fetch("/get-products");
-    const allProducts = await allRes.json();
-
-    const container = document.getElementById("recommendation-list");
-    container.innerHTML = ""; // clear previous content if any
-
-    for (const rec of top10) {
-      const product = allProducts.find((p) => p.ID === rec.ID);
-      if (!product) continue;
-
-      /*const itemHTML = document.createElement("div");
-      itemHTML.innerHTML = `
-                        <img src="${product.picture}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <p>${product.info}</p>
-                        <p>Price: ${product.price} DKK</p>
-                        <p>Match Score: ${rec.score}</p>
-                        <button onclick='addToBasket(${JSON.stringify(
-                          product
-                        )})'>Tilføj til kurv</button>
-                    `;*/
-      container.appendChild(displayProduct(product));
-    }
-  } else {
-    const container = document.getElementById("recommendation-list");
-    container.innerHTML = ""; // clear previous content if any
-
-    const itemHTML = document.createElement("div");
-    itemHTML.innerHTML = `
-                    <h3>Login for at se dine anbefalede varer</h3>
-                `;
-    container.appendChild(itemHTML);
-  }
-}
+}*/
 
 async function displaySimilarItems(similarItems) {
   // starter fra 1 i stedet for 0, så den ikke viser det samme item som man er trykket ind på.
@@ -109,6 +70,16 @@ async function displaySimilarItems(similarItems) {
                     `;*/
     container.appendChild(displayProduct(product));
   }
+  container.addEventListener("click", function (e) {
+    if (e.target && e.target.classList.contains("add-to-basket")) {
+      e.preventDefault();
+      const productId = parseInt(e.target.getAttribute("data-id"));
+      const product = allProducts.find((p) => p.ID === productId);
+      if (product) {
+        addToBasket(product);
+      }
+    }
+  });
 }
 
 async function getSimilarItems() {
@@ -124,10 +95,6 @@ async function getSimilarItems() {
       console.error("Failed to load similar items:", err);
     });
 }
-
-updateUserFiltersHTML();
-getRecommendedItemsHTML();
-getSimilarItems();
 
 async function loadDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -154,6 +121,9 @@ async function loadDetailPage() {
 
     renderDetailPage(data, type);
     setupEventListeners(data, type);
+    updateUserFiltersHTML();
+    getRecommendedItemsHTML();
+    getSimilarItems();
   } catch (error) {
     console.error(`Error loading ${type}:`, error);
     document.getElementById("detail-container").innerHTML = `
@@ -210,20 +180,6 @@ function setupEventListeners(data, type) {
   } else {
     // Event registration logic would go here
   }
-}
-
-// Function to add a product to the basket
-function addToBasket(product) {
-  let basket = JSON.parse(localStorage.getItem("basket")) || [];
-  const existingProduct = basket.find((item) => item.ID === product.ID);
-  if (existingProduct) {
-    existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-  } else {
-    product.quantity = 1;
-    basket.push(product);
-  }
-  localStorage.setItem("basket", JSON.stringify(basket));
-  alert("Produktet er tilføjet til kurven!");
 }
 
 document.addEventListener("DOMContentLoaded", loadDetailPage);

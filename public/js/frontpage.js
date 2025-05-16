@@ -1,6 +1,6 @@
-export { getUserId };
+export { getUserId, displayRecommendedItems, getRecommendedItemsHTML };
 import { displayEvent } from "./events/viewevents.js";
-import { displayProduct } from "./products/viewproducts.js";
+import { displayProduct, addToBasket } from "./products/viewproducts.js";
 
 async function getUserId() {
   // Get token from localStorage
@@ -35,6 +35,7 @@ async function getUserId() {
 
 async function getRecommendedItemsHTML() {
   const userId = await getUserId();
+  console.log("USER ID", userId);
 
   await fetch(`/recommendItems?userId=${userId}`)
     .then((response) => response.json())
@@ -69,31 +70,20 @@ async function displayRecommendedItems(recommendationList, placement) {
     const allProducts = await allRes.json();
 
     const container = document.getElementById(placement);
-    container.innerHTML = ""; // clear previous content if any
+    //container.innerHTML = ""; // clear previous content if any
     for (const rec of top10) {
       const product = allProducts.find((p) => p.ID === rec.ID);
       if (!product) continue;
       //Display the given product
-      container.appendChild(displayProduct(product));
+      container.appendChild(displayProduct(product, "products/"));
     }
-    document.body.addEventListener("click", function (e) {
+    container.addEventListener("click", function (e) {
       if (e.target && e.target.classList.contains("add-to-basket")) {
         e.preventDefault();
-
-        const productId = parseInt(e.target.dataset.id);
+        const productId = parseInt(e.target.getAttribute("data-id"));
         const product = allProducts.find((p) => p.ID === productId);
-
         if (product) {
-          let basket = JSON.parse(localStorage.getItem("basket")) || [];
-          const existingProduct = basket.find((item) => item.ID === product.ID);
-          if (existingProduct) {
-            existingProduct.quantity = existingProduct.quantity++;
-          } else {
-            product.quantity = 1;
-            basket.push(product);
-          }
-          localStorage.setItem("basket", JSON.stringify(basket));
-          alert("Produktet er tilføjet til kurven!");
+          addToBasket(product);
         }
       }
     });
@@ -178,7 +168,14 @@ async function displayRecommendedEvents(recommendationList, placement) {
     container.appendChild(itemHTML);
   }
 }
-getNewEvents();
-getRecommendedItemsHTML();
-getNewItems();
-getRecommendedEventsHTML();
+
+function loadFrontpage() {
+  if (window.location.href.includes("index")) {
+    getNewEvents();
+    getRecommendedItemsHTML();
+    getNewItems();
+    getRecommendedEventsHTML();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadFrontpage);
