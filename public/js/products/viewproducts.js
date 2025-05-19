@@ -50,16 +50,23 @@ function displayFromDB(data) {
 
 function addToBasket(product) {
   let basket = JSON.parse(localStorage.getItem("basket")) || [];
-  const existingProduct = basket.find((item) => item.ID === product.ID);
+  const existingProduct = basket.find((item) => item.id === product.ID);
   if (existingProduct) {
     existingProduct.quantity = (existingProduct.quantity || 1) + 1;
   } else {
-    product.quantity = 1;
-    basket.push(product);
+    const productToAdd = {
+      id: product.ID,             
+      name: product.name,
+      price: product.price,
+      info: product.info || "",
+      quantity: 1
+    };
+    basket.push(productToAdd);
   }
   localStorage.setItem("basket", JSON.stringify(basket));
   alert("Produktet er tilføjet til kurven!");
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");

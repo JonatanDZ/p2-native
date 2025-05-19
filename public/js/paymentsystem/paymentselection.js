@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    totalPrice: totalPrice,
                     basket: basket,
                     email: email,
                     paymentMethod: selectedPaymentMethod.value,

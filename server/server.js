@@ -81,9 +81,10 @@ function fileResponse(res, filename) {
 async function sendConfirmationEmail(
   recipientEmail,
   basket,
-  shopNames,
+  shopName,
   fornavn,
-  efternavn
+  efternavn,
+  totalPrice
 ) {
   // Check if the required environment variables are set
   const transporter = nodemailer.createTransport({
@@ -101,7 +102,7 @@ async function sendConfirmationEmail(
     })
     .join("");
 
-  const shopList = shopNames.map((shop) => `<li>${shop}</li>`).join("");
+  const shopList = shopName.map((shop) => `<li>${shop}</li>`).join("");
 
   const mailOptions = {
     from: `"Din Butik" <${process.env.GMAIL_USER}>`,
@@ -115,6 +116,7 @@ async function sendConfirmationEmail(
           <p><strong>Afhentes i butik:</strong></p>
           <ul>${shopList}</ul>
           <p>Vi glæder os til at se dig!</p>
+          <p><strong>Total pris:</strong> DKK ${totalPrice}</p>
       `,
   };
 
