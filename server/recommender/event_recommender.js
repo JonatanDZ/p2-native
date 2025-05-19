@@ -1,12 +1,10 @@
 //import DB functions;
-import {
-  getAllEventsDB,
-  getAllUserEventsDB,
-} from "./recommenderAlgorithmsServer.js";
+import { getAllUserEventsDB } from "./recommenderAlgorithmsServer.js";
 
+import { getEvents } from "../dbserver.js";
 export async function recommenderAlgorithmForEvents(userID) {
   //Get data from database
-  let events = await getAllEventsDB();
+  let events = await getEvents();
   let userEvents = await getAllUserEventsDB();
   //Call recommender with the data
   return recommendEvents(userEvents, events, userID);
