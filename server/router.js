@@ -169,13 +169,34 @@ async function processReq(req, res) {
           req.on("data", (chunk) => (body += chunk.toString()));
           req.on("end", async () => {
             try {
-              const { totalPrice, email, basket } = JSON.parse(body);
-              if (!totalPrice || !email || !basket) {
+              const { email, basket } = JSON.parse(body);
+              if (!email || !Array.isArray(basket) || basket.length === 0) {
                 res.writeHead(400, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Missing data" }));
+                res.end(JSON.stringify({ error: "Missing or invalid data" }));
                 return;
               }
-              // Creates a Stripe checkout session with Stripes safe payment page with the given data
+              const allProducts = await getProducts(); // Get full DB list
+              let totalPrice = 0;
+              for (const basketItem of basket) {
+                const product = allProducts.find(p => p.ID == basketItem.id); // use == to match number/string
+                if (!product) {
+                  res.writeHead(400, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: `Product ID ${basketItem.id} not found.` }));
+                  return;
+                }
+                const price = typeof product.price === "string"
+                ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
+                : Number(product.price);
+                
+                const quantity = basketItem.quantity || 1;
+                if (quantity < 1 || quantity > 99) {
+                  res.writeHead(400, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: `Invalid quantity for product ${basketItem.id}` }));
+                  return;
+                }
+                totalPrice += price * quantity;
+              }
+              // Create Stripe checkout session with verified total
               const session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
                 line_items: [
@@ -183,18 +204,15 @@ async function processReq(req, res) {
                     price_data: {
                       currency: "dkk",
                       product_data: { name: "Din kurv" },
-                      unit_amount: Math.round(Number(totalPrice) * 100),
+                      unit_amount: Math.round(totalPrice * 100),
                     },
                     quantity: 1,
                   },
                 ],
-                // Tells Stripe it is a one time payment session and will redirect to the given URLs if successful or failed payment
                 mode: "payment",
                 customer_email: email,
-                success_url:
-                  "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
-                cancel_url:
-                  "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
+                success_url: "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                cancel_url: "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
               });
               res.writeHead(200, {
                 "Content-Type": "application/json",
@@ -202,6 +220,7 @@ async function processReq(req, res) {
               });
               res.end(JSON.stringify({ url: session.url }));
             } catch (err) {
+              console.error("Checkout error:", err);
               res.writeHead(500, {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
@@ -209,7 +228,6 @@ async function processReq(req, res) {
               res.end(JSON.stringify({ error: err.message }));
             }
           });
-          // Returns Stripe session URL
           return;
 
         // Sends a confirmation email to the user with the given data
@@ -219,15 +237,51 @@ async function processReq(req, res) {
           req.on("data", (chunk) => (bodyConfirmationMail += chunk.toString()));
           req.on("end", async () => {
             try {
-              const { email, basket, fornavn, efternavn } =
-                JSON.parse(bodyConfirmationMail);
-              const shopNames = [...new Set(basket.map((item) => item.info))];
+              const { email, basket, fornavn, efternavn } = JSON.parse(bodyConfirmationMail);
+
+              const allProducts = await getProducts();
+
+                let correctedBasket = [];
+                let totalPrice = 0;
+
+                for (const item of basket) {
+                  const product = allProducts.find(p => p.ID == item.id);
+                  if (!product) continue;
+
+                  const quantity = item.quantity || 1;
+                  const price = typeof product.price === "string"
+                    ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
+                    : Number(product.price);
+
+                  correctedBasket.push({
+                    name: product.name,
+                    quantity,
+                    price: `DKK ${price}`,
+                    shopID: product.shopID
+                  });
+
+                  totalPrice += price * quantity;
+                }
+
+                 // give each shopId a name
+                  const shopIdToName = {
+                    1: "Lucy's Tøjbutik",
+                    2: "Tøjhjørnet",
+                    3: "ModeMekka",
+                    4: "Stil & Stof",
+                    5: "Den Lille Garderobe"
+                };
+
+                const shopIds = [...new Set(correctedBasket.map(item => item.shopID).filter(Boolean))];
+                const shopNames = shopIds.map(id => shopIdToName[id] || `Ukendt butik (ID ${id})`);
+
               await sendConfirmationEmail(
                 email,
-                basket,
+                correctedBasket,
                 shopNames,
                 fornavn,
-                efternavn
+                efternavn,
+                totalPrice
               );
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ success: true }));
@@ -237,6 +291,7 @@ async function processReq(req, res) {
             }
           });
           break;
+
         case "verify-token":
           let bodyVerify = "";
           // Listen for incoming data and append it to the body
