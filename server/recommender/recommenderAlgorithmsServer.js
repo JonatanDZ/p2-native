@@ -2,11 +2,11 @@ import mysql from "mysql2/promise";
 import "dotenv/config";
 
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
 
 export async function getUserFiltersDB(userId) {
@@ -71,24 +71,6 @@ export async function getAllItemFiltersDB() {
     return itemResults.map((row) => Object.values(row));
   } catch (err) {
     console.error("Database error in getAllItemFilters:", err);
-    throw err;
-  }
-}
-
-export async function getAllEventsDB() {
-  try {
-    // Destructuring([]) removes meta data from db, db code gets specific user, with id.
-    const [eventsResults] = await pool.query("SELECT * FROM events_table");
-
-    // input controll, checks if list is empty
-    if (eventsResults.length === 0) {
-      console.log("events_table is empty");
-      return null;
-    }
-    console.log("EVENTS:", eventsResults);
-    return eventsResults;
-  } catch (err) {
-    console.error("Database error in getAllEventsDB:", err);
     throw err;
   }
 }
