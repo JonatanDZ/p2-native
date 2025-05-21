@@ -1,4 +1,5 @@
-// putting inside if, since testing suite fails because it uses the DOM. Need another testing env for that
+// putting inside if, since testing suite fails because it uses the DOM. If we were to remove the if statement the testing environment would have to be "JSdom"
+// In other words the current environment "node" cannot handle the document. method since it requires access to the DOM, which node (the backend) does not have.
 if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", function () {
         readFromDB();

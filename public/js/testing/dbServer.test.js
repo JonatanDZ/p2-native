@@ -45,7 +45,7 @@ test('getRecommendedProducts returns an array of recommended products with expec
             expect(recProduct).toHaveProperty('amount');
         });
         }
-})
+});
 
 //  Testing retrieval of liked products
 test('getLikedProducts returns an array of liked products with expected fields', async () =>{
@@ -67,7 +67,7 @@ test('getLikedProducts returns an array of liked products with expected fields',
         });
         }
 
-})
+});
 
 test('getProduct properly returns a single, specific product', async () =>{
     //  init mock id and function call 
@@ -95,7 +95,7 @@ test('getProduct properly returns a single, specific product', async () =>{
         expect(output).toHaveProperty('price');
         expect(output).toHaveProperty('amount');
     } 
-})
+});
 
 test('createProduct properly returns both a row in products_table and products_filter. The function is dependent on getProduct working.. ', async () =>{
     // arranging a mock product with filters
@@ -155,4 +155,4 @@ test('createProduct properly returns both a row in products_table and products_f
         linnen: 0,
         polyester: 1
       });
-})
+});
