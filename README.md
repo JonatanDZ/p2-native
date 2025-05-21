@@ -4,7 +4,7 @@
 
 ### **STEP 1** Creating the data base ###
 
-Navigate to: https://dev.mysql.com/doc/mysql-getting-started/en/
+Navigate to: 'https://dev.mysql.com/doc/mysql-getting-started/en/'
 And follow the instructions on the page and install MySQL.
 Make sure you remember the password as you will need it when creating the .env file in step 2.
 
@@ -21,12 +21,14 @@ You need to create a .env file in the project folder. The .env file should conta
 
 got to 'https://dashboard.stripe.com/test/apikeys' create and account if you haven't already and find the keys and input them under.
 
-```STRIPE_SECRET_KEY=*insert your stripe keys here*
+```
+STRIPE_SECRET_KEY=*insert your stripe keys here*
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=*insert your stripe keys here*
 DB_HOST =127.0.0.1
 DB_USER = root
 DB_PASSWORD=*insert your database password here*
-DB_NAME = p2_database```
+DB_NAME = p2_database
+```
 
 ### **STEP 3** Running the server ###
 
