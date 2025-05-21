@@ -1,4 +1,4 @@
-import { reccomendEvents } from "../../../server/recommender/event_recommender";
+import { recommendEvents } from "../../../server/recommender/event_recommender";
 import { compareLists, dotProduct, recommenderAlgorithmForItem, recommendItem } from "../../../server/recommender/recommenderAlgorithms"
 
 // every test follows the principle of arrange, act and assert
@@ -99,7 +99,7 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
       }
 })
 
-/*
+
 test('reccomendEvents properly returns a sorted array of recommended events', ()=>{
   const data = [
     { userID: 1, eventID: 1 },
@@ -118,12 +118,13 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     { ID: 4, name: "Fashion Show" }
   ];
   
-  const output = reccomendEvents(data,events);
+  const output = recommendEvents(data,events);
 
   // expect the type of output to be a 3d array
   expect(Array.isArray(output)).toBe(true);
 
   //  Expecting the following array
+  /*
   Expecting: 
     [
     [2, 1],
@@ -132,7 +133,7 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     [1, 3]
     ]
     console log: "We reccomend event 1, event 4 and event 2"
-
+  */
   expect(output).toEqual([
     [2, 1],
     [2, 4],
@@ -140,6 +141,6 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     [1, 3]
   ])
 })
-*/
+
 
 
