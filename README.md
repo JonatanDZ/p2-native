@@ -11,9 +11,8 @@ Make sure you remember the password as you will need it when creating the .env f
 In the folder called 'DB - setup' a sql file called 'table.sql' exists
 Open the MySQL Command Line Client and run the code in the file.
 
-#### *optional step for mock data* ####
+#### *Optional step for mock data:* #### 
 From the same 'DB - setup' folder run the file called 'dummy-data.sql'
-
 
 ### **STEP 2** Creating a .env file ###
 
