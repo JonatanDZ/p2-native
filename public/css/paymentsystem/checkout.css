@@ -1,5 +1,6 @@
 /* Set default font and background color for the entire page */
-html, body {
+html,
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -17,8 +18,8 @@ h1 {
 /* Layout container for the entire checkout section. Form on left, basket on right */
 .checkout-container {
     display: flex;
-    justify-content: space-between; 
-    align-items: flex-start; 
+    justify-content: space-between;
+    align-items: flex-start;
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
@@ -27,8 +28,9 @@ h1 {
 }
 
 /* Flex children of checkout-container share equal width */
-.checkout-container1, .checkout-container2 {
-    flex: 1; 
+.checkout-container1,
+.checkout-container2 {
+    flex: 1;
 }
 
 
@@ -39,12 +41,12 @@ h1 {
 
 /* Styling for the checkout form box */
 .checkout-form {
-    max-width: 65%; 
+    max-width: 65%;
     padding: 35px;
-    border: 3px solid #ddd; 
+    border: 3px solid #ddd;
     border-radius: 12px;
     background-color: #fff;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15); 
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Align each form field in a vertical stack */
@@ -52,11 +54,11 @@ form div {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
-  }  
+}
 
 /* Container for the basket summary section on the right */
 .basket-overview {
-    max-width: 300px; 
+    max-width: 300px;
     padding: 30px;
     border: 2px solid #ccc;
     border-radius: 12px;
@@ -74,9 +76,10 @@ label {
 }
 
 /* Styling for text and email inputs */
-input[type="text"], input[type="email"] {
-    width: 300px; 
-    padding: 10px; 
+input[type="text"],
+input[type="email"] {
+    width: 300px;
+    padding: 10px;
     border: 2px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
@@ -94,7 +97,7 @@ button[type="submit"] {
     font-size: 15px;
     font-weight: bold;
     transition: 0.3s;
-    margin-top: 20px; 
+    margin-top: 20px;
 }
 
 /* Button hover effect to darken the green slightly */
@@ -105,7 +108,7 @@ button[type="submit"]:hover {
 /* Layout for dropdown selectors or similar grouped controls */
 .selectors {
     display: flex;
-    gap: 10px; 
+    gap: 10px;
     align-items: center;
 }
 
@@ -120,7 +123,7 @@ button[type="submit"]:hover {
 
 /* Input box used to adjust product quantities in basket */
 .quantity-input {
-    width: 40px; 
+    width: 40px;
     padding: 4px;
     font-size: 13px;
     border: 2px solid #ccc;

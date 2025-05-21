@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,68 +8,47 @@
     <title>Signup</title>
     <link rel="stylesheet" href="/public/css/login/login.css">
 </head>
+
 <body>
     <div id="navbar"></div>
-        <div class="containerCenter">
-            <div class="customcontainer">
-                <div class="container" id="signup">
-                    <form>
-                        <h1 class="loginName">Registrer dig</h1>
-                
-                        <div class="inputBox">
-                            <input
-                                type="text"
-                                id="name"
-                                placeholder="Navn"
-                                name="name"
-                                required
-                            ></input>
-                        </div>
+    <div class="containerCenter">
+        <div class="customcontainer">
+            <div class="container" id="signup">
+                <form>
+                    <h1 class="loginName">Registrer dig</h1>
 
-                        <div class="inputBox">
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder="E-mail"
-                                name="email"
-                                required
-                            ></input>
-                        </div>
-        
-                        <div class="inputBox">
-                            <input
-                                type="password"
-                                id="password"
-                                placeholder="Password"
-                                name="password"
-                                required
-                            ></input>
-                        </div>
-                
-                        <div class="inputBox">
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                placeholder="Bekræft password"
-                                name="confirmPassword"
-                                required
-                            ></input>
-                        </div>
-        
-                        <button type="subimt" class="button">Signup</button>
-        
-                        <div class="registerLink">
-                            <p>
-                                Allerede bruger? <a href="/public/pages/login/login.html"><u>Login her</u></a>
-                            </p>
-                        </div>
-                    </form>
-                </div>
+                    <div class="inputBox">
+                        <input type="text" id="name" placeholder="Navn" name="name" required></input>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="email" id="email" placeholder="E-mail" name="email" required></input>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="password" id="password" placeholder="Password" name="password" required></input>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="password" id="confirmPassword" placeholder="Bekræft password"
+                            name="confirmPassword" required></input>
+                    </div>
+
+                    <button type="subimt" class="button">Signup</button>
+
+                    <div class="registerLink">
+                        <p>
+                            Allerede bruger? <a href="/public/pages/login/login.html"><u>Login her</u></a>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
-      <div id="footer"></div>
-      <script src="/public/js/components/navbar.js"></script>
-      <script src="/public/js/components/footer.js"></script>
-      <script src="/public/js/login/register.js"></script>
+    </div>
+    <div id="footer"></div>
+    <script src="/public/js/components/navbar.js"></script>
+    <script src="/public/js/components/footer.js"></script>
+    <script src="/public/js/login/register.js"></script>
 </body>
+
 </html>

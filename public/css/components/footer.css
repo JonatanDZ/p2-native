@@ -14,7 +14,8 @@
     justify-content: space-between;
     align-items: center;
     font-family: Arial, sans-serif;
-    margin-top: auto;  /* Push the footer to the bottom */
+    margin-top: auto;
+    /* Push the footer to the bottom */
     width: 100%;
 }
 

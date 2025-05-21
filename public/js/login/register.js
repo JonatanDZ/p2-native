@@ -1,4 +1,4 @@
-    document.getElementById("signup").addEventListener("submit", async function(e) {
+document.getElementById("signup").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     // create values for name, email, password and confirmpassword which comes from the html
@@ -14,7 +14,7 @@
 
     // POST request to send signup data to server, name, email and password
     try {
-        const response = await fetch("http://localhost:3000/signup", { 
+        const response = await fetch("http://localhost:3000/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password }),

@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
         totalText.textContent = `Total (${totalQuantity} vare${totalQuantity > 1 ? "r" : ""}) DKK ${total}`;
 
         // give each shopId a name
-       const shopIdToName = {
+        const shopIdToName = {
             1: "Lucy's Tøjbutik",
             2: "Tøjhjørnet",
             3: "ModeMekka",

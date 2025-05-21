@@ -1,41 +1,41 @@
 // putting inside if, since testing suite fails because it uses the DOM. If we were to remove the if statement the testing environment would have to be "JSdom"
 // In other words the current environment "node" cannot handle the document. method since it requires access to the DOM, which node (the backend) does not have.
 if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", function () {
-    readFromDB();
-  });
+    document.addEventListener("DOMContentLoaded", function () {
+        readFromDB();
+    });
 }
 
 export async function fetchUserIdFromToken(token) {
-  try {
-    const response = await fetch("http://localhost:3000/verify-token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ token })
-    });
+    try {
+        const response = await fetch("http://localhost:3000/verify-token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token })
+        });
 
-    if (!response.ok) {
-      console.error("Failed to verify token:", response.statusText);
-      return null;
+        if (!response.ok) {
+            console.error("Failed to verify token:", response.statusText);
+            return null;
+        }
+
+        const data = await response.json();
+
+        if (data.isAuthenticated) {
+            return data.userId;
+        } else {
+            console.warn("User not authenticated");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user ID:", error);
+        return null;
     }
-
-    const data = await response.json();
-
-    if (data.isAuthenticated) {
-      return data.userId;
-    } else {
-      console.warn("User not authenticated");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching user ID:", error);
-    return null;
-  }
 }
 
-export async function displayFromDB(data){
+export async function displayFromDB(data) {
     // getting the token from localstorage and passing into function to get user id
     const token = localStorage.getItem("token");
     const userId = await fetchUserIdFromToken(token);
@@ -47,7 +47,7 @@ export async function displayFromDB(data){
         //  TODO: Change this to dynamic shop name via user authentication
         //  We have to check if its the correct user accessing the page
         // check if the userID is the same as the shopID
-        if(userId === products.shopID){
+        if (userId === products.shopID) {
             count++;
         }
     });
@@ -62,11 +62,11 @@ async function readFromDB() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        displayFromDB(data);
-    })
-    .catch(error => {
-        console.error("Error receiving data from /get-products:", error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            displayFromDB(data);
+        })
+        .catch(error => {
+            console.error("Error receiving data from /get-products:", error);
+        });
 }
