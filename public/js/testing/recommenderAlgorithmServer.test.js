@@ -3,20 +3,20 @@
 import { getAllItemFiltersDB, getUserFiltersDB } from "../../../server/recommender/recommenderAlgorithmsServer"
 
 test('getUserFiltersDB properly returns the filter row from the DB given a user id', async () => {
-  // assumes that there actually is a row with id = 7, this can cause issues 
-    const id = 7;
+  // assumes that there actually is a row with id = 6, this can cause issues !!!
+    const id = 6;
     const output = await getUserFiltersDB(id);
 
     //  Testing to see if it returns an array, since it initially gets an object from the DB and then returns the specific row as an array
     expect(output).toEqual(expect.any(Array));
 
+    //  If it is not Null we can then check the values inside to see if they are there
+
     //  Testing to see if the row has the correct properties
     // The function returns only the values in the row. Therefore we simply want to check that the function returns a row with actual information.
-    if(output !== undefined){
-        output.forEach(element => {
-            expect(element).toBeGreaterThanOrEqual(0);
-        });
-    } 
+    output.forEach(element => {
+        expect(element).toBeGreaterThanOrEqual(0);
+    });
   });
 
 test('getAllItemFiltersDB properly returns an array of the values of each itemFilter', async ()=>{

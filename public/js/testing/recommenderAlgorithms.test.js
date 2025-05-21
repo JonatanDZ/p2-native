@@ -83,7 +83,8 @@ test('recommendItem properly compares the lists and returns the recommended item
 // integration test, since it touches DB
 //  will fail if the expected id changes, or its attributes are altered. 
 test('recommenderAlgorithmForItem properly returns recommended item given a specific item ("other products you will like") ', async ()=>{
-    const id = 551;
+    // if there is no such id this will cause issues. 
+    const id = 1;
     const output = await recommenderAlgorithmForItem(id);
 
     //  since this is an integration test, values are subject to change, therefore the specific properties are stated as expected not the values.
@@ -100,7 +101,7 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
 })
 
 
-test('reccomendEvents properly returns a sorted array of recommended events', ()=>{
+test('recommendEvents properly returns a sorted array of recommended events', ()=>{
   const data = [
     { userID: 1, eventID: 1 },
     { userID: 1, eventID: 2 },
@@ -117,8 +118,10 @@ test('reccomendEvents properly returns a sorted array of recommended events', ()
     { ID: 3, name: "Food Fest" },
     { ID: 4, name: "Fashion Show" }
   ];
+
+  const userId = 1;
   
-  const output = recommendEvents(data,events);
+  const output = recommendEvents(data,events, userId);
 
   // expect the type of output to be a 3d array
   expect(Array.isArray(output)).toBe(true);

@@ -36,7 +36,7 @@ test("GET /get-events returns event list", async () => {
 
 test("GET /get-event returns single event", async () => {
   // assuming that there is an id = 10, if not will fail. 
-  const res = await request(server).get("/get-event?id=10");
+  const res = await request(server).get("/get-event?id=1");
 
   //  simply expecting endpoint to return success and that the response is a single object.
   expect(res.statusCode).toBe(200);
@@ -45,7 +45,7 @@ test("GET /get-event returns single event", async () => {
 
 test("GET /get-product returns single product", async () => {
   // assuming that there is an id = 569, if not will fail. 
-  const res = await request(server).get("/get-product?id=569");
+  const res = await request(server).get("/get-product?id=1");
 
   //  simply expecting endpoint to return success and that the response is a single object.
   expect(res.statusCode).toBe(200);
@@ -59,8 +59,8 @@ test("POST posting a login returns success and JWT token", async () => {
   const response = await request(server)
     .post("/login")
     .send({
-      email: "pikken@gmail.com",
-      password: "123"
+      email: "Niels@niels.com",
+      password: "niels"
     })
     .set("Content-Type", "application/json");
 

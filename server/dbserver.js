@@ -204,21 +204,21 @@ export async function getEvents() {
 }
 
 export async function createEvent(event) {
-  const { price, place, picture, info, name, time } = event;
+  const { price, place, info, name, image, time } = event;
   //  ProductID works as a placeholder it is init further down
 
   const result_table = await pool.query(
     `INSERT INTO events_table (
             price, 
-            place, 
-            picture, 
+            place,  
             info, 
-            name, 
+            name,
+            image, 
             time
         ) VALUES (
             ?,?,?,?,?,?
         )`,
-    [price, place, picture, info, name, time]
+    [price, place, info, name, image, time]
   );
 
   //  TODO: revisit this.

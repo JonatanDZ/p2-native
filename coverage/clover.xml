@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1747815497474" clover="3.2.0">
-  <project timestamp="1747815497474" name="All files">
-    <metrics statements="533" coveredstatements="200" conditionals="145" coveredconditionals="35" methods="93" coveredmethods="49" elements="771" coveredelements="284" complexity="0" loc="533" ncloc="533" packages="3" files="8" classes="8"/>
+<coverage generated="1747828703140" clover="3.2.0">
+  <project timestamp="1747828703140" name="All files">
+    <metrics statements="533" coveredstatements="207" conditionals="145" coveredconditionals="45" methods="93" coveredmethods="49" elements="771" coveredelements="301" complexity="0" loc="533" ncloc="533" packages="3" files="8" classes="8"/>
     <package name="public.js.testing.unitTestSnippets">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
       <file name="onLoadTest.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/public/js/testing/unitTestSnippets/onLoadTest.js">
@@ -34,9 +34,9 @@
         <line num="42" count="1" type="stmt"/>
         <line num="45" count="1" type="stmt"/>
         <line num="47" count="1" type="stmt"/>
-        <line num="54" count="103" type="stmt"/>
-        <line num="57" count="103" type="stmt"/>
-        <line num="58" count="103" type="stmt"/>
+        <line num="54" count="3" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+        <line num="58" count="3" type="stmt"/>
         <line num="62" count="1" type="stmt"/>
         <line num="65" count="1" type="stmt"/>
         <line num="66" count="1" type="stmt"/>
@@ -451,9 +451,9 @@
       </file>
     </package>
     <package name="server.recommender">
-      <metrics statements="103" coveredstatements="46" conditionals="30" coveredconditionals="8" methods="20" coveredmethods="14"/>
+      <metrics statements="103" coveredstatements="53" conditionals="30" coveredconditionals="18" methods="20" coveredmethods="14"/>
       <file name="event_recommender.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/recommender/event_recommender.js">
-        <metrics statements="28" coveredstatements="18" conditionals="16" coveredconditionals="5" methods="4" coveredmethods="3"/>
+        <metrics statements="28" coveredstatements="25" conditionals="16" coveredconditionals="15" methods="4" coveredmethods="3"/>
         <line num="7" count="0" type="stmt"/>
         <line num="8" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
@@ -466,22 +466,22 @@
         <line num="26" count="4" type="stmt"/>
         <line num="30" count="1" type="stmt"/>
         <line num="31" count="1" type="stmt"/>
-        <line num="32" count="8" type="cond" truecount="1" falsecount="1"/>
-        <line num="33" count="0" type="stmt"/>
+        <line num="32" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="2" type="stmt"/>
         <line num="38" count="1" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="41" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="45" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="46" count="0" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="41" count="16" type="cond" truecount="4" falsecount="0"/>
+        <line num="43" count="3" type="stmt"/>
+        <line num="45" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="6" type="stmt"/>
         <line num="53" count="1" type="stmt"/>
         <line num="56" count="1" type="stmt"/>
         <line num="59" count="4" type="stmt"/>
         <line num="65" count="1" type="stmt"/>
         <line num="66" count="1" type="stmt"/>
-        <line num="71" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="72" count="3" type="stmt"/>
-        <line num="74" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="71" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="74" count="3" type="cond" truecount="2" falsecount="0"/>
       </file>
       <file name="recommenderAlgorithms.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/recommender/recommenderAlgorithms.js">
         <metrics statements="17" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="8" coveredmethods="7"/>
@@ -491,16 +491,16 @@
         <line num="22" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
         <line num="28" count="1" type="stmt"/>
-        <line num="33" count="233" type="stmt"/>
+        <line num="33" count="37" type="stmt"/>
         <line num="41" count="2" type="stmt"/>
         <line num="48" count="2" type="stmt"/>
         <line num="51" count="2" type="stmt"/>
-        <line num="56" count="234" type="stmt"/>
-        <line num="57" count="234" type="stmt"/>
-        <line num="58" count="3276" type="stmt"/>
-        <line num="60" count="234" type="stmt"/>
+        <line num="56" count="38" type="stmt"/>
+        <line num="57" count="38" type="stmt"/>
+        <line num="58" count="532" type="stmt"/>
+        <line num="60" count="38" type="stmt"/>
         <line num="66" count="3" type="stmt"/>
-        <line num="67" count="1145" type="stmt"/>
+        <line num="67" count="140" type="stmt"/>
         <line num="73" count="2" type="stmt"/>
       </file>
       <file name="recommenderAlgorithmsServer.js" path="/Users/nicolaischultz/Documents/GitHub/P1-project/p1project/p2-native/server/recommender/recommenderAlgorithmsServer.js">
@@ -528,7 +528,7 @@
         <line num="65" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="66" count="0" type="stmt"/>
         <line num="67" count="0" type="stmt"/>
-        <line num="71" count="463" type="stmt"/>
+        <line num="71" count="71" type="stmt"/>
         <line num="73" count="0" type="stmt"/>
         <line num="74" count="0" type="stmt"/>
         <line num="79" count="0" type="stmt"/>

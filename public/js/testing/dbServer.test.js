@@ -21,6 +21,7 @@ test('getProducts returns an array of products with expected fields', async () =
           expect(product).toHaveProperty('info');
           expect(product).toHaveProperty('price');
           expect(product).toHaveProperty('amount');
+          expect(product).toHaveProperty('size');
         });
       }
   });
