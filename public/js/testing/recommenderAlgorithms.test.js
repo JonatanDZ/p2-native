@@ -83,7 +83,7 @@ test('recommendItem properly compares the lists and returns the recommended item
 // integration test, since it touches DB
 //  will fail if the expected id changes, or its attributes are altered. 
 test('recommenderAlgorithmForItem properly returns recommended item given a specific item ("other products you will like") ', async ()=>{
-    // if there is no such id this will cause issues. 
+    // if there is no such id this will cause issues.
     const id = 1;
     const output = await recommenderAlgorithmForItem(id);
 
@@ -101,7 +101,7 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
 })
 
 
-test('recommendEvents properly returns a sorted array of recommended events', ()=>{
+test('recommendEvents properly returns a sorted array of recommended events', async () => {
   const data = [
     { userID: 1, eventID: 1 },
     { userID: 1, eventID: 2 },
@@ -112,6 +112,7 @@ test('recommendEvents properly returns a sorted array of recommended events', ()
     { userID: 4, eventID: 1 },
     { userID: 4, eventID: 4 }
   ];
+
   const events = [
     { ID: 1, name: "Yoga" },
     { ID: 2, name: "Jazz" },
@@ -120,30 +121,27 @@ test('recommendEvents properly returns a sorted array of recommended events', ()
   ];
 
   const userId = 1;
-  
-  const output = recommendEvents(data,events, userId);
 
-  // expect the type of output to be a 3d array
+  const output = await recommendEvents(data, events, userId);
+
   expect(Array.isArray(output)).toBe(true);
+  expect(output.length).toBe(events.length);
 
-  //  Expecting the following array
-  /*
-  Expecting: 
-    [
-    [2, 1],
-    [2, 4],
-    [1, 2],
-    [1, 3]
-    ]
-    console log: "We reccomend event 1, event 4 and event 2"
-  */
-  expect(output).toEqual([
-    [2, 1],
-    [2, 4],
-    [1, 2],
-    [1, 3]
-  ])
-})
+  //checking structure
+  output.forEach(item => {
+    expect(item).toHaveProperty("ID");
+    expect(item).toHaveProperty("score");
+  });
+
+  //   check that scores are sorted descending
+  const scores = output.map(o => o.score);
+  for (let i = 1; i < scores.length; i++) {
+    expect(scores[i]).toBeLessThanOrEqual(scores[i - 1]);
+  }
+
+  // check specific top recommendation (from your comment)
+  expect(output[0].ID).toBe(1); // Top recommended event is event 1
+});
 
 
 

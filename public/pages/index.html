@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Main</title>
     <link rel="stylesheet" href="/public/css/global.css" />
     <link rel="stylesheet" href="/public/css/frontpage.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <main>
-      <div id="navbar"></div>
+        <div id="navbar"></div>
 
-      <h1>
-        Velkommen til lokaltlivet Aalborg her finder du de nyeste udgivet varer
-        og meget mere
-      </h1>
-      <h4>Hent og returner dine varer hurtigt og nemt med click and collect</h4>
+        <h1>
+            Velkommen til lokaltlivet Aalborg her finder du de nyeste udgivet varer
+            og meget mere
+        </h1>
+        <h4>Hent og returner dine varer hurtigt og nemt med click and collect</h4>
 
-      <div>
-        <h1>Nyeste Events</h1>
-        <div class="scrollmenu image-container" id="newevents">
-          <!-- images will be displayed here -->
+        <div>
+            <h1>Nyeste Events</h1>
+            <div class="scrollmenu image-container" id="newevents">
+                <!-- images will be displayed here -->
+            </div>
+
+            <h1>Nyeste produkter</h1>
+            <div class="scrollmenu image-container" id="products">
+                <!-- images will be displayed here -->
+            </div>
+            <h1>Anbefalede Events</h1>
+            <div class="scrollmenu image-container" id="events">
+                <!-- images will be displayed here -->
+            </div>
+
+            <h1>Anbefalede produkter</h1>
+            <div class="scrollmenu image-container" id="recommendations"></div>
         </div>
+        <div id="footer"></div>
 
-        <h1>Nyeste produkter</h1>
-        <div class="scrollmenu image-container" id="products">
-          <!-- images will be displayed here -->
-        </div>
-        <h1>Anbefalede Events</h1>
-        <div class="scrollmenu image-container" id="events">
-          <!-- images will be displayed here -->
-        </div>
-
-        <h1>Anbefalede produkter</h1>
-        <div class="scrollmenu image-container" id="recommendations"></div>
-      </div>
-      <div id="footer"></div>
-
-      <script src="/public/js/components/navbar.js"></script>
-      <script src="/public/js/components/footer.js"></script>
-      <script src="/public/js/frontpage.js" type="module"></script>
+        <script src="/public/js/components/navbar.js"></script>
+        <script src="/public/js/components/footer.js"></script>
+        <script src="/public/js/frontpage.js" type="module"></script>
     </main>
-  </body>
+</body>
+
 </html>

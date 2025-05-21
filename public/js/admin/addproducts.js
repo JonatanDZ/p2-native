@@ -5,19 +5,19 @@ export function onLoad(e) {
     let columnNames = data.split("\n");
 
     //  Trimming both headers for weird characters as this causes issues in the DB
-        //  Splitting once more, so each columnName is stored as indexes.      
+    //  Splitting once more, so each columnName is stored as indexes.      
     let headers = columnNames[0].split(";").map(header => header.replace(/\r/g, ""));
     //  .split returns an array of strings therefore .map has to be used to clean up; .map works just as foreach but returns an array which is needed
 
     // Splitting for row data 
     // this skips the header row, and removes carriage returns 
-    let rowDataSplit = columnNames.slice(1).map(row => row.replace(/\r/g, "")); 
-    
+    let rowDataSplit = columnNames.slice(1).map(row => row.replace(/\r/g, ""));
+
 
     // initialize object
     //  Using the .map function on the array rowDataSplit. The array has all the data in each row, we now want to separate them by ";" so we can access
-        //  each datapoint individually. The map method functions just as the forEach but returns an array; this is a KEY difference.
-    let rowData = rowDataSplit.map((row)=>{
+    //  each datapoint individually. The map method functions just as the forEach but returns an array; this is a KEY difference.
+    let rowData = rowDataSplit.map((row) => {
         const rowData = row.split(";");
         let object = {};
         //  We now want to loop through each header and store each datapoint to the associated header, this will be stored in an object (associative array / struct).
@@ -29,11 +29,11 @@ export function onLoad(e) {
     })
     console.log(rowData);
     // save to DB in case of button click
-    document.getElementById("upload_to_db").addEventListener("click", async function (event){
+    document.getElementById("upload_to_db").addEventListener("click", async function (event) {
         const saveToDbResult = await saveToDbReq(rowData);
-        if(saveToDbResult === 0){
+        if (saveToDbResult === 0) {
             alert("Data er ikke gemt, forsøg igen!");
-        } else{
+        } else {
             alert("Data er gemt!");
         }
     })
@@ -60,7 +60,7 @@ export function onLoad(e) {
     table.appendChild(headerRow);
 
     //  displaying the row data
-    rowData.forEach(rowData => {    
+    rowData.forEach(rowData => {
         // create row each time 
         const tr = document.createElement("tr");
 
@@ -82,19 +82,19 @@ export function onLoad(e) {
 }
 
 
-function readFile(){
+function readFile() {
     //  Using FileReader instead of fetch. 
     document.getElementById("file_upload").addEventListener("change", function (event) {
         const file = event.target.files[0];
         const reader = new FileReader();
-        
+
         //  Passing the event to the function onLoad. 
         reader.onload = onLoad;
         reader.readAsText(file);
     });
 }
 
-async function saveToDbReq(rowData){
+async function saveToDbReq(rowData) {
     try {
         //Make POST request with data given by the user
         const res = await fetch('/save-products', {

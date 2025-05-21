@@ -15,19 +15,19 @@ async function readFromDB(endpoint) {   //endpointet bliver defineret på den gi
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        displayFromDB(data);
-    })
-    .catch(error => {
-        console.error("Error receiving data from /get-products:", error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            displayFromDB(data);
+        })
+        .catch(error => {
+            console.error("Error receiving data from /get-products:", error);
+        });
 }
 
 async function displayFromDB(data) {
     const productsContainer = document.getElementById("products-container");
     if (!productsContainer) return;
-    
+
     productsContainer.innerHTML = '';
 
     // getting the userId in order to display the admins published items
@@ -35,7 +35,7 @@ async function displayFromDB(data) {
 
     data.forEach(product => {
         //checking if the logged in user is the product owner
-        if(userId === product.shopID){
+        if (userId === product.shopID) {
             const card = document.createElement('div');
             card.className = 'card';
 
@@ -46,11 +46,11 @@ async function displayFromDB(data) {
             const img = document.createElement('img');
             img.src = product.image || product.picture;
             img.alt = product.name || 'Product image';
-            
+
             img.style.width = '200px';
             img.style.height = '250px';
             img.style.objectFit = 'cover';
-            img.style.objectPosition = 'center'; 
+            img.style.objectPosition = 'center';
 
             productLink.appendChild(img);
 
@@ -63,14 +63,14 @@ async function displayFromDB(data) {
             const deleteButton = document.createElement('button');
             deleteButton.textContent = `Delete product` || 'Deletion is not available';
 
-            card.appendChild(productLink); 
+            card.appendChild(productLink);
             card.appendChild(price);
             card.appendChild(title);
             card.appendChild(deleteButton);
             productsContainer.appendChild(card);
 
             // logic for pressing the delete button:
-            deleteButton.addEventListener("click", function (e){
+            deleteButton.addEventListener("click", function (e) {
                 // making a POST request to the API to delete item.
                 //  passing the product id
                 // small issue: the user has to update the page to see the change
@@ -81,47 +81,46 @@ async function displayFromDB(data) {
             })
         }
 
-    }); 
+    });
 }
 
-async function deleteReq(ID){
+async function deleteReq(ID) {
     fetch("/delete-product", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ productId: ID })
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ productId: ID })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.productDeleted) {
-        console.log("Product deleted!", data);
-        } else {
-        console.log("Product not found.");
-        }
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.productDeleted) {
+                console.log("Product deleted!", data);
+            } else {
+                console.log("Product not found.");
+            }
+        });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");
-  
+
     if (searchInput) {
-      searchInput.addEventListener("input", async (e) => {
-        const query = e.target.value.trim();
-  
-        if (query.length === 0) {
-          readFromDB("/get-products"); // fallback to all products
-          return;
-        }
-  
-        try {
-          const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
-          const products = await res.json();
-          displayFromDB(products); // your existing function to render
-        } catch (err) {
-          console.error("Error searching products:", err);
-        }
-      });
+        searchInput.addEventListener("input", async (e) => {
+            const query = e.target.value.trim();
+
+            if (query.length === 0) {
+                readFromDB("/get-products"); // fallback to all products
+                return;
+            }
+
+            try {
+                const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+                const products = await res.json();
+                displayFromDB(products); // your existing function to render
+            } catch (err) {
+                console.error("Error searching products:", err);
+            }
+        });
     }
-  });
-  
+});

@@ -40,20 +40,20 @@ form {
 
 /* Label styling inside each payment method */
 .payment-method label {
-    font-weight: bold; 
-    flex-grow: 1; 
-    text-align: left; 
-    margin-left: 10px; 
+    font-weight: bold;
+    flex-grow: 1;
+    text-align: left;
+    margin-left: 10px;
 }
 
 /* Radio button spacing */
 .payment-method input[type="radio"] {
-    margin-left: 5px; 
+    margin-left: 5px;
 }
 
 /* Icon/image spacing */
 .payment-method img {
-    margin-left: 10px; 
+    margin-left: 10px;
 }
 
 /* Submit button styling */
