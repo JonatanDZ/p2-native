@@ -56,6 +56,8 @@ export async function getSpecificItemFiltersDB(itemId) {
   }
 }
 
+getSpecificItemFiltersDB(2);
+
 export async function getAllItemFiltersDB() {
   try {
     // Destructuring([]) removes meta data from db, db code gets all items.
@@ -74,6 +76,8 @@ export async function getAllItemFiltersDB() {
     throw err;
   }
 }
+
+getAllItemFiltersDB();
 
 export async function getAllUserEventsDB() {
   try {

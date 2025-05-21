@@ -136,9 +136,6 @@ async function displayRecommendedEvents(recommendationList, placement) {
         if (event) {
           const userID = await getUserId(); //Get userID
           if (userID != null) {
-            console.log(userID);
-
-            console.log("USER", userID, "EVENT", eventId);
             //Make a POST with userID and eventID
             try {
               const response = fetch("http://localhost:3000/event-detail", {

@@ -96,6 +96,7 @@ function readFile(){
 
 async function saveToDbReq(rowData){
     try {
+        //Make POST request with data given by the user
         const res = await fetch('/save-products', {
             method: 'POST',
             headers: {
@@ -103,7 +104,7 @@ async function saveToDbReq(rowData){
             },
             body: JSON.stringify(rowData)
         });
-        // error handling from server response. Returning from function so i can check and display alert
+        // error handling from server response. Returning from function to check and display alert
         if (!res.ok) {
             return 0;
         }

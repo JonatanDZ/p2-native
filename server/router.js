@@ -178,20 +178,29 @@ async function processReq(req, res) {
               const allProducts = await getProducts(); // Get full DB list
               let totalPrice = 0;
               for (const basketItem of basket) {
-                const product = allProducts.find(p => p.ID == basketItem.id); // use == to match number/string
+                const product = allProducts.find((p) => p.ID == basketItem.id); // use == to match number/string
                 if (!product) {
                   res.writeHead(400, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify({ error: `Product ID ${basketItem.id} not found.` }));
+                  res.end(
+                    JSON.stringify({
+                      error: `Product ID ${basketItem.id} not found.`,
+                    })
+                  );
                   return;
                 }
-                const price = typeof product.price === "string"
-                ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
-                : Number(product.price);
-                
+                const price =
+                  typeof product.price === "string"
+                    ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
+                    : Number(product.price);
+
                 const quantity = basketItem.quantity || 1;
                 if (quantity < 1 || quantity > 99) {
                   res.writeHead(400, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify({ error: `Invalid quantity for product ${basketItem.id}` }));
+                  res.end(
+                    JSON.stringify({
+                      error: `Invalid quantity for product ${basketItem.id}`,
+                    })
+                  );
                   return;
                 }
                 totalPrice += price * quantity;
@@ -211,8 +220,10 @@ async function processReq(req, res) {
                 ],
                 mode: "payment",
                 customer_email: email,
-                success_url: "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
-                cancel_url: "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
+                success_url:
+                  "http://localhost:3000/public/pages/paymentsystem/paymentsuccess.html",
+                cancel_url:
+                  "http://localhost:3000/public/pages/paymentsystem/paymentfail.html",
               });
               res.writeHead(200, {
                 "Content-Type": "application/json",
@@ -237,43 +248,51 @@ async function processReq(req, res) {
           req.on("data", (chunk) => (bodyConfirmationMail += chunk.toString()));
           req.on("end", async () => {
             try {
-              const { email, basket, fornavn, efternavn } = JSON.parse(bodyConfirmationMail);
+              const { email, basket, fornavn, efternavn } =
+                JSON.parse(bodyConfirmationMail);
 
               const allProducts = await getProducts();
 
-                let correctedBasket = [];
-                let totalPrice = 0;
+              let correctedBasket = [];
+              let totalPrice = 0;
 
-                for (const item of basket) {
-                  const product = allProducts.find(p => p.ID == item.id);
-                  if (!product) continue;
+              for (const item of basket) {
+                const product = allProducts.find((p) => p.ID == item.id);
+                if (!product) continue;
 
-                  const quantity = item.quantity || 1;
-                  const price = typeof product.price === "string"
+                const quantity = item.quantity || 1;
+                const price =
+                  typeof product.price === "string"
                     ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
                     : Number(product.price);
 
-                  correctedBasket.push({
-                    name: product.name,
-                    quantity,
-                    price: `DKK ${price}`,
-                    shopID: product.shopID
-                  });
+                correctedBasket.push({
+                  name: product.name,
+                  quantity,
+                  price: `DKK ${price}`,
+                  shopID: product.shopID,
+                });
 
-                  totalPrice += price * quantity;
-                }
+                totalPrice += price * quantity;
+              }
 
-                 // give each shopId a name
-                  const shopIdToName = {
-                    1: "Lucy's Tøjbutik",
-                    2: "Tøjhjørnet",
-                    3: "ModeMekka",
-                    4: "Stil & Stof",
-                    5: "Den Lille Garderobe"
-                };
+              // give each shopId a name
+              const shopIdToName = {
+                1: "Lucy's Tøjbutik",
+                2: "Tøjhjørnet",
+                3: "ModeMekka",
+                4: "Stil & Stof",
+                5: "Den Lille Garderobe",
+              };
 
-                const shopIds = [...new Set(correctedBasket.map(item => item.shopID).filter(Boolean))];
-                const shopNames = shopIds.map(id => shopIdToName[id] || `Ukendt butik (ID ${id})`);
+              const shopIds = [
+                ...new Set(
+                  correctedBasket.map((item) => item.shopID).filter(Boolean)
+                ),
+              ];
+              const shopNames = shopIds.map(
+                (id) => shopIdToName[id] || `Ukendt butik (ID ${id})`
+              );
 
               await sendConfirmationEmail(
                 email,

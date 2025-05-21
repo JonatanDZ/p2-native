@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("Stuff loaded!")
   const apiContainers = document.querySelectorAll(".api-call");
   apiContainers.forEach((container) => {
     const endpoint = container.dataset.endpoint;

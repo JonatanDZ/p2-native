@@ -86,6 +86,7 @@ function readFile(){
 
 function saveToDb(rowData){
     document.getElementById("upload_to_db_events").addEventListener("click", function (event){
+        //Make a POST request with the data given by user
           fetch('/save-events', {
             method: 'POST',
             headers: {
