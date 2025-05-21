@@ -22,9 +22,23 @@ async function getUserId() {
       body: JSON.stringify({ token: token }),
     });
 
+    if (!response.ok) {
+      console.error("Failed to verify token:", response.statusText);
+      return null;
+    }
+
     const data = await response.json();
 
-    return await data.userId;
+     if (data.isAuthenticated) {
+      return data.userId;
+    } else {
+      console.warn("User not authenticated");
+      return null;
+    }
+
+    
+
+    //return await data.userId;*/
   } catch (err) {
     // Handle fetch errors or server issues
     console.error("Error verifying token:", err);

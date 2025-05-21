@@ -1,4 +1,4 @@
-import { fetchUserIdFromToken } from "./admin.js";
+import { getUserId } from "../frontpage.js";
 
 document.addEventListener("DOMContentLoaded", async () => {              // udvidet den lidt så den kan tage flere kald på en side
     const apiContainers = document.querySelectorAll('.api-call');
@@ -31,8 +31,7 @@ async function displayFromDB(data) {
     productsContainer.innerHTML = '';
 
     // getting the userId in order to display the admins published items
-    const token = localStorage.getItem("token");
-    const userId = await fetchUserIdFromToken(token);
+    const userId = await getUserId();
 
     data.forEach(product => {
         //checking if the logged in user is the product owner

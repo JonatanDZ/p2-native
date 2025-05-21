@@ -1,3 +1,5 @@
+import { getUserId } from "../frontpage.js";
+
 // putting inside if, since testing suite fails because it uses the DOM. Need another testing env for that
 if (typeof document !== "undefined") {
   document.addEventListener("DOMContentLoaded", function () {
@@ -5,39 +7,10 @@ if (typeof document !== "undefined") {
   });
 }
 
-export async function fetchUserIdFromToken(token) {
-  try {
-    const response = await fetch("http://localhost:3000/verify-token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ token })
-    });
-
-    if (!response.ok) {
-      console.error("Failed to verify token:", response.statusText);
-      return null;
-    }
-
-    const data = await response.json();
-
-    if (data.isAuthenticated) {
-      return data.userId;
-    } else {
-      console.warn("User not authenticated");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching user ID:", error);
-    return null;
-  }
-}
 
 export async function displayFromDB(data){
-    // getting the token from localstorage and passing into function to get user id
-    const token = localStorage.getItem("token");
-    const userId = await fetchUserIdFromToken(token);
+    //get userId
+    const userId = getUserId();
 
     const amount_of_products_p = document.getElementById("amount_of_products_p");
     console.log(userId);
