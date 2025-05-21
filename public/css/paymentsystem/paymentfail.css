@@ -1,4 +1,3 @@
-
 /* Container for the cancellation/failure screen */
 .cancel-container {
     display: flex;
@@ -34,7 +33,8 @@ h1 {
 }
 
 /* Shared button style */
-.retry-button, .home-button {
+.retry-button,
+.home-button {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 15px;

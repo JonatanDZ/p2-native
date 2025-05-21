@@ -18,10 +18,13 @@ body {
 .customContainer {
     display: flex;
 }
+
 /* Main content styling */
 .events-container {
-    margin-left: 0px; /* Adjusted for sidebar width */
-    flex: 1; /* Ensures the container takes up remaining space */
+    margin-left: 0px;
+    /* Adjusted for sidebar width */
+    flex: 1;
+    /* Ensures the container takes up remaining space */
     display: flex;
     flex-wrap: wrap;
     gap: 20px;

@@ -4,7 +4,7 @@ import { loadSidebar } from "../../components/sidebar.js";
 
 console.log("Component script loaded");
 
-export function loadComponents(){
+export function loadComponents() {
     loadSidebar();
     loadFooter();
     loadNavbar();

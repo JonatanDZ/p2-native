@@ -1,6 +1,8 @@
 #upper-bar {
-    flex: 1; /* this makes it take the remaining space */
-    padding: 1rem; /* optional, spacing */
+    flex: 1;
+    /* this makes it take the remaining space */
+    padding: 1rem;
+    /* optional, spacing */
     overflow: auto;
 }
 
@@ -9,12 +11,15 @@
     justify-content: center;
     align-items: flex-start;
     gap: 1rem;
-    flex-wrap: wrap; /* optional if cards overflow on smaller screens */
+    flex-wrap: wrap;
+    /* optional if cards overflow on smaller screens */
 }
 
 #sidebar-container {
-    width: 250px; /* or whatever width you want */
-    background-color: #f8f9fa; /* optional, for visibility */
+    width: 250px;
+    /* or whatever width you want */
+    background-color: #f8f9fa;
+    /* optional, for visibility */
 }
 
 #main-content {
