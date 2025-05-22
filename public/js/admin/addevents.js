@@ -87,16 +87,16 @@ function readFile() {
 function saveToDb(rowData){
     document.getElementById("upload_to_db_events").addEventListener("click", function (event){
         //Make a POST request with the data given by user
-          fetch('/save-events', {
+        fetch('/save-events', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(rowData)
         })
-            .catch(error => {
-                console.error("Error sending data to /save-events:", error);
-            });
+        .catch(error => {
+            console.error("Error sending data to /save-events:", error);
+        });
     })
 }
 

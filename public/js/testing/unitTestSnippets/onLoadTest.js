@@ -5,7 +5,7 @@ export function onLoadTest(e) {
     let columnNames = data.split("\n");
     let headers = columnNames[0].split(";").map(header => header.replace(/\r/g, ""));
     let rowDataSplit = columnNames.slice(1).map(row => row.replace(/\r/g, ""));
-    let rowData = rowDataSplit.map((row)=>{
+    let rowData = rowDataSplit.map((row) => {
         const rowData = row.split(";");
         let object = {};
         headers.forEach((headers, index) => {

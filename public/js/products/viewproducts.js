@@ -1,7 +1,5 @@
 export { displayProduct, addToBasket };
 
-
-
 // bliver brugt af admin og ikke produkt page levn fra fortiden
 document.addEventListener("DOMContentLoaded", async () => {
     // udvidet den lidt så den kan tage flere kald på en side
@@ -69,7 +67,6 @@ function addToBasket(product) {
     localStorage.setItem("basket", JSON.stringify(basket));
     alert("Produktet er tilføjet til kurven!");
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");

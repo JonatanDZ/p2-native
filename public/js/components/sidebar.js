@@ -3,7 +3,6 @@ async function loadSidebar() {
         .then(res => res.text())
         .then(html => {
             document.getElementById("sidebar-container").innerHTML = html;
-
         });
 }
 document.addEventListener("DOMContentLoaded", loadSidebar);

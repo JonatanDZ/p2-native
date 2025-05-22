@@ -79,15 +79,6 @@ async function processReq(req, res) {
                         .then((productData) => {
                             productData.forEach((product) => {
                                 createProduct(product);
-                                /* Denne bør have sit eget endpoint (switch case) da der ikke kan være flere end én .then pr endpoint
-                                                                .then((productData) => {
-                                                                    productData.forEach((product) => {
-                                                                        createProduct(
-                                                                        product.name,
-                                                                        product.price,
-                                                                        product.amount,
-                                                                        product.filters
-                                                                        );*/
                             });
                             res.writeHead(200, { "Content-Type": "application/json" });
                             res.end(
@@ -425,10 +416,11 @@ async function processReq(req, res) {
 
                                     db.query(
                                         `INSERT INTO user_filters (
-                    userID, black, white, gray, brown, blue,
-                    pants, t_shirt, sweatshirt, hoodie, shoes, shorts,
-                    cotton, linnen, polyester
-                    ) VALUES (?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)`,
+                                            userID, black, white, gray, brown, blue,
+                                            pants, t_shirt, sweatshirt, hoodie, shoes, shorts,
+                                            cotton, linnen, polyester
+                                        ) VALUES (
+                                            ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)`,
                                         [userId],
                                         (err2) => {
                                             if (err2) {

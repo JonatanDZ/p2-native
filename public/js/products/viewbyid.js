@@ -43,17 +43,6 @@ async function displaySimilarItems(similarItems) {
         const product = allProducts.find((p) => p.ID === rec.ID);
         if (!product) continue;
 
-        /*const itemHTML = document.createElement("div");
-        itemHTML.innerHTML = `
-                            <img src="${product.picture}" alt="${product.name}">
-                            <h3>${product.name}</h3>
-                            <p>${product.info}</p>
-                            <p>Price: ${product.price} DKK</p>
-                            <p>Match Score: ${rec.score}</p>
-                            <button onclick='addToBasket(${JSON.stringify(
-                              product
-                            )})'>Tilføj til kurv</button>
-                        `;*/
         container.appendChild(displayProduct(product));
     }
     container.addEventListener("click", function (e) {

@@ -4,8 +4,8 @@ import { compareLists, dotProduct, recommenderAlgorithmForItem, recommendItem } 
 // every test follows the principle of arrange, act and assert
 
 //  testing recommenderAlgorithm functions
-test('dotProduct properly returns a dotproduct between two vectors', ()=>{
-  // arranging mock user and item filters
+test('dotProduct properly returns a dotproduct between two vectors', () => {
+    // arranging mock user and item filters
     const user = {
         black: 2,
         white: 1,
@@ -21,8 +21,8 @@ test('dotProduct properly returns a dotproduct between two vectors', ()=>{
         cotton: 0,
         linnen: 0,
         polyester: 0
-      };
-      const item = {
+    };
+    const item = {
         black: 1,
         white: 1,
         gray: 0,
@@ -37,7 +37,7 @@ test('dotProduct properly returns a dotproduct between two vectors', ()=>{
         cotton: 1,
         linnen: 0,
         polyester: 0
-      };
+    };
 
     // expecting the value of these two vectors being dotted with each other. 
     const output = dotProduct(user, item);
@@ -45,44 +45,44 @@ test('dotProduct properly returns a dotproduct between two vectors', ()=>{
     expect(output).toEqual(expected);
 })
 
-test('compareLists properly compares objects and returns a sorted list of objects', ()=>{
-  // arranging mock input 
+test('compareLists properly compares objects and returns a sorted list of objects', () => {
+    // arranging mock input 
     const input = [
         { ID: 1, score: 3 },
         { ID: 2, score: 7 },
         { ID: 3, score: 5 }
     ];
-    
+
     // expecting that the list with the highest score is output
     const sorted = compareLists(input);
-    const expected =  
-    [{ ID: 2, score: 7 },
-    { ID: 3, score: 5 },
-    { ID: 1, score: 3 }]
+    const expected =
+        [{ ID: 2, score: 7 },
+        { ID: 3, score: 5 },
+        { ID: 1, score: 3 }]
 
     expect(sorted).toEqual(expected);
 });
 
 
-test('recommendItem properly compares the lists and returns the recommended items as a list of objects', ()=>{
+test('recommendItem properly compares the lists and returns the recommended items as a list of objects', () => {
     // arranging mock user and items filters
     const user = [null, 2, 1, 0, 0, 1, 0, 0, 0, 2, 2, 0, 2, 0, 0];
 
     const items = [
         [1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0],
-        [2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0] 
-      ];
-    
+        [2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+    ];
+
     // the recommended item should be the row in "items" which, when multiplied with the user filter, yields the largest result 
     const output = recommendItem(user, items);
-    const expected = [{ID: 1, score: 8}, {ID: 2, score: 6}];
+    const expected = [{ ID: 1, score: 8 }, { ID: 2, score: 6 }];
 
     expect(output).toEqual(expected);
 });
 
 // integration test, since it touches DB
 //  will fail if the expected id changes, or its attributes are altered. 
-test('recommenderAlgorithmForItem properly returns recommended item given a specific item ("other products you will like") ', async ()=>{
+test('recommenderAlgorithmForItem properly returns recommended item given a specific item ("other products you will like") ', async () => {
     // if there is no such id this will cause issues.
     const id = 1;
     const output = await recommenderAlgorithmForItem(id);
@@ -94,54 +94,51 @@ test('recommenderAlgorithmForItem properly returns recommended item given a spec
     // secondly, we expect the properties ID and score to be present in each object. 
     if (output.length > 0) {
         output.forEach(object => {
-          expect(object).toHaveProperty('ID');
-          expect(object).toHaveProperty('score');
+            expect(object).toHaveProperty('ID');
+            expect(object).toHaveProperty('score');
         });
-      }
+    }
 })
 
 
 test('recommendEvents properly returns a sorted array of recommended events', async () => {
-  const data = [
-    { userID: 1, eventID: 1 },
-    { userID: 1, eventID: 2 },
-    { userID: 2, eventID: 1 },
-    { userID: 2, eventID: 3 },
-    { userID: 3, eventID: 2 },
-    { userID: 3, eventID: 4 },
-    { userID: 4, eventID: 1 },
-    { userID: 4, eventID: 4 }
-  ];
+    const data = [
+        { userID: 1, eventID: 1 },
+        { userID: 1, eventID: 2 },
+        { userID: 2, eventID: 1 },
+        { userID: 2, eventID: 3 },
+        { userID: 3, eventID: 2 },
+        { userID: 3, eventID: 4 },
+        { userID: 4, eventID: 1 },
+        { userID: 4, eventID: 4 }
+    ];
 
-  const events = [
-    { ID: 1, name: "Yoga" },
-    { ID: 2, name: "Jazz" },
-    { ID: 3, name: "Food Fest" },
-    { ID: 4, name: "Fashion Show" }
-  ];
+    const events = [
+        { ID: 1, name: "Yoga" },
+        { ID: 2, name: "Jazz" },
+        { ID: 3, name: "Food Fest" },
+        { ID: 4, name: "Fashion Show" }
+    ];
 
-  const userId = 1;
+    const userId = 1;
 
-  const output = await recommendEvents(data, events, userId);
+    const output = await recommendEvents(data, events, userId);
 
-  expect(Array.isArray(output)).toBe(true);
-  expect(output.length).toBe(events.length);
+    expect(Array.isArray(output)).toBe(true);
+    expect(output.length).toBe(events.length);
 
-  //checking structure
-  output.forEach(item => {
-    expect(item).toHaveProperty("ID");
-    expect(item).toHaveProperty("score");
-  });
+    //checking structure
+    output.forEach(item => {
+        expect(item).toHaveProperty("ID");
+        expect(item).toHaveProperty("score");
+    });
 
-  //   check that scores are sorted descending
-  const scores = output.map(o => o.score);
-  for (let i = 1; i < scores.length; i++) {
-    expect(scores[i]).toBeLessThanOrEqual(scores[i - 1]);
-  }
+    //   check that scores are sorted descending
+    const scores = output.map(o => o.score);
+    for (let i = 1; i < scores.length; i++) {
+        expect(scores[i]).toBeLessThanOrEqual(scores[i - 1]);
+    }
 
-  // check specific top recommendation (from your comment)
-  expect(output[0].ID).toBe(1); // Top recommended event is event 1
+    // check specific top recommendation (from your comment)
+    expect(output[0].ID).toBe(1); // Top recommended event is event 1
 });
-
-
-

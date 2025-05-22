@@ -109,14 +109,14 @@ async function sendConfirmationEmail(
         to: recipientEmail,
         subject: "Din ordrebekræftelse",
         html: `
-          <h2>Hej ${fornavn} ${efternavn},</h2>
-          <p>Tak for din ordre!</p>
-          <p>Her er dine varer:</p>
-          <ul>${itemList}</ul>
-          <p><strong>Afhentes i butik:</strong></p>
-          <ul>${shopList}</ul>
-          <p>Vi glæder os til at se dig!</p>
-          <p><strong>Total pris:</strong> DKK ${totalPrice}</p>
+            <h2>Hej ${fornavn} ${efternavn},</h2>
+            <p>Tak for din ordre!</p>
+            <p>Her er dine varer:</p>
+            <ul>${itemList}</ul>
+            <p><strong>Afhentes i butik:</strong></p>
+            <ul>${shopList}</ul>
+            <p>Vi glæder os til at se dig!</p>
+            <p><strong>Total pris:</strong> DKK ${totalPrice}</p>
       `,
     };
 

@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedPaymentMethod) {
             alert("Vælg en betalingsmetode først.");
             return;
-
         }
 
         // Gets the first name and last name from local storage
@@ -31,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!email) {
             alert("Ingen e-mail fundet. Gå tilbage og udfyld din e-mail.");
             return;
-
         }
 
         // Makes a POST request to the backend server to create a checkout session
