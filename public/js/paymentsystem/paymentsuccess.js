@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Checks if the basket is not empty and the email is available
     if (basket.length > 0 && email) {
-
         // Sends a POST request to the backend server with basket and email data for sending the order confirmation email.
         try {
             await fetch("http://localhost:3000/send-confirmation-email", {

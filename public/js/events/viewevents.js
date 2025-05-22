@@ -97,8 +97,7 @@ function displayEvent(event) {
     price.innerHTML = `<strong>Pris:</strong> ${event.price || "N/A"},-`;
 
     const info = document.createElement("p");
-    info.innerHTML = `<strong>Info:</strong> ${event.info || "Ingen info tilgængelig"
-        }`;
+    info.innerHTML = `<strong>Info:</strong> ${event.info || "Ingen info tilgængelig"}`;
 
     const button = document.createElement("button");
     button.className = "btn btn-primary event-link";

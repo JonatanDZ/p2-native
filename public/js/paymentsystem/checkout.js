@@ -116,13 +116,11 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("userFornavn", fornavn);
         localStorage.setItem("userEfternavn", efternavn);
 
-
         // Saves the email in the checkout form to local storage
         const emailInput = document.getElementById("email");
         if (emailInput && emailInput.value) {
             localStorage.setItem("userEmail", emailInput.value);
         }
-
 
         // If basket is empty when the user clicks on the checkout button, an alert is shown
         if (basket.length === 0) {
@@ -132,9 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Calculates the total price of the items in the basket
         const totalPrice = basket.reduce((sum, item) => {
-            const price = typeof item.price === 'string'
-                ? parseInt(item.price.replace(/[^\d]/g, ''), 10)
-                : item.price;
+            const price = typeof item.price === 'string' ? parseInt(item.price.replace(/[^\d]/g, ''), 10) : item.price;
             const quantity = item.quantity || 1;
             return sum + price * quantity;
         }, 0);
@@ -144,6 +140,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Redirects to the payment selection page
         window.location.href = `paymentselection.html`;
-
     });
 });

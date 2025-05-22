@@ -1,5 +1,6 @@
 export { displayProduct, addToBasket };
 
+// bliver brugt af admin og ikke produkt page levn fra fortiden
 document.addEventListener("DOMContentLoaded", async () => {
     // udvidet den lidt så den kan tage flere kald på en side
     const apiContainers = document.querySelectorAll(".api-call");
@@ -67,7 +68,6 @@ function addToBasket(product) {
     alert("Produktet er tilføjet til kurven!");
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");
 
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     `/search-product?query=${encodeURIComponent(query)}`
                 );
                 const products = await res.json();
-                displayFromDB(products); // your existing function to render
+                displayFromDB(products);
             } catch (err) {
                 console.error("Error searching products:", err);
             }
@@ -123,7 +123,6 @@ function displayProduct(product, path = "") {
     button.dataset.id = product.ID;
     button.textContent = "Tilføj til kurv";
 
-    card.appendChild(productLink);
     card.appendChild(productLink);
     card.appendChild(price);
     card.appendChild(title);

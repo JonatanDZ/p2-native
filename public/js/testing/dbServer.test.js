@@ -7,27 +7,27 @@ import { createProduct, getLikedProducts, getProduct, getProducts, getRecommende
 // when posting to the DB it does so to the live DB so there are rows with test data 
 test('getProducts returns an array of products with expected fields', async () => {
     const products = await getProducts();
-  
+
     // check that its an array
     expect(Array.isArray(products)).toBe(true);
-  
+
     // if not empty, check properties of product 
     if (products.length > 0) {
         products.forEach(product => {
-          expect(product).toHaveProperty('ID');
-          expect(product).toHaveProperty('shopID');
-          expect(product).toHaveProperty('name');
-          expect(product).toHaveProperty('picture');
-          expect(product).toHaveProperty('info');
-          expect(product).toHaveProperty('price');
-          expect(product).toHaveProperty('amount');
-          expect(product).toHaveProperty('size');
+            expect(product).toHaveProperty('ID');
+            expect(product).toHaveProperty('shopID');
+            expect(product).toHaveProperty('name');
+            expect(product).toHaveProperty('picture');
+            expect(product).toHaveProperty('info');
+            expect(product).toHaveProperty('price');
+            expect(product).toHaveProperty('amount');
+            expect(product).toHaveProperty('size');
         });
-      }
-  });
+    }
+});
 
 //  Testing retrieval of recommendedProducts
-test('getRecommendedProducts returns an array of recommended products with expected fields', async () =>{
+test('getRecommendedProducts returns an array of recommended products with expected fields', async () => {
     const recProducts = await getRecommendedProducts();
 
     // check that its an array
@@ -44,11 +44,11 @@ test('getRecommendedProducts returns an array of recommended products with expec
             expect(recProduct).toHaveProperty('price');
             expect(recProduct).toHaveProperty('amount');
         });
-        }
+    }
 });
 
 //  Testing retrieval of liked products
-test('getLikedProducts returns an array of liked products with expected fields', async () =>{
+test('getLikedProducts returns an array of liked products with expected fields', async () => {
     const likedProducts = await getLikedProducts();
 
     // check that its an array
@@ -65,13 +65,13 @@ test('getLikedProducts returns an array of liked products with expected fields',
             expect(likedProduct).toHaveProperty('price');
             expect(likedProduct).toHaveProperty('amount');
         });
-        }
+    }
 
 });
 
-test('getProduct properly returns a single, specific product', async () =>{
+test('getProduct properly returns a single, specific product', async () => {
     //  init mock id and function call 
-    let mockId = 1; 
+    let mockId = 1;
     let output = await getProduct(mockId);
     //  init max tries and amount of current tries, so loop doesnt run infinitely.
     //  This accounts for zero entries in the DB
@@ -80,13 +80,13 @@ test('getProduct properly returns a single, specific product', async () =>{
 
     // simply put: all the arranging code is to loop through every row in the database to find a row with data. 
     //  if every element in the row is null, we skip to the next product (there should be no NULL rows in the DB)
-    while(output === undefined && tries < maxTries){
+    while (output === undefined && tries < maxTries) {
         mockId++;
         tries++;
         output = await getProduct(mockId);
     }
 
-    if(output !== undefined){
+    if (output !== undefined) {
         expect(output).toHaveProperty('ID');
         expect(output).toHaveProperty('shopID');
         expect(output).toHaveProperty('name');
@@ -94,10 +94,10 @@ test('getProduct properly returns a single, specific product', async () =>{
         expect(output).toHaveProperty('info');
         expect(output).toHaveProperty('price');
         expect(output).toHaveProperty('amount');
-    } 
+    }
 });
 
-test('createProduct properly returns both a row in products_table and products_filter. The function is dependent on getProduct working.. ', async () =>{
+test('createProduct properly returns both a row in products_table and products_filter. The function is dependent on getProduct working.. ', async () => {
     // arranging a mock product with filters
     const input = {
         name: "White pants",
@@ -120,8 +120,7 @@ test('createProduct properly returns both a row in products_table and products_f
         cotton: 0,
         linnen: 0,
         polyester: 1
-      };    
-      
+    };
 
     // this creates a test row in the database and potentially displays on website... 
     // checking the products_table
@@ -135,11 +134,11 @@ test('createProduct properly returns both a row in products_table and products_f
         picture: "test.jpg",
         info: "Perfect for everyday use.",
         size: null
-      });
+    });
 
     // checking the products_filters table 
     expect(output.productFiltersTableOutput).toEqual({
-        productID: output.productTableOutput.ID,  
+        productID: output.productTableOutput.ID,
         black: 0,
         white: 1,
         gray: 0,
@@ -154,5 +153,5 @@ test('createProduct properly returns both a row in products_table and products_f
         cotton: 0,
         linnen: 0,
         polyester: 1
-      });
+    });
 });

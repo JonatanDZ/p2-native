@@ -3,7 +3,7 @@
 import { getAllItemFiltersDB, getUserFiltersDB } from "../../../server/recommender/recommenderAlgorithmsServer"
 
 test('getUserFiltersDB properly returns the filter row from the DB given a user id', async () => {
-  // assumes that there actually is a row with id = 6, this can cause issues !!!
+    // assumes that there actually is a row with id = 6, this can cause issues !!!
     const id = 6;
     const output = await getUserFiltersDB(id);
 
@@ -17,9 +17,9 @@ test('getUserFiltersDB properly returns the filter row from the DB given a user 
     output.forEach(element => {
         expect(element).toBeGreaterThanOrEqual(0);
     });
-  });
+});
 
-test('getAllItemFiltersDB properly returns an array of the values of each itemFilter', async ()=>{
+test('getAllItemFiltersDB properly returns an array of the values of each itemFilter', async () => {
     const output = await getAllItemFiltersDB();
 
     //  Function should return an array of objects
@@ -31,8 +31,8 @@ test('getAllItemFiltersDB properly returns an array of the values of each itemFi
         output.forEach(row => {
             // enters the inner array, where the values of the item filter is
             row.forEach(value => {
-              expect(value).toBeGreaterThanOrEqual(0);
+                expect(value).toBeGreaterThanOrEqual(0);
             });
-          });
-        }
+        });
+    }
 })

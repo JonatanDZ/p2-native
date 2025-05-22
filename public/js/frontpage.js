@@ -22,10 +22,10 @@ async function getUserId() {
             body: JSON.stringify({ token: token }),
         });
 
-    if (!response.ok) {
-      console.error("Failed to verify token:", response.statusText);
-      return null;
-    }
+        if (!response.ok) {
+            console.error("Failed to verify token:", response.statusText);
+            return null;
+        }
 
     const data = await response.json();
 
