@@ -27,18 +27,14 @@ async function getUserId() {
       return null;
     }
 
-        const data = await response.json();
+    const data = await response.json();
 
-         if (data.isAuthenticated) {
+    if (data.isAuthenticated) {
       return data.userId;
     } else {
       console.warn("User not authenticated");
       return null;
     }
-
-    
-
-    //return await data.userId;*/
     } catch (err) {
         // Handle fetch errors or server issues
         console.error("Error verifying token:", err);
