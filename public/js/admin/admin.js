@@ -8,35 +8,6 @@ if (typeof document !== "undefined") {
     });
 }
 
-export async function fetchUserIdFromToken(token) {
-    try {
-        const response = await fetch("http://localhost:3000/verify-token", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token })
-        });
-
-        if (!response.ok) {
-            console.error("Failed to verify token:", response.statusText);
-            return null;
-        }
-
-        const data = await response.json();
-
-        if (data.isAuthenticated) {
-            return data.userId;
-        } else {
-            console.warn("User not authenticated");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching user ID:", error);
-        return null;
-    }
-}
-
 export async function displayFromDB(data) {
     //get userId
     const userId = await getUserId();

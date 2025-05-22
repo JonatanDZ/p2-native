@@ -57,7 +57,7 @@ function displayFromDB(data) {
                         console.error("Error:", err);
                         alert("Something went wrong. Try again.");
                     }
-                    addToUserEvents(event);
+                    addToUserEvents(event);//Has no usage right now
                 } else {
                     console.log("log in to add to reccommender");
                 }
