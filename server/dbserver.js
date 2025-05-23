@@ -27,8 +27,6 @@ export async function getProducts() {
     return rows;
 }
 
-//  these three functions do the exact same?
-
 export async function getRecommendedProducts() {
     const result = await pool.query("SELECT * FROM products_table");
     //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
