@@ -2,6 +2,9 @@
 import { getAllUserEventsDB } from "./recommenderAlgorithmsServer.js";
 
 import { getEvents } from "../dbserver.js";
+// funktionen har userId som parameter. Så kalder den på getEvents som giver den et array af alle events. Så kalder den på getAllUserEventsDB som finder alle de events som 
+// useren er tilknyttet.
+// så returnerer den funktionen recommentEvents med argumenterne userEvents og events som lige er fundet, samt userId som den tog som parameter i starten.
 export async function recommenderAlgorithmForEvents(userID) {
     //Get data from database
     let events = await getEvents();
@@ -11,6 +14,10 @@ export async function recommenderAlgorithmForEvents(userID) {
 }
 
 //The event recommender algorithm. Currently only looks at events people are singed up for
+// funktionen har 3 parametre, data, events og userId. Første for loop sætter alle events til 0, for at de kan blive tællet op senere.
+// det andet for loop tjekker hvilke events som brugeren er tilmeldt. 
+// det tredje for loop har til opgave at finde andre brugere som også deltager i det samme event som den nuværende bruger gør. Dernæst kører den igennem den anden brugers
+// tilmeldte events og lægger dem over i den nye brugers anbefalinger. 
 export async function recommendEvents(data, events, userId) {
     //If either data is NULL then stop
     if (!data || !events) return events;

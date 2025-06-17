@@ -5,6 +5,8 @@ import {
 } from "./recommenderAlgorithmsServer.js";
 
 // User recommendation based on pressed items.
+// anbefalings algoritmen her tager userId som parameter. Så får den fat i userFilters og alle filtre fra databasen. Til sidst returnerer den anbefalet produkter hvor den har
+// argumenterne userFilters og allItems.
 export async function recommenderAlgorithmForUser(userId) {
     // Get items from DB.
     let userFilters = await getUserFiltersDB(userId);
@@ -27,7 +29,11 @@ export async function recommenderAlgorithmForItem(itemId) {
     // To get result use: await recommenderAlgorithmForItem(itemId)
     return recommendItem(itemFilters, allItems);
 }
-
+// funktionen tager userFilters og allItems som parametre. Så kalder den på dotProduct med argumenterne userFilters.slice(1) og item.slice(1) som fjerner det første element i
+// begge arrays, da de vil indeholde et form for ID
+// Dernæst kalder den på compareLists og giver den argumentet med dotproduct fra før. Den sorterer så listen så den med højest score kommer først.
+// dernæst kalder den på resultsComparedPrinted men man kan se nede i funktionen at console.log er udkommenteret så der sker faktisk ikke noget her.
+// til sidst returenrer den den sorterede liste med anbefaliner
 export function recommendItem(userFilters, allItems) {
     // map returns an array to resultsOfDotProduct, where every item is mapped to an object with an id and a score for the different items
     let resultsOfDotProduct = allItems.map((item) => ({

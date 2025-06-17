@@ -9,6 +9,9 @@ const pool = mysql.createPool({
     port: process.env.DB_PORT,
 });
 
+// tager userid som parameter. Så er der en try som kigger i databasen, og så i user_filters og kigger specifikt efter det userID den har fået og sætter filtrene i et array
+// if statement at hvis arrayet er 0, vil det sige der ingen userfiltre var og den returnerer null
+// object.values gør at vi fjerner kolonnenavnene og kun får filtrene [1, 0, 1, osv...]
 export async function getUserFiltersDB(userId) {
     try {
         // Destructuring([]) removes meta data from db, db code gets specific user, with id.
@@ -58,6 +61,7 @@ export async function getSpecificItemFiltersDB(itemId) {
 
 getSpecificItemFiltersDB(2);
 
+// henter alle filtre fra alle produkter og returnerer dem som et array af arrays. Object.value bruges til at fjerne kolonne navnene.
 export async function getAllItemFiltersDB() {
     try {
         // Destructuring([]) removes meta data from db, db code gets all items.
@@ -79,6 +83,7 @@ export async function getAllItemFiltersDB() {
 
 getAllItemFiltersDB();
 
+// henter alle rækker fra user_events tabellen. Denne funktion returner værdierne med kolonne navnene. 
 export async function getAllUserEventsDB() {
     try {
         // Destructuring([]) removes meta data from db, db code gets specific user, with id.
@@ -97,6 +102,8 @@ export async function getAllUserEventsDB() {
     }
 }
 
+// tager to parametre, et userID og dataForDB som er et array af tal for nye filtre. Så opdaterer den filtrene til det nye givet array.
+// til sidst console logger den de rækker som er blevet ændret.
 export async function updateUserFiltersDB(userId, dataForDB) {
     try {
         // inserts the dataForDB into these variabels.

@@ -15,6 +15,8 @@ const port = 3000; //Run on port 3000
 const server = http.createServer(requestHandler); //Create a server with a request handler
 
 //Create function for standard error response
+//Den her funktion tager 3 parametre, res (HTTTP respons), code (HTTP statuskode) og reason(en tekst som forklarer fejlen). Funktionen bruges når vi skal sende en fejl
+//tilbage til brugeren. Vi giver funktionen en statuskode og en fejlbesked. Det gør det let for os og mere ensartet at håndtere fejl flere steder i vores kode.
 function errorResponse(res, code, reason) {
     res.statusCode = code;
     res.setHeader("Content-Type", "text/txt");
@@ -22,6 +24,8 @@ function errorResponse(res, code, reason) {
     res.end("\n");
 }
 
+//funktionen tager 2 parametre, req og res. Forsøger i try at behandle anmodningen ved at kalde på processReq. Sker der en fejl går den så i catch.
+//Det er en funktion som tager imod selve HTTP anmodningen. den prøver at sende den videre til processReq som håndterer logikken.
 export function requestHandler(req, res) {
     try {
         //Try to proceess the request
@@ -43,6 +47,8 @@ function startServer() {
 //Helper functions for the router
 
 //Finds the MIME type of the file - Function is taken from the BMI server
+//denne funktion finder ud af hvilken MIME-type og har den liste af typer den kan kigge igennem. Er der ingen af dem som matcher filendelsen så returner den text/plain
+//Den tager ét parameter, filename, som er fx billede.png.
 function guessMimeType(fileName) {
     const fileExtension = fileName.split(".").pop().toLowerCase();
     const ext2Mime = {
@@ -65,6 +71,8 @@ function guessMimeType(fileName) {
 }
 
 //Reads and writes the found file - Function is a simplified version of the BMI one
+//denne funktion tager 2 parametre res (HTTP respons objektet) og filename(navnet på den fil som skal sendes tilbage til brugeren)
+//findes filen og der ikke sker fejl kalder vi på guessMimeType fra ovenover og sender den korrekte mime-type tilbage.
 function fileResponse(res, filename) {
     fs.readFile(filename, (err, data) => {
         if (err) {
@@ -78,6 +86,7 @@ function fileResponse(res, filename) {
 }
 
 // Function to send a confirmation email
+//funtionen tager 6 parametre. Den er asynkron da vi senere først vil fortsætte når mailen er sendt. Funktionen bruger nodemailer library.  
 async function sendConfirmationEmail(
     recipientEmail,
     basket,
@@ -126,6 +135,7 @@ async function sendConfirmationEmail(
 }
 
 //Taken from BMI server (Nicolai?)
+//en funktion som tjekker om en HTTP request har JSON indhold. Hvis den har, samler og parser den requestens body til et javascript object. Så værdierne kan bruges i koden.
 function extractJSON(req) {
     console.log("Content-Type:", req.headers["content-type"]);
 

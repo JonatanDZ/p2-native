@@ -18,6 +18,7 @@ const pool = mysql
 /////////////////////////////////////////
 
 //  Product functions
+//asynkron funktion som henter alle produkter fra databasen. Mere præcist fra products_table. Den returnerer et array som er rækkerne af produkter fra databasen.
 export async function getProducts() {
     const result = await pool.query("SELECT * FROM products_table");
     //  The query returns a bunch of other data, in an array, which are not just the table rows, therefore we specify
@@ -46,7 +47,7 @@ export async function getLikedProducts() {
 }
 
 /////////////////////////////////////////
-
+//Funktionen tager en parameter, id, som er et produkt-id. Den henter ét produkt fra databasen i product_table, hvor id matcher, og returnerer det som et JavaScript-objekt
 export async function getProduct(id) {
     //  This function retrieves one product based on id. Syntax is a bit different in order to prevent sql injection attacks
     const result = await pool.query("SELECT * FROM products_table WHERE id = ?", [
@@ -74,6 +75,8 @@ export async function getProductFilters(id) {
     return rows[0];
 }
 
+//funktionen tager id som et parameter. Det som funktionen gør er, at slette både filtrene til et produkt og derefter produktet.
+//den returnerer hvor mange filtre og produkter som er blevet slettet. 
 export async function deleteProduct(id) {
     try {
         // each product has a foreign key rooted in product_filters so that has to be deleted first
@@ -97,6 +100,11 @@ export async function deleteProduct(id) {
         throw err;
     }
 }
+
+//funktionen tager produkt som parameter, og inde i funktionen ærklerer vi hvad product indebærer. Så har vi en const med alle produkt filtrene
+// Så sætter vi den første del af produktet, altså name, shopid osv... ind i products_table
+// Så finder vi det produktID som det nye produkt har fået i databasen, og skaber et filter til den hvor vi indsætter black, white osv...
+// Så kalder vi på det produkt vi lige har sat ind og dets filtre. Til sidst returneres et samlet objekt
 
 export async function createProduct(product) {
     // initializing one object twice since they are passed into two different tables
