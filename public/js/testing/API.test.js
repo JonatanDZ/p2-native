@@ -18,6 +18,7 @@ test("GET / successfully returns the landing page", async () => {
     expect(res.text).toContain("<!DOCTYPE html>");
 });
 
+//her der ser vi hvad der sker når vi kalder på API endpoint /get-events og forventer at den returnerer statuskode 200 "OK" og at array den får faktisk er et array
 test("GET /get-products returns product list", async () => {
     const res = await request(server).get("/get-products");
 
@@ -34,6 +35,8 @@ test("GET /get-events returns event list", async () => {
     expect(Array.isArray(res.body)).toBe(true);
 });
 
+//her fortæller vi den at den skal kigge på endpoint /get-event og mere specifikt event med id=1
+//så forventer vi en statuskode 200 samt at det den returnerer ikke er et array men et enkelt objekt
 test("GET /get-event returns single event", async () => {
     // assuming that there is an id = 10, if not will fail. 
     const res = await request(server).get("/get-event?id=1");
