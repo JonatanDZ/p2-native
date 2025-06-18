@@ -6,13 +6,22 @@ function makeCookie(cookieName, value, expire) {
 }
 
 function getCookie(cookieName) {
+    // gør det nemmer at søge efter landigVisited navnet. 
     let name = cookieName + "=";
+    // decode gør URL encoded tegn læselige fx %20. ellers blive cookien hentet ned. 
     let decodedCookie = decodeURIComponent(document.cookie);
+    // vi splitter alle evt cookie up. 
     let cookieArray = decodedCookie.split(";");
 
+    // vi kører igennem alle cookies indtil vi finder den rigtige
     for (let i = 0; i < cookieArray.length; i++) {
+        // vores cookie array er nu cookie. 
         let cookie = cookieArray[i].trim();
+        // vi tjekker her om det er landingvisited vi kigger på. så vi tjekker om 
+        // landingvisited er det første ord. 
         if (cookie.indexOf(name) === 0) {
+            // substring fjerner det fra 0-name.lenght og derfra fra cookie.length til slut
+            // derfor gemme den tallet efter = , og ikke andet. 
             return cookie.substring(name.length, cookie.length);
         }
     }

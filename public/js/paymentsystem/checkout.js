@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // If the basket/local storage is empty, it shows a message indicating that the basket is empty
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = "<p>Kurven er tom</p>";
+        // textContent replacer hvad der står i forvejen
         totalText.textContent = "Total (0 varer) DKK 0";
         clickAndCollectElement.innerHTML = "";
 
@@ -55,6 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Calculates the total amount of products in the basket
+        // sum er akkumleret og er sat til at starte fra 0, set som det sidste argument
+        // item er vores basket items
+        // The function adds item.quantity to sum for each item
         const totalQuantity = basket.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
         // Displays the total quantity and price of the items in the basket
@@ -70,6 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         // Displays click and collect information on the buttom of the basket
+        // går igennem alle butikker, hvis item ikke har et id = undefined, hvilket boolen
+        // fjerner. 
         const shopIds = [...new Set(basket.map(item => item.shopID).filter(Boolean))];
         if (shopIds.length > 0) {
             const shopLines = shopIds.map(id => {
@@ -87,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.classList.contains("remove-item")) {
             e.preventDefault();
             const index = parseInt(e.target.getAttribute("data-index"), 10);
+            // item med specefic indec, 1 er antallet of items removed derfor en. 
             basket.splice(index, 1);
             localStorage.setItem("basket", JSON.stringify(basket));
             location.reload();
@@ -132,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const totalPrice = basket.reduce((sum, item) => {
             const price = typeof item.price === 'string' ? parseInt(item.price.replace(/[^\d]/g, ''), 10) : item.price;
             const quantity = item.quantity || 1;
+            // sum += price * quantity, det er det samme som det her. 
             return sum + price * quantity;
         }, 0);
 

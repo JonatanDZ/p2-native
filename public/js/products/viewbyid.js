@@ -74,6 +74,8 @@ async function getSimilarItems() {
 async function loadDetailPage() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id"); //extracts id from url
+
+    // afgør om fejlkoden skal sende en til events eller produkt siden
     const type = window.location.pathname.includes("product")
         ? "product"
         : "event"; //determines if its a single event or products thats to be rendered
@@ -88,6 +90,7 @@ async function loadDetailPage() {
     }
 
     try {
+        // henter enten products eller events 
         const response = await fetch(`/get-${type}?id=${id}`);
         const data = await response.json(); //api call to get data by id
 

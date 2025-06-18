@@ -23,6 +23,7 @@ test("GET /get-products returns product list", async () => {
 
     //  simply expecting endpoint to return success and that the response is an array of objects. 
     expect(res.statusCode).toBe(200);
+    // forventer at body kommer som et array
     expect(Array.isArray(res.body)).toBe(true);
 });
 

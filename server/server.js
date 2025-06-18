@@ -131,6 +131,7 @@ function extractJSON(req) {
 
     if (isJsonEncoded(req.headers["content-type"]))
         return collectPostBody(req).then((body) => {
+            // laver string om fra collectPostBody om til json, et js object
             let x = JSON.parse(body);
             return x;
         });
@@ -141,8 +142,8 @@ function extractJSON(req) {
 }
 
 function isJsonEncoded(contentType) {
-    //Format
-    //Content-Type: application/json; encoding
+    // contentType = "application/json; charset=utf-8", vi split og tager element 0. altså: application/json, så trimmer vi, fjerner forkerte mellemrum foran eller bag. så tjekker vi om det er
+    // ctType === application/json. og returner true eller false. 
     let ctType = contentType.split(";")[0];
     ctType = ctType.trim();
     return ctType === "application/json";
@@ -152,7 +153,9 @@ function isJsonEncoded(contentType) {
 function collectPostBody(req) {
     //the "executor" function
     function collectPostBodyExecutor(resolve, reject) {
+        // Liste af chunks: fx: Chunk 1: { "userId": 1, Chunk 2:  "itemId": 4 }, det kommer som binary: bodyData = [ <Buffer 7b 20 22 75 73 65 72 49 44 22 3a 20 31 2c>,   // '{ "userID": 1,'<Buffer 20 22 69 74 65 6d 49 44 22 3a 20 34 20 7d>    // ' "itemID": 4 }']
         let bodyData = [];
+        // holder styr på hvor mange bytes vi har
         let length = 0;
         req
             .on("data", (chunk) => {
@@ -166,6 +169,7 @@ function collectPostBody(req) {
                 }
             })
             .on("end", () => {
+                // buffer sætter de to chunks sammen, de kommer i binær, derefter bliver de lavet til tekst med to string
                 bodyData = Buffer.concat(bodyData).toString(); //By default, Buffers use UTF8
                 //  Bit annoying but comments can be removed
                 console.log(bodyData);

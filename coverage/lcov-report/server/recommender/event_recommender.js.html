@@ -220,76 +220,76 @@ import { getAllUserEventsDB } from "./recommenderAlgorithmsServer.js";
 &nbsp;
 import { getEvents } from "../dbserver.js";
 export async function <span class="fstat-no" title="function not covered" >recommenderAlgorithmForEvents(</span>userID) {
-  //Get data from database
-  let events = <span class="cstat-no" title="statement not covered" >await getEvents();</span>
-  let userEvents = <span class="cstat-no" title="statement not covered" >await getAllUserEventsDB();</span>
-  //Call recommender with the data
-<span class="cstat-no" title="statement not covered" >  return recommendEvents(userEvents, events, userID);</span>
+    //Get data from database
+    let events = <span class="cstat-no" title="statement not covered" >await getEvents();</span>
+    let userEvents = <span class="cstat-no" title="statement not covered" >await getAllUserEventsDB();</span>
+    //Call recommender with the data
+<span class="cstat-no" title="statement not covered" >    return recommendEvents(userEvents, events, userID);</span>
 }
 &nbsp;
 //The event recommender algorithm. Currently only looks at events people are singed up for
 export async function recommendEvents(data, events, userId) {
-  //If either data is NULL then stop
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!data || !events) <span class="cstat-no" title="statement not covered" >return events;</span>
+    //If either data is NULL then stop
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!data || !events) <span class="cstat-no" title="statement not covered" >return events;</span>
 &nbsp;
-  let currentUser = userId; //Get currentUser
+    let currentUser = userId; //Get currentUser
 &nbsp;
-  let result = []; //Holds the score and id of the events
+    let result = []; //Holds the score and id of the events
 &nbsp;
-  //Initialize score to [0,eventID]
-  for (let i = 0; i &lt; events.length; i++) {
-    result[i] = [];
-    result[i][0] = 0;
-    result[i][1] = events[i].ID;
-  }
-&nbsp;
-  //Finds and creates user, which hold id of events current user attends ex. [4,9,1,7]
-  let user = [];
-  for (let i = 0; i &lt; data.length; i++) {
-    if (data[i].userID == currentUser) {
-      user.push(data[i].eventID);
+    //Initialize score to [0,eventID]
+    for (let i = 0; i &lt; events.length; i++) {
+        result[i] = [];
+        result[i][0] = 0;
+        result[i][1] = events[i].ID;
     }
-  }
 &nbsp;
-  //Reccomender
-  for (let n = 0; n &lt; user.length; n++) {
+    //Finds and creates user, which hold id of events current user attends ex. [4,9,1,7]
+    let user = [];
     for (let i = 0; i &lt; data.length; i++) {
-      //If a user is at event [n], find other user [i] at event
-      if (user[n] == data[i].eventID &amp;&amp; data[i].userID != currentUser) {
-        //If other person is at event, look at what other person is otherwise at
-        for (let k = 0; k &lt; data.length; k++) {
-          //If other user is at other event add other event score.
-          if (data[k].userID == data[i].userID) {
-            result[data[k].eventID - 1][0] += 1;
-          }
+        if (data[i].userID == currentUser) {
+            user.push(data[i].eventID);
         }
-      }
     }
-  }
-  //Sort it by amount
-  result.sort(sortFunction);
 &nbsp;
-  //Print top 3 reccomended
-  console.log(
-    `We reccomend event ${result[0][1]}, event ${result[1][1]} and event ${result[2][1]}`
-  );
-  let resultsEvents = result.map((event) =&gt; ({
-    // Saves id on every item in the list
-    ID: event[1],
-    // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero.
-    score: event[0],
-  }));
-  console.log(resultsEvents);
-  return resultsEvents;
+    //Reccomender
+    for (let n = 0; n &lt; user.length; n++) {
+        for (let i = 0; i &lt; data.length; i++) {
+            //If a user is at event [n], find other user [i] at event
+            if (user[n] == data[i].eventID &amp;&amp; data[i].userID != currentUser) {
+                //If other person is at event, look at what other person is otherwise at
+                for (let k = 0; k &lt; data.length; k++) {
+                    //If other user is at other event add other event score.
+                    if (data[k].userID == data[i].userID) {
+                        result[data[k].eventID - 1][0] += 1;
+                    }
+                }
+            }
+        }
+    }
+    //Sort it by amount
+    result.sort(sortFunction);
+&nbsp;
+    //Print top 3 reccomended
+    console.log(
+        `We reccomend event ${result[0][1]}, event ${result[1][1]} and event ${result[2][1]}`
+    );
+    let resultsEvents = result.map((event) =&gt; ({
+        // Saves id on every item in the list
+        ID: event[1],
+        // Saves scores on every item in the list with dotProduct(), slice(1) to remove id's, slice(1) makes it start at index 1 instead of zero.
+        score: event[0],
+    }));
+    console.log(resultsEvents);
+    return resultsEvents;
 }
 &nbsp;
 //Sorts array by first column
 function sortFunction(a, b) {
-  if (a[0] === b[0]) {
-    return 0;
-  } else {
-    return a[0] &gt; b[0] ? -1 : 1;
-  }
+    if (a[0] === b[0]) {
+        return 0;
+    } else {
+        return a[0] &gt; b[0] ? -1 : 1;
+    }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -298,7 +298,7 @@ function sortFunction(a, b) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-05-21T12:07:28.906Z
+                at 2025-06-18T07:28:36.385Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

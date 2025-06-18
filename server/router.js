@@ -61,17 +61,27 @@ const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT;
 
 //Process the server request
 async function processReq(req, res) {
+    //req osv indeholder alt data fra browseren
+
     //Print method and path (for checking errors)
+
+    // req.method om det er post eller get. req.url er: /public/css/global.css, filen der skal hentes
     console.log("GOT: " + req.method + " " + req.url);
 
+    // baseURL er http://localhost:3000/
     let baseURL = "http://" + req.headers.host + "/";
+    // Denne nye url bliver lavet om til et object hvor den gemmer disse ting fra før
     let url = new URL(req.url, baseURL);
-    //let searchParms = new URLSearchParams(url.search);
+    console.log(url);
+
+    // decoder url.pathname for alle ureheder man kunne finde på at smide ind som " " bliver %20 osv.
     let queryPath = decodeURIComponent(url.pathname);
 
     switch (req.method) {
         case "POST":
             let pathElements = queryPath.split("/");
+            console.log(pathElements);
+            // første elememt er en tom streng, fordi der er et / først, derfor tager andet element som ville være fx save-products
             switch (pathElements[1]) {
                 case "save-products":
                     extractJSON(req)
@@ -113,6 +123,7 @@ async function processReq(req, res) {
                     break;
                 case "update-user-filters":
                     extractJSON(req)
+                        // destructing {}, trækker userId, itemId ud af object.
                         .then(({ userId, itemId }) => {
                             updateUserFilters(userId, itemId)
                                 .then(() => {
@@ -176,6 +187,7 @@ async function processReq(req, res) {
                                     return;
                                 }
                                 const price = typeof product.price === "string"
+                                                                    // fjerner alt på nær tal: /[^\d]/g   → alt der IKKE er et tal, det næste: parseInt("00123", 10) → 123. parseInt("299", 10) → 299, sørger for det i 10.
                                     ? parseInt(product.price.replace(/[^\d]/g, ""), 10)
                                     : Number(product.price);
 
@@ -195,7 +207,7 @@ async function processReq(req, res) {
                                         price_data: {
                                             currency: "dkk",
                                             product_data: { name: "Din kurv" },
-                                            unit_amount: Math.round(totalPrice * 100),
+                                            unit_amount: Math.round(totalPrice * 100), // gange 100 fordi stripe regner i ørrer. 
                                         },
                                         quantity: 1,
                                     },
@@ -391,6 +403,7 @@ async function processReq(req, res) {
                             }
 
                             // Hash the password that the user has provided
+                            // 10 er salt rounds, jo hører tal jo mere ydeevne til at knæk, 10 er standard
                             const hashedPassword = await bcrypt.hash(password, 10);
 
                             // Insert user into database, name, email and hashedpassword

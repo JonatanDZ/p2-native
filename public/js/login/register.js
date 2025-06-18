@@ -24,6 +24,7 @@ document.getElementById("signup").addEventListener("submit", async function (e) 
         // Attempt to parse JSON response
         try {
             const text = await response.text();
+            // hvis text.trim() er true, så:
             result = text.trim() ? JSON.parse(text) : {};
         } catch (err) {
             console.error("Failed to parse JSON:", err);

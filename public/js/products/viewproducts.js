@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // udvidet den lidt så den kan tage flere kald på en side
     const apiContainers = document.querySelectorAll(".api-call");
     apiContainers.forEach((container) => {
+        // <div class="api-call" data-endpoint="/get-events" data-user-id="42"></div>
+        // dataset fjerner data- foran endpoint, så vi får /get-events
         const endpoint = container.dataset.endpoint;
         if (endpoint) readFromDB(endpoint);
     });
@@ -68,6 +70,7 @@ function addToBasket(product) {
     alert("Produktet er tilføjet til kurven!");
 }
 
+// ikke implementeret. 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");
 

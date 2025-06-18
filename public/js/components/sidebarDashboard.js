@@ -29,6 +29,7 @@ async function loadSidebarAndAuth() {
             </a></a>`;
             const firstItem = sidebarLinks.querySelector('li');
             // This puts the button at the top of the list
+            // da dette ikke er korrekt ift koden, bliver else brugt. og 
             if (firstItem && firstItem.nextSibling) {
                 sidebarLinks.insertBefore(adminLink, firstItem.nextSibling);
             } else {

@@ -150,6 +150,7 @@ async function displayRecommendedEvents(recommendationList, placement) {
 
                         console.log("USER", userID, "EVENT", eventId);
                         //Make a POST with userID and eventID
+                        // Sætter liked product in i databasen med specefic bruger.
                         try {
                             const response = fetch("http://localhost:3000/event-detail", {
                                 method: "POST",

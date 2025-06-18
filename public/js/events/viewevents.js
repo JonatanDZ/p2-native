@@ -41,12 +41,14 @@ function displayFromDB(data) {
         if (e.target && e.target.classList.contains("event-link")) {
             e.preventDefault();
             const eventId = parseInt(e.target.getAttribute("data-id"));
+            // so it checks if it exist in the database and it exist on the html 
             const event = data.find((ev) => ev.ID === eventId);
             if (event) {
                 //Get userID
                 const userID = await getUserId();
                 if (userID != null) {
                     //Make a POST with userID and eventID
+                    // vi indsætter at user kan lide specefikt event med denne post. 
                     try {
                         const response = fetch("http://localhost:3000/event-detail", {
                             method: "POST",

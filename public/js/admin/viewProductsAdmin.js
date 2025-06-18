@@ -102,6 +102,7 @@ async function deleteReq(ID) {
         });
 }
 
+// ikke lavet færdig og visses ikke på siden. 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");
 

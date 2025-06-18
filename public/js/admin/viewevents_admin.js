@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Stuff loaded!")
+    // finder alle elementer med klassen api-call
     const apiContainers = document.querySelectorAll(".api-call");
     apiContainers.forEach((container) => {
+        // <div class="api-call" data-endpoint="/get-events" data-user-id="42"></div>
+        // dataset fjerner data- foran endpoint, så vi får /get-events
         const endpoint = container.dataset.endpoint;
         if (endpoint) readFromDB(endpoint);
     });
@@ -83,7 +86,8 @@ function displayFromDB(data) {
             const event = data.find((ev) => ev.ID === eventId);
             if (event) {
                 console.log("CLICKED!");
-
+                
+                // Er en forælet version derfor er det en fejl og det er opdateret i weiwevents. 
                 const userID = 2; //Insert userID here (somehow)
                 console.log("USER", userID, "EVENT", eventId);
                 //Make a POST with userID and eventID

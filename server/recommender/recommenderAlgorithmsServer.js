@@ -12,6 +12,7 @@ const pool = mysql.createPool({
 export async function getUserFiltersDB(userId) {
     try {
         // Destructuring([]) removes meta data from db, db code gets specific user, with id.
+        // tager altså bare kun det første element i arraet. hvis der stod [user, nfjnf] ville første element ryger i user og andet element ryger i: nfjnf
         const [userResults] = await pool.query(
             "SELECT * FROM user_filters WHERE userID = ?",
             [userId]
@@ -36,6 +37,7 @@ export async function getUserFiltersDB(userId) {
 export async function getSpecificItemFiltersDB(itemId) {
     try {
         // Destructuring([]) removes meta data from db, db code gets specific item, with id.
+        // tager altså bare kun det første element i arraet. hvis der stod [user, nfjnf] ville første element ryger i user og andet element ryger i: nfjnf
         const [itemResults] = await pool.query(
             "SELECT * FROM products_filters WHERE productID = ?",
             [itemId]
@@ -60,7 +62,9 @@ getSpecificItemFiltersDB(2);
 
 export async function getAllItemFiltersDB() {
     try {
-        // Destructuring([]) removes meta data from db, db code gets all items.
+        // Destructuring([]) removes meta data from db, db code gets all items.                
+        // tager altså bare kun det første element i arraet. hvis der stod [user, nfjnf] ville første element ryger i user og andet element ryger i: nfjnf
+
         const [itemResults] = await pool.query("SELECT * FROM products_filters");
 
         // input controll, checks if list is empty
@@ -82,6 +86,8 @@ getAllItemFiltersDB();
 export async function getAllUserEventsDB() {
     try {
         // Destructuring([]) removes meta data from db, db code gets specific user, with id.
+        // tager altså bare kun det første element i arraet. hvis der stod [user, nfjnf] ville første element ryger i user og andet element ryger i: nfjnf
+
         const [userEventsResults] = await pool.query("SELECT * FROM user_events");
 
         // input controll, checks if list is empty
